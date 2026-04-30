@@ -18,7 +18,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract class ICliente implements Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="pk", columnDefinition = "INT UNSIGNED")
     @Getter
     private Long id;

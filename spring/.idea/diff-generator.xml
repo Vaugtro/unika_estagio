@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DiffGenerationConfig">
+    <option name="snapshotDb" value="false" />
+    <option name="snapshotModelValue" value="estagio.main:estagio.main" />
+    <option name="sourceModelValue" value="estagio.main:estagio.main" />
+    <option name="targetDbValue" value="832bac54-9400-408c-a507-1b56cb70910d" />
+  </component>
+</project>
