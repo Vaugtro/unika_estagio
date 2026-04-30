@@ -1,4 +1,4 @@
 package com.desafio.estagio.mvc.model.entity;
 
-interface Endereco {
+public interface Endereco {
 }

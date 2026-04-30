@@ -3,46 +3,54 @@ package com.desafio.estagio.mvc.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "endereco", check = @C)
+@Table(name = "endereco")
 public class IEndereco implements Endereco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="pk", columnDefinition = "INT UNSIGNED")
+    @Column(name = "pk", columnDefinition = "INT UNSIGNED")
     @Getter
     private Long id;
 
     @Column(name = "logradouro", nullable = false)
-    @Getter @Setter
+    @Getter
+    @Setter
     private String logradouro;
 
-    @Column(name="numero", nullable = false, columnDefinition = "INT UNSIGNED")
-    @Getter @Setter
+    @Column(name = "numero", nullable = false, columnDefinition = "INT UNSIGNED")
+    @Getter
+    @Setter
     private long numero;
 
-    @Column(name="cep", nullable = false, length = 8)
-    @Getter @Setter
+    @Column(name = "cep", nullable = false, length = 8)
+    @Getter
+    @Setter
     private String cep;
 
-    @Column(name="bairro")
-    @Getter @Setter
+    @Column(name = "bairro")
+    @Getter
+    @Setter
     private String bairro;
 
-    @Column(name="telefone", nullable = false, length = 11)
-    @Getter @Setter
+    @Column(name = "telefone", nullable = false, length = 11)
+    @Getter
+    @Setter
     private String telefone;
 
-    @Column(name="cidade", nullable = false)
-    @Getter @Setter
+    @Column(name = "cidade", nullable = false)
+    @Getter
+    @Setter
     private String cidade;
 
-    @Column(name="estado", nullable = false)
-    @Getter @Setter
+    @Column(name = "estado", nullable = false)
+    @Getter
+    @Setter
     private String estado;
 
     @Column(name = "endereco_principal", nullable = false)
@@ -55,10 +63,6 @@ public class IEndereco implements Endereco {
     @JoinColumn(name = "cliente_id", nullable = false, updatable = false)
     private Cliente cliente;
 
-    @Column(insertable = false, updatable = false,
-            columnDefinition = "BOOLEAN AS (IF(endereco_principal, 1, NULL)) PERSISTENT")
-    private Boolean clienteEnderecoPrincipalUnicoConstraint;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     @Getter
@@ -69,15 +73,40 @@ public class IEndereco implements Endereco {
     @Getter
     private LocalDateTime updatedAt;
 
-    public Boolean eEnderecoPrincipal(){
+    // --- Constructor
+
+    public IEndereco() {
+
+    }
+
+    public IEndereco(Long id, String logradouro, long numero, String cep, String bairro, String telefone, String cidade, String estado, Boolean eEnderecoPrincipal, String complemento, Cliente cliente, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.cep = cep;
+        this.bairro = bairro;
+        this.telefone = telefone;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.eEnderecoPrincipal = eEnderecoPrincipal;
+        this.complemento = complemento;
+        this.cliente = cliente;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+
+    // --- Methods
+
+    public Boolean eEnderecoPrincipal() {
         return eEnderecoPrincipal;
     }
 
-    public void eEnderecoPrincipalActivate(){
+    public void eEnderecoPrincipalActivate() {
         this.eEnderecoPrincipal = true;
     }
 
-    public void eEnderecoPrincipalDeactivate(){
+    public void eEnderecoPrincipalDeactivate() {
         this.eEnderecoPrincipal = false;
     }
 

@@ -1,36 +1,37 @@
 package com.desafio.estagio.mvc.model.entity;
 
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract class ICliente implements Cliente {
+@Table(name = "cliente")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class ICliente implements Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="pk", columnDefinition = "INT UNSIGNED")
+    @Column(name = "pk", columnDefinition = "INT UNSIGNED")
     @Getter
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="tipo", nullable = false, length = 8)
-    @Getter @Setter
+    @Column(name = "tipo", nullable = false, length = 8)
+    @Getter
+    @Setter
     private TipoCliente tipo;
 
     @Column(name = "email", nullable = false)
     @Email()
-    @Getter @Setter
+    @Getter
+    @Setter
     private String email;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -46,35 +47,20 @@ abstract class ICliente implements Cliente {
     @Column(name = "ativo", nullable = false)
     private Boolean estaAtivo = true;
 
-    @OneToMany(targetEntity = IEndereco.class)
+    @OneToMany(targetEntity = IEndereco.class, mappedBy = "cliente")
     private Set<Endereco> enderecos;
 
-    // --- Constructor
-
-    public ICliente() {
-
-    }
-
-    public ICliente(Long id, TipoCliente tipo, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean estaAtivo) {
-        this.id = id;
-        this.tipo = tipo;
-        this.email = email;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.estaAtivo = estaAtivo;
-    }
 
     // --- Methods
-
-    public Boolean estaAtivo(){
+    public Boolean estaAtivo() {
         return estaAtivo;
     }
 
-    public void estaAtivoActivate(){
+    public void estaAtivoActivate() {
         this.estaAtivo = true;
     }
 
-    public void estaAtivoDeactivate(){
+    public void estaAtivoDeactivate() {
         this.estaAtivo = false;
     }
 

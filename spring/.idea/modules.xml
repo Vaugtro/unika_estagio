@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/estagio.main.iml" filepath="$PROJECT_DIR$/.idea/modules/estagio.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/estagio.test.iml" filepath="$PROJECT_DIR$/.idea/modules/estagio.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/spring.iml" filepath="$PROJECT_DIR$/.idea/spring.iml" />
     </modules>
   </component>

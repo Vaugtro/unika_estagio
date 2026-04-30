@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DatabaseMigrationSettings" lastSelectedDirectory="$PROJECT_DIR$/estagio/src/main/resources/db/migration" />
+  <component name="DatabaseMigrationSettings" lastSelectedDirectory="$PROJECT_DIR$/estagio/src/main/resources/db/migration">
+    <database-infos>
+      <database-info>
+        <dbms-id>maria</dbms-id>
+        <mapping-types>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>com.desafio.estagio.mvc.model.entity.Cliente</java-class>
+            <sql-type>int unsigned</sql-type>
+          </mapping-type>
+        </mapping-types>
+      </database-info>
+    </database-infos>
+  </component>
 </project>
