@@ -55,7 +55,7 @@ dependencies {
 }
 
 flyway {
-	url = 'jdbc:mysql://localhost:3306/dummy'
+	url = 'jdbc:mysql://localhost:3306/dummy_db'
 	user = 'root'
 	password = 'mariadb'
 	validateMigrationNaming = true

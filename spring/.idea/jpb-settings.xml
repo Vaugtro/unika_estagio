@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DatabaseMigrationSettings" lastSelectedDirectory="$PROJECT_DIR$/estagio/src/main/resources/db/migration">
+  <component name="DatabaseMigrationSettings" lastSelectedDirectory="$PROJECT_DIR$/estagio/src/main/java/com/desafio/estagio/mvc/model/entity">
     <database-infos>
       <database-info>
         <dbms-id>maria</dbms-id>

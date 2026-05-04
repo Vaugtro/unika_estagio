@@ -14,8 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "cliente")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class ICliente implements Cliente {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class ClienteEntity implements Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", columnDefinition = "INT UNSIGNED")
@@ -47,7 +47,7 @@ public abstract class ICliente implements Cliente {
     @Column(name = "ativo", nullable = false)
     private Boolean estaAtivo = true;
 
-    @OneToMany(targetEntity = IEndereco.class, mappedBy = "cliente")
+    @OneToMany(targetEntity = EnderecoEntity.class, mappedBy = "cliente")
     private Set<Endereco> enderecos;
 
 

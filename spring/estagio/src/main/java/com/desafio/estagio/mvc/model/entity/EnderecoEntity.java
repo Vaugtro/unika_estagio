@@ -1,16 +1,20 @@
 package com.desafio.estagio.mvc.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "endereco")
-public class IEndereco implements Endereco {
+public class EnderecoEntity implements Endereco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +30,7 @@ public class IEndereco implements Endereco {
     @Column(name = "numero", nullable = false, columnDefinition = "INT UNSIGNED")
     @Getter
     @Setter
-    private long numero;
+    private Long numero;
 
     @Column(name = "cep", nullable = false, length = 8)
     @Getter
@@ -54,13 +58,16 @@ public class IEndereco implements Endereco {
     private String estado;
 
     @Column(name = "endereco_principal", nullable = false)
+    @Getter @Setter
     private Boolean eEnderecoPrincipal = false;
 
     @Column(name = "complemento")
+    @Getter @Setter
     private String complemento;
 
-    @ManyToOne(optional = false, targetEntity = ICliente.class)
+    @ManyToOne(optional = false, targetEntity = ClienteEntity.class)
     @JoinColumn(name = "cliente_id", nullable = false, updatable = false)
+    @Getter
     private Cliente cliente;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -72,31 +79,6 @@ public class IEndereco implements Endereco {
     @UpdateTimestamp
     @Getter
     private LocalDateTime updatedAt;
-
-    // --- Constructor
-
-    public IEndereco() {
-
-    }
-
-    public IEndereco(Long id, String logradouro, long numero, String cep, String bairro, String telefone, String cidade, String estado, Boolean eEnderecoPrincipal, String complemento, Cliente cliente, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.cep = cep;
-        this.bairro = bairro;
-        this.telefone = telefone;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.eEnderecoPrincipal = eEnderecoPrincipal;
-        this.complemento = complemento;
-        this.cliente = cliente;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-
-    // --- Methods
 
     public Boolean eEnderecoPrincipal() {
         return eEnderecoPrincipal;

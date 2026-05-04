@@ -2,6 +2,7 @@ package com.desafio.estagio.mvc.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -9,7 +10,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class IClienteJuridico extends ICliente implements ClienteJuridico {
+@Table(name="cliente_juridico")
+public class ClienteJuridicoEntity extends ClienteEntity implements ClienteJuridico {
     @Column(name = "cnpj", unique = true, nullable = false, length = 14)
     @Getter
     @Setter
