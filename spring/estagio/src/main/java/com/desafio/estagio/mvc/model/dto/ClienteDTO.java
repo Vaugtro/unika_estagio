@@ -11,8 +11,11 @@ public interface ClienteDTO {
     // Common contract for all Requests
     interface Request extends Serializable {
         TipoCliente tipo();
+
         String email();
+
         Boolean estaAtivo();
+
         List<Endereco> enderecos();
     }
 
@@ -20,11 +23,17 @@ public interface ClienteDTO {
     // The Service uses <S extends ClienteDTO.Response>
     interface Response extends Serializable {
         Long id();
+
         TipoCliente tipo();
+
         String email();
+
         Boolean estaAtivo();
-        List<EnderecoDTO.Request> enderecos();
+
+        List<EnderecoDTO.Response> enderecos();
+
         LocalDateTime createdAt();
+
         LocalDateTime updatedAt();
     }
 }

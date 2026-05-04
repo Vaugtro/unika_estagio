@@ -1,44 +1,49 @@
 package com.desafio.estagio.mvc.model.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface Endereco {
 
     Long getId();
 
-    void setLogradouro(String logradouro);
     String getLogradouro();
 
-    void setNumero(Long numero);
+    void setLogradouro(String logradouro);
+
     Long getNumero();
 
-    void setCep(String cep);
+    void setNumero(Long numero);
+
     String getCep();
 
-    void setBairro(String bairro);
+    void setCep(String cep);
+
     String getBairro();
 
-    void setTelefone(String telefone);
+    void setBairro(String bairro);
+
     String getTelefone();
 
-    void setCidade(String cidade);
+    void setTelefone(String telefone);
+
     String getCidade();
 
-    void setEstado(String estado);
+    void setCidade(String cidade);
+
     String getEstado();
 
-    Boolean eEnderecoPrincipal();
-    void eEnderecoPrincipalActivate();
-    void eEnderecoPrincipalDeactivate();
+    void setEstado(String estado);
+
+    void setPrincipal(Boolean principal);
+    Boolean isPrincipal();
+
+    String getComplemento();
 
     void setComplemento(String complemento);
-    String getComplemento();
 
     LocalDateTime getCreatedAt();
 
     LocalDateTime getUpdatedAt();
-
 
 
 }

@@ -10,12 +10,12 @@ import org.mapstruct.*;
         uses = EnderecoEntity.class,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface EnderecoMapper {
-
     EnderecoDTO.Response toResponse(Endereco entity);
 
     @Mapping(target = "id", ignore = true)
     EnderecoEntity toEntity(EnderecoDTO.Request request);
 
+    @Mapping(target = "id", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDTO(EnderecoDTO.Request request, @MappingTarget EnderecoEntity entity);
 }

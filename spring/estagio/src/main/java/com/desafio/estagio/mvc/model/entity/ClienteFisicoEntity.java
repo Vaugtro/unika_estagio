@@ -3,14 +3,17 @@ package com.desafio.estagio.mvc.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="cliente_fisico")
+@Table(name = "cliente_fisico")
 public class ClienteFisicoEntity extends ClienteEntity implements ClienteFisico {
     @Column(name = "cpf", unique = true, nullable = false, length = 11)
     @Getter

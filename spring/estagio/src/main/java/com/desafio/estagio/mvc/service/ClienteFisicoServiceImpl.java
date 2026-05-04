@@ -1,4 +1,4 @@
-package com.desafio.estagio.mvc.model.service;
+package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
@@ -7,7 +7,6 @@ import com.desafio.estagio.repository.ClienteFisicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClienteFisicoServiceImpl

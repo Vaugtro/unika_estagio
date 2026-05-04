@@ -1,9 +1,8 @@
-package com.desafio.estagio.mvc.model.service;
+package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteEntity;
 import com.desafio.estagio.repository.ClienteRepository;
-import java.util.List;
 
 public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends ClienteDTO.Response, R extends ClienteRepository<T>>
         implements ClienteService<T, S, R> {
@@ -25,13 +24,13 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     public void inativarCliente(Long id) {
         T cliente = findEntityById(id);
-        cliente.estaAtivoDeactivate();
+        cliente.setEstaAtivo(false);
         repository.save(cliente);
     }
 
     public void ativarCliente(Long id) {
         T cliente = findEntityById(id);
-        cliente.estaAtivoActivate();
+        cliente.setEstaAtivo(true);
         repository.save(cliente);
     }
 }

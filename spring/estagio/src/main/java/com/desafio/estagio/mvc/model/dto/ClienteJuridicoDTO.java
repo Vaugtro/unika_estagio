@@ -3,6 +3,8 @@ package com.desafio.estagio.mvc.model.dto;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridico;
 import com.desafio.estagio.mvc.model.entity.Endereco;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidCNPJ;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -41,7 +43,8 @@ public interface ClienteJuridicoDTO extends ClienteDTO {
                     String inscricaoEstadual,
                     Boolean estaAtivo,
                     LocalDate dataCriacaoEmpresa,
-                    List<EnderecoDTO.Request> enderecos,
+                    @ArraySchema(schema = @Schema(implementation = EnderecoDTO.Response.class))
+                    List<EnderecoDTO.Response> enderecos,
                     LocalDateTime createdAt,
                     LocalDateTime updatedAt
     ) implements ClienteDTO.Response, Serializable {

@@ -1,4 +1,4 @@
-package com.desafio.estagio.mvc.model.service;
+package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
@@ -33,7 +33,7 @@ public class ClienteJuridicoServiceImpl
     public ClienteJuridicoDTO.Response getById(Long id) {
         return repository.findById(id)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Cliente físico não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Cliente jurídico não encontrado"));
     }
 
     @Override

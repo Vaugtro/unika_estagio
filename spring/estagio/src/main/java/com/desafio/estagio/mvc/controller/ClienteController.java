@@ -1,18 +1,11 @@
 package com.desafio.estagio.mvc.controller;
 
-import com.desafio.estagio.mvc.model.dto.ClienteDTO;
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
-import com.desafio.estagio.mvc.model.entity.ClienteEntity;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
-import com.desafio.estagio.mvc.model.service.ClienteFisicoService;
-import com.desafio.estagio.mvc.model.service.ClienteJuridicoService;
-import com.desafio.estagio.mvc.model.service.ClienteService;
-import com.desafio.estagio.repository.ClienteRepository;
+import com.desafio.estagio.mvc.service.ClienteFisicoService;
+import com.desafio.estagio.mvc.service.ClienteJuridicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

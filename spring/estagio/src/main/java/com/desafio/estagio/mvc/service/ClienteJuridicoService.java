@@ -1,4 +1,4 @@
-package com.desafio.estagio.mvc.model.service;
+package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;

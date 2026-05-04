@@ -4,6 +4,8 @@ import com.desafio.estagio.mvc.model.entity.ClienteFisico;
 import com.desafio.estagio.mvc.model.entity.Endereco;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidCPF;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidRG;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -42,7 +44,8 @@ public interface ClienteFisicoDTO extends ClienteDTO {
                     String rg,
                     Boolean estaAtivo,
                     LocalDate dataNascimento,
-                    List<EnderecoDTO.Request> enderecos,
+                    @ArraySchema(schema = @Schema(implementation = EnderecoDTO.Response.class))
+                    List<EnderecoDTO.Response> enderecos,
                     LocalDateTime createdAt,
                     LocalDateTime updatedAt
     ) implements ClienteDTO.Response, Serializable {

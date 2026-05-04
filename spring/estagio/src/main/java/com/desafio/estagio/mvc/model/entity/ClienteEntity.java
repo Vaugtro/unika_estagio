@@ -3,11 +3,15 @@ package com.desafio.estagio.mvc.model.entity;
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -45,27 +49,10 @@ public abstract class ClienteEntity implements Cliente {
     private LocalDateTime updatedAt;
 
     @Column(name = "ativo", nullable = false)
+    @Getter @Setter
     private Boolean estaAtivo = true;
 
     @OneToMany(targetEntity = EnderecoEntity.class, mappedBy = "cliente")
-    private Set<Endereco> enderecos;
-
-
-    // --- Methods
-    public Boolean estaAtivo() {
-        return estaAtivo;
-    }
-
-    public void estaAtivoActivate() {
-        this.estaAtivo = true;
-    }
-
-    public void estaAtivoDeactivate() {
-        this.estaAtivo = false;
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @Getter
+    private List<Endereco> enderecos;
 }

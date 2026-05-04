@@ -58,11 +58,12 @@ public class EnderecoEntity implements Endereco {
     private String estado;
 
     @Column(name = "endereco_principal", nullable = false)
-    @Getter @Setter
-    private Boolean eEnderecoPrincipal = false;
+    @Setter
+    private Boolean principal = false;
 
     @Column(name = "complemento")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String complemento;
 
     @ManyToOne(optional = false, targetEntity = ClienteEntity.class)
@@ -80,20 +81,8 @@ public class EnderecoEntity implements Endereco {
     @Getter
     private LocalDateTime updatedAt;
 
-    public Boolean eEnderecoPrincipal() {
-        return eEnderecoPrincipal;
-    }
-
-    public void eEnderecoPrincipalActivate() {
-        this.eEnderecoPrincipal = true;
-    }
-
-    public void eEnderecoPrincipalDeactivate() {
-        this.eEnderecoPrincipal = false;
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    @Override
+    public Boolean isPrincipal() {
+        return this.principal;
     }
 }
