@@ -1,21 +1,36 @@
 package com.desafio.estagio.mvc.model.mapper;
 
 import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
-import com.desafio.estagio.mvc.model.entity.ClienteJuridico;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = ClienteJuridicoEntity.class,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = EnderecoMapper.class,  // Use EnderecoMapper
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ClienteJuridicoMapper {
 
-    ClienteJuridicoDTO.Response toResponse(ClienteJuridico entity);
+    // Response mapping
+    @Mapping(target = "enderecos", source = "enderecos")
+    @Mapping(target = "tipo", constant = "JURIDICA")
+    ClienteJuridicoDTO.Response toResponse(ClienteJuridicoEntity entity);
 
+    // Request to Entity
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "enderecos", source = "enderecos")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "estaAtivo", constant = "true")
     ClienteJuridicoEntity toEntity(ClienteJuridicoDTO.Request request);
 
+    // Update mapping
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "enderecos", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateEntityFromDTO(ClienteJuridicoDTO.Request request, @MappingTarget ClienteJuridicoEntity entity);
 }

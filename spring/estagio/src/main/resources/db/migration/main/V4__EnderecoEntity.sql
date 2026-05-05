@@ -24,3 +24,18 @@ ALTER TABLE endereco
 
 CREATE UNIQUE INDEX uk_cliente_endereco_principal_unico
     ON endereco (cliente_id, un_endereco_principal);
+
+ALTER TABLE endereco
+    ADD CONSTRAINT che_cep_length CHECK (LENGTH(cep) = 8);
+
+-- CEP: Must contain only digits
+ALTER TABLE endereco
+    ADD CONSTRAINT che_cep_digits CHECK (cep REGEXP '^[0-9]+$');
+
+-- TELEFONE: Must be 10 or 11 digits
+ALTER TABLE endereco
+    ADD CONSTRAINT che_telefone_length CHECK (LENGTH(telefone) = 10 OR LENGTH(telefone) = 11);
+
+-- TELEFONE: Must contain only digits
+ALTER TABLE endereco
+    ADD CONSTRAINT che_telefone_digits CHECK (telefone REGEXP '^[0-9]+$');

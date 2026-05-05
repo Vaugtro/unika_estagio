@@ -1,21 +1,38 @@
 package com.desafio.estagio.mvc.model.mapper;
 
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
-import com.desafio.estagio.mvc.model.entity.ClienteFisico;
+import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
+import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = ClienteFisicoEntity.class,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = EnderecoMapper.class,  // Use EnderecoMapper for endereco mappings
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ClienteFisicoMapper {
 
-    ClienteFisicoDTO.Response toResponse(ClienteFisico entity);
+    // Response mapping - use EnderecoMapper for enderecos
+    @Mapping(target = "enderecos", source = "enderecos")
+    @Mapping(target = "tipo", constant = "FISICA")
+    ClienteFisicoDTO.Response toResponse(ClienteFisicoEntity entity);
 
+    // Request to Entity
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "enderecos", source = "enderecos")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "estaAtivo", constant = "true")
     ClienteFisicoEntity toEntity(ClienteFisicoDTO.Request request);
 
+    // Update mapping
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "enderecos", ignore = true)  // Handle enderecos separately
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateEntityFromDTO(ClienteFisicoDTO.Request request, @MappingTarget ClienteFisicoEntity entity);
 }

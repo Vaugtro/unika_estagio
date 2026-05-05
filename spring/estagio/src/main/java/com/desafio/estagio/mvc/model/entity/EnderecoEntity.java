@@ -1,10 +1,12 @@
 package com.desafio.estagio.mvc.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,6 +22,7 @@ public class EnderecoEntity implements Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", columnDefinition = "INT UNSIGNED")
     @Getter
+    @Setter
     private Long id;
 
     @Column(name = "logradouro", nullable = false)
@@ -34,7 +37,6 @@ public class EnderecoEntity implements Endereco {
 
     @Column(name = "cep", nullable = false, length = 8)
     @Getter
-    @Setter
     private String cep;
 
     @Column(name = "bairro")
@@ -44,7 +46,6 @@ public class EnderecoEntity implements Endereco {
 
     @Column(name = "telefone", nullable = false, length = 11)
     @Getter
-    @Setter
     private String telefone;
 
     @Column(name = "cidade", nullable = false)
@@ -58,6 +59,7 @@ public class EnderecoEntity implements Endereco {
     private String estado;
 
     @Column(name = "endereco_principal", nullable = false)
+    @Getter
     @Setter
     private Boolean principal = false;
 
@@ -68,7 +70,9 @@ public class EnderecoEntity implements Endereco {
 
     @ManyToOne(optional = false, targetEntity = ClienteEntity.class)
     @JoinColumn(name = "cliente_id", nullable = false, updatable = false)
+    @Setter
     @Getter
+    @JsonIgnore
     private Cliente cliente;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -80,6 +84,24 @@ public class EnderecoEntity implements Endereco {
     @UpdateTimestamp
     @Getter
     private LocalDateTime updatedAt;
+
+    // Manual setter for CEP with cleaning
+    public void setCep(String cep) {
+        if (cep == null) {
+            this.cep = null;
+        } else {
+            this.cep = cep.replaceAll("\\D", "");
+        }
+    }
+
+    // Manual setter for Telefone with cleaning
+    public void setTelefone(String telefone) {
+        if (telefone == null) {
+            this.telefone = null;
+        } else {
+            this.telefone = telefone.replaceAll("\\D", "");
+        }
+    }
 
     @Override
     public Boolean isPrincipal() {

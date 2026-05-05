@@ -14,6 +14,7 @@ public interface Cliente {
     String getEmail();
     void setEmail(String email);
 
+    void setEnderecos(List<Endereco> enderecos);
     List<Endereco> getEnderecos();
 
     LocalDateTime getCreatedAt();

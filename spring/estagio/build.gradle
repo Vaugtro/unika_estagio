@@ -1,3 +1,6 @@
+import org.flywaydb.gradle.task.FlywayCleanTask
+import org.flywaydb.gradle.task.FlywayMigrateTask
+
 buildscript {
 	repositories {
 		mavenCentral()
@@ -38,16 +41,25 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// Flyway
-	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.flywaydb:flyway-core:12.5.0'
 	implementation 'org.flywaydb:flyway-mysql:12.5.0'
 
 	// Mapstruct
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
+	// Test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.testcontainers:testcontainers:1.19.3'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+	testImplementation 'org.testcontainers:mariadb:1.19.3'  // MariaDB Testcontainer
+	testImplementation 'org.testcontainers:testcontainers'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
@@ -60,8 +72,38 @@ flyway {
 	password = 'mariadb'
 	validateMigrationNaming = true
 	cleanDisabled=false
+	locations = ['classpath:db/migration/main']
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('flywayTestMigrate', FlywayMigrateTask) {
+	// These will be overridden by Testcontainers, but kept as fallback
+	url = 'jdbc:mysql://localhost:3306/testdb'
+	user = 'test'
+	password = 'test'
+	locations = ['classpath:db/migration/test']
+	cleanDisabled = false
+	baselineOnMigrate = true
+	validateOnMigrate = true
+
+	// Configure to use the test profile
+	doFirst {
+		println "Running Flyway migrations for test database"
+		println "Make sure Docker is running and Testcontainers will start MariaDB"
+	}
+}
+
+// Task to clean test database
+tasks.register('flywayTestClean', FlywayCleanTask) {
+	url = 'jdbc:mysql://localhost:3306/testdb'
+	user = 'test'
+	password = 'test'
+	cleanDisabled = false
+
+	doFirst {
+		println "Cleaning test database"
+	}
 }

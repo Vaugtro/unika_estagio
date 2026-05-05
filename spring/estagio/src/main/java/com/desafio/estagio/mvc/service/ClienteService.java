@@ -1,6 +1,7 @@
 package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteDTO;
+import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteEntity;
 import com.desafio.estagio.repository.ClienteRepository;
 
@@ -17,4 +18,8 @@ public interface ClienteService<T extends ClienteEntity, S extends ClienteDTO.Re
     T findEntityById(Long id);
 
     List<S> findAll();
+
+    void delete(Long id);
+
+    T findById(Long id);
 }

@@ -8,37 +8,20 @@ public class RGValidator implements ConstraintValidator<ValidRG, String> {
 
     @Override
     public boolean isValid(String rg, ConstraintValidatorContext context) {
-        if (rg == null || rg.isEmpty()) return true;
-
-        // Remove dots and dashes
-        rg = rg.replaceAll("[^0-9Xx]", "");
-
-        // Basic check for common 9-digit format (SP)
-        if (rg.length() != 9) return false;
-
-        return isRGValid(rg);
-    }
-
-    private boolean isRGValid(String rg) {
-        // Calculation for SP Standard:
-        // Weights: 2, 3, 4, 5, 6, 7, 8, 9 (for the first 8 digits)
-        int sum = 0;
-        for (int i = 0; i < 8; i++) {
-            sum += (rg.charAt(i) - '0') * (i + 2);
+        if (rg == null || rg.isBlank()) {
+            return false;
         }
 
-        int remainder = sum % 11;
-        char expectedDigit;
+        // Remove any non-digit characters (handles formatting like "12.345.678-9")
+        String rawRG = rg.replaceAll("\\D", "");
 
-        if (remainder == 0) {
-            expectedDigit = '0';
-        } else if (remainder == 1) {
-            expectedDigit = 'X';
-        } else {
-            expectedDigit = (char) ((11 - remainder) + '0');
+        // RG can be 8 or 9 digits (sometimes 10 in some states)
+        if (rawRG.length() < 8 || rawRG.length() > 10) {
+            return false;
         }
 
-        char actualDigit = Character.toUpperCase(rg.charAt(8));
-        return actualDigit == expectedDigit;
+        // Add any additional RG validation logic here
+        // Example: check if not all digits are the same
+        return !rawRG.matches("(\\d)\\1{" + (rawRG.length() - 1) + "}");
     }
 }

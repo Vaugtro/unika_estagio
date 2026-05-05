@@ -17,4 +17,6 @@ public interface ClienteFisicoService
     ClienteFisicoDTO.Response create(ClienteFisicoDTO.Request request);
 
     ClienteFisicoDTO.Response update(Long id, ClienteFisicoDTO.Request request);
+
+    ClienteFisicoDTO.Response findByCpf(String cpf);
 }

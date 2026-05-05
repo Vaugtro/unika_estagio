@@ -2,6 +2,8 @@ package com.desafio.estagio.mvc.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,30 +11,46 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "cliente_fisico")
 public class ClienteFisicoEntity extends ClienteEntity implements ClienteFisico {
+
+    // Manual getter and setter for CPF with cleaning
     @Column(name = "cpf", unique = true, nullable = false, length = 11)
-    @Getter
-    @Setter
-    private String cpf;
+    private String cpf;  // Removed Lombok annotation - we control the setter
 
     @Column(name = "nome", nullable = false)
-    @Getter
     @Setter
     private String nome;
 
     @Column(name = "rg", nullable = false, length = 9)
-    @Getter
     @Setter
     private String rg;
 
     @Column(name = "data_nascimento", nullable = false)
-    @Getter
     @Setter
     private LocalDate dataNascimento;
 
+    public void setCpf(String cpf) {
+        // Clean the CPF before storing
+        if (cpf == null) {
+            this.cpf = null;
+        } else {
+            this.cpf = cpf.replaceAll("\\D", "");
+        }
+    }
+
+    // Optional: Add validation before persist/update
+    @PrePersist
+    @PreUpdate
+    private void validateCpf() {
+        if (cpf != null && cpf.length() != 11) {
+            throw new IllegalStateException("CPF must have exactly 11 digits");
+        }
+    }
 }
