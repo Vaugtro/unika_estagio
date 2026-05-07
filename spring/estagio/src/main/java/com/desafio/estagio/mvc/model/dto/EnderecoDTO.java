@@ -1,16 +1,9 @@
 package com.desafio.estagio.mvc.model.dto;
 
 import com.desafio.estagio.mvc.model.entity.Cliente;
-import com.desafio.estagio.mvc.model.entity.Endereco;
-import com.desafio.estagio.mvc.model.serializer.CEPFormatDeserializer;
-import com.desafio.estagio.mvc.model.serializer.CEPFormatSerializer;
-import com.desafio.estagio.mvc.model.serializer.TelefoneFormatDeserializer;
-import com.desafio.estagio.mvc.model.serializer.TelefoneFormatSerializer;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidCEP;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidTelefone;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +23,6 @@ public interface EnderecoDTO {
             @NotNull @PositiveOrZero Long numero,
 
             @Schema(description = "CEP (formato: 00000-000)", example = "01234-567", requiredMode = Schema.RequiredMode.REQUIRED)
-            @JsonDeserialize(using = CEPFormatDeserializer.class)
             @NotNull @NotBlank @ValidCEP String cep,
 
             @Schema(description = "Bairro", example = "Centro", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -38,7 +30,6 @@ public interface EnderecoDTO {
 
             @Schema(description = "Telefone (formato: (00) 00000-0000 ou (00) 0000-0000)",
                     example = "(11) 91234-5678", requiredMode = Schema.RequiredMode.REQUIRED)
-            @JsonDeserialize(using = TelefoneFormatDeserializer.class)
             @NotNull @NotBlank @ValidTelefone String telefone,
 
             @Schema(description = "Cidade", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -71,7 +62,6 @@ public interface EnderecoDTO {
             Long numero,
 
             @Schema(description = "CEP (formato: 00000-000)", example = "01234-567")
-            @JsonSerialize(using = CEPFormatSerializer.class)
             String cep,
 
             @Schema(description = "Bairro", example = "Centro")
@@ -79,7 +69,7 @@ public interface EnderecoDTO {
 
             @Schema(description = "Telefone (formato: (00) 00000-0000 ou (00) 0000-0000)",
                     example = "(11) 91234-5678")
-            @JsonSerialize(using = TelefoneFormatSerializer.class)
+
             String telefone,
 
             @Schema(description = "Cidade", example = "São Paulo")

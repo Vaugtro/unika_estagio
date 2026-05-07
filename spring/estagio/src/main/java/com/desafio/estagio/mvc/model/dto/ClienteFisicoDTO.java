@@ -1,12 +1,6 @@
 package com.desafio.estagio.mvc.model.dto;
 
-import com.desafio.estagio.mvc.model.serializer.CPFFormatDeserializer;
-import com.desafio.estagio.mvc.model.serializer.CPFFormatSerializer;
 import com.desafio.estagio.mvc.model.validation.annotation.ValidRG;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -29,8 +23,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             @Email String email,
 
             @Schema(description = "CPF (formato: 000.000.000-00)", example = "123.456.789-01", requiredMode = Schema.RequiredMode.REQUIRED)
-            @JsonProperty("cpf")
-            @JsonDeserialize(using = CPFFormatDeserializer.class)
             @NotNull @CPF String cpf,
 
             @Schema(description = "Nome completo", example = "João Silva Santos", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -50,63 +42,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             @Valid
             List<EnderecoDTO.Request> enderecos
     ) implements ClienteDTO.Request, Serializable {
-
-        @JsonCreator
-        public static Request fromJson(
-                @JsonProperty("tipo") TipoCliente tipo,
-                @JsonProperty("email") String email,
-                @JsonProperty("cpf") String cpf,
-                @JsonProperty("nome") String nome,
-                @JsonProperty("rg") String rg,
-                @JsonProperty("estaAtivo") Boolean estaAtivo,
-                @JsonProperty("dataNascimento") LocalDate dataNascimento,
-                @JsonProperty("enderecos") List<EnderecoDTO.Request> enderecos
-        ) {
-            // Normalize RG (remove all non-digits)
-            String normalizedRg = cleanRg(rg);
-
-            // Set default for estaAtivo
-            Boolean activeStatus = estaAtivo != null ? estaAtivo : true;
-
-            // Ensure enderecos is not null
-            List<EnderecoDTO.Request> safeEnderecos = enderecos != null ? enderecos : List.of();
-
-            // Validate age (18+ years)
-            validateAge(dataNascimento);
-
-            // Validate CPF and RG are not identical
-            validateCpfNotEqualsRg(cpf, normalizedRg);
-
-            return new Request(
-                    tipo,
-                    email,
-                    cpf,
-                    nome,
-                    normalizedRg,
-                    activeStatus,
-                    dataNascimento,
-                    safeEnderecos
-            );
-        }
-
-        private static String cleanRg(String rg) {
-            return rg != null ? rg.replaceAll("\\D", "") : null;
-        }
-
-        private static void validateAge(LocalDate dataNascimento) {
-            if (dataNascimento != null && dataNascimento.isAfter(LocalDate.now().minusYears(18))) {
-                throw new IllegalArgumentException("Cliente deve ter pelo menos 18 anos");
-            }
-        }
-
-        private static void validateCpfNotEqualsRg(String cpf, String rg) {
-            if (cpf != null && rg != null) {
-                String cleanCpf = cpf.replaceAll("\\D", "");
-                if (cleanCpf.equals(rg)) {
-                    throw new IllegalArgumentException("CPF e RG não podem ser iguais");
-                }
-            }
-        }
     }
 
     @Schema(name = "ClienteFisicoResponse", description = "Dados completos de um cliente pessoa física")
@@ -121,7 +56,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             String email,
 
             @Schema(description = "CPF (formato: 000.000.000-00)", example = "123.456.789-01")
-            @JsonSerialize(using = CPFFormatSerializer.class)
             String cpf,
 
             @Schema(description = "Nome completo", example = "João Silva Santos")

@@ -33,8 +33,8 @@ public class EnderecoServiceImpl implements EnderecoService {
     public EnderecoDTO.Response create(EnderecoDTO.Request request) {
         EnderecoEntity entity = enderecoMapper.toEntity(request);
 
-        if (Boolean.TRUE.equals(request.principal())) {  // ✅ Record accessor for DTO
-            if (entity.getCliente() != null) {  // ✅ Getter for entity
+        if (Boolean.TRUE.equals(request.principal())) {
+            if (entity.getCliente() != null) {
                 removePrincipalFlagFromOtherAddresses(entity.getCliente().getId(), null);
             }
         }
@@ -51,13 +51,16 @@ public class EnderecoServiceImpl implements EnderecoService {
         EnderecoEntity entity = enderecoMapper.toEntity(request);
         entity.setCliente(cliente);
 
-        boolean hasNoEnderecos = cliente.getEnderecos() == null || cliente.getEnderecos().isEmpty();
+        long addressCount = enderecoRepository.countByClienteId(clienteId);
+        boolean hasNoEnderecos = addressCount == 0;
 
-        if (Boolean.TRUE.equals(request.principal())) {  // ✅ Record accessor for DTO
+        if (request.principal() != null && request.principal()) {
             removePrincipalFlagFromOtherAddresses(clienteId, null);
-            entity.setPrincipal(true);  // ✅ Setter for entity
+            entity.setPrincipal(true);
         } else if (hasNoEnderecos) {
-            entity.setPrincipal(true);  // ✅ Setter for entity
+            entity.setPrincipal(true);
+        } else {
+            entity.setPrincipal(false);
         }
 
         EnderecoEntity saved = enderecoRepository.save(entity);
@@ -95,9 +98,9 @@ public class EnderecoServiceImpl implements EnderecoService {
         enderecoMapper.updateEntityFromDTO(request, existing);
 
         // Handle principal flag change
-        if (Boolean.TRUE.equals(request.principal()) && !existing.getPrincipal()) {  // ✅ Getter for entity
+        if (Boolean.TRUE.equals(request.principal()) && !existing.getPrincipal()) {
             removePrincipalFlagFromOtherAddresses(existing.getCliente().getId(), id);
-            existing.setPrincipal(true);  // ✅ Setter for entity
+            existing.setPrincipal(true);
         }
 
         EnderecoEntity updated = enderecoRepository.save(existing);
@@ -112,7 +115,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
         removePrincipalFlagFromOtherAddresses(clienteId, id);
 
-        endereco.setPrincipal(true);  // ✅ Setter for entity
+        endereco.setPrincipal(true);
         EnderecoEntity updated = enderecoRepository.save(endereco);
 
         return enderecoMapper.toResponse(updated);
@@ -123,14 +126,14 @@ public class EnderecoServiceImpl implements EnderecoService {
         EnderecoEntity endereco = findEntityById(id);
         Long clienteId = endereco.getCliente().getId();
 
-        if (endereco.getPrincipal()) {  // ✅ Getter for entity
+        if (endereco.getPrincipal()) {
             List<EnderecoEntity> otherAddresses = enderecoRepository.findByClienteId(clienteId)
                     .stream()
                     .filter(e -> !e.getId().equals(id))
                     .toList();
 
             if (!otherAddresses.isEmpty()) {
-                otherAddresses.get(0).setPrincipal(true);  // ✅ Setter for entity
+                otherAddresses.get(0).setPrincipal(true);
                 enderecoRepository.save(otherAddresses.get(0));
             }
         }
@@ -159,7 +162,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
         for (EnderecoEntity endereco : enderecos) {
             if (!endereco.getId().equals(excludeEnderecoId)) {
-                endereco.setPrincipal(false);  // ✅ Setter for entity
+                endereco.setPrincipal(false);
                 enderecoRepository.save(endereco);
             }
         }

@@ -18,6 +18,7 @@ public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico
 
     // Find by active status
     List<ClienteJuridicoEntity> findByEstaAtivoTrue();
+
     List<ClienteJuridicoEntity> findByEstaAtivoFalse();
 
     // Find by CNPJ containing (for search functionality)

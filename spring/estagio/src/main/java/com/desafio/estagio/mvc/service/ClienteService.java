@@ -1,7 +1,6 @@
 package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteDTO;
-import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteEntity;
 import com.desafio.estagio.repository.ClienteRepository;
 

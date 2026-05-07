@@ -1,6 +1,7 @@
 package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
+import com.desafio.estagio.mvc.model.dto.TipoCliente;
 import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
 import com.desafio.estagio.mvc.model.formatter.CPFFormatter;
 import com.desafio.estagio.mvc.model.mapper.ClienteFisicoMapper;
@@ -8,6 +9,8 @@ import com.desafio.estagio.repository.ClienteFisicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +30,35 @@ public class ClienteFisicoServiceImpl
         this.mapper = mapper;
     }
 
+    // Helper method to create response with formatted CPF
+    private ClienteFisicoDTO.Response toResponseWithFormattedCpf(ClienteFisicoEntity entity) {
+        ClienteFisicoDTO.Response response = mapper.toResponse(entity);
+        return new ClienteFisicoDTO.Response(
+                response.id(),
+                response.tipo(),
+                response.email(),
+                CPFFormatter.format(response.cpf()),  // Formatted CPF
+                response.nome(),
+                response.rg(),
+                response.estaAtivo(),
+                response.dataNascimento(),
+                response.enderecos(),
+                response.createdAt(),
+                response.updatedAt()
+        );
+    }
+
     @Override
     public ClienteFisicoDTO.Response getById(Long id) {
-        return null;
+        ClienteFisicoEntity entity = findById(id);
+        return mapper.toResponse(entity);
+    }
+
+    @Override
+    public Page<ClienteFisicoDTO.Response> findAll(Pageable pageable) {
+        log.debug("Finding all physical person clients with pagination");
+        Page<ClienteFisicoEntity> entities = repository.findAll(pageable);
+        return entities.map(this::toResponseWithFormattedCpf);
     }
 
     @Override
@@ -38,24 +67,22 @@ public class ClienteFisicoServiceImpl
 
         return repository.findAll()
                 .stream()
-                .map(mapper::toResponse)
+                .map(this::toResponseWithFormattedCpf)
                 .toList();
     }
 
     @Override
     public ClienteFisicoDTO.Response findByCpf(String cpf) {
-        // Validate input
-        if (cpf == null || cpf.isBlank()) {
+        // Clean CPF in service layer
+        String cleanedCpf = CPFFormatter.unformat(cpf);
+
+        if (cleanedCpf == null || cleanedCpf.isBlank()) {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio");
         }
 
-        String cleanedCpf = CPFFormatter.unformat(cpf);
-
-        // Validate length
         if (cleanedCpf.length() != 11) {
             throw new IllegalArgumentException(
-                    String.format("CPF %s tem %d dígitos, mas deve ter 11 dígitos",
-                            cpf, cleanedCpf.length())
+                    String.format("CPF %s tem %d dígitos, mas deve ter 11 dígitos", cpf, cleanedCpf.length())
             );
         }
 
@@ -79,8 +106,10 @@ public class ClienteFisicoServiceImpl
             throw new IllegalArgumentException("Request cannot be null");
         }
 
-        // Check for duplicate CPF
+        // Clean CPF
         String cleanedCpf = CPFFormatter.unformat(request.cpf());
+
+        // Check for duplicate CPF
         if (repository.existsByCpf(cleanedCpf)) {
             throw new DataIntegrityViolationException("CPF já cadastrado: " + request.cpf());
         }
@@ -93,6 +122,8 @@ public class ClienteFisicoServiceImpl
 
         // Map to entity
         ClienteFisicoEntity entity = mapper.toEntity(request);
+        entity.setCpf(cleanedCpf);  // Set cleaned CPF
+        entity.setRg(cleanedRg);     // Set cleaned RG
 
         // Set timestamps
         LocalDateTime now = LocalDateTime.now();
@@ -104,6 +135,9 @@ public class ClienteFisicoServiceImpl
             entity.setEstaAtivo(true);
         }
 
+        // Set discriminator type
+        entity.setTipo(TipoCliente.FISICA);
+
         // Link enderecos to cliente
         if (entity.getEnderecos() != null) {
             entity.getEnderecos().forEach(endereco -> endereco.setCliente(entity));
@@ -114,7 +148,7 @@ public class ClienteFisicoServiceImpl
 
         log.info("Created physical person client with ID: {}", saved.getId());
 
-        return mapper.toResponse(saved);
+        return toResponseWithFormattedCpf(saved);
     }
 
     @Override
@@ -137,6 +171,10 @@ public class ClienteFisicoServiceImpl
         if (request.rg() != null) {
             String cleanedRg = request.rg().replaceAll("\\D", "");
             if (cleanedRg.length() >= 8 && cleanedRg.length() <= 9) {
+                // Check for duplicate RG if changed
+                if (!cleanedRg.equals(entity.getRg()) && repository.existsByRg(cleanedRg)) {
+                    throw new DataIntegrityViolationException("RG já cadastrado: " + request.rg());
+                }
                 entity.setRg(cleanedRg);
             }
         }
@@ -153,7 +191,7 @@ public class ClienteFisicoServiceImpl
 
         log.info("Updated physical person client with ID: {}", saved.getId());
 
-        return mapper.toResponse(saved);
+        return toResponseWithFormattedCpf(saved);
     }
 
     @Override

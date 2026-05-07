@@ -2,7 +2,6 @@ package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteEntity;
-import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
 import com.desafio.estagio.repository.ClienteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -22,6 +21,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Finds an entity by ID without mapping to DTO
+     *
      * @param id the entity ID
      * @return the found entity
      * @throws EntityNotFoundException if entity not found
@@ -34,6 +34,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Checks if an entity exists by ID
+     *
      * @param id the entity ID
      * @return true if exists, false otherwise
      */
@@ -57,6 +58,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Deactivates a client
+     *
      * @param id the client ID
      * @throws EntityNotFoundException if client not found
      */
@@ -74,6 +76,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Activates a client
+     *
      * @param id the client ID
      * @throws EntityNotFoundException if client not found
      */
@@ -91,6 +94,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Saves an entity to the repository
+     *
      * @param entity the entity to save
      * @return the saved entity
      */
@@ -102,6 +106,7 @@ public abstract class ClienteServiceImpl<T extends ClienteEntity, S extends Clie
 
     /**
      * Deletes an entity by ID
+     *
      * @param id the entity ID
      * @throws EntityNotFoundException if entity not found
      */

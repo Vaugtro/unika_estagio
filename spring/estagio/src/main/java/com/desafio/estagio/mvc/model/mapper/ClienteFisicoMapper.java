@@ -1,12 +1,8 @@
 package com.desafio.estagio.mvc.model.mapper;
 
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,

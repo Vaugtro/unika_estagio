@@ -34,15 +34,19 @@ public interface Endereco {
 
     void setEstado(String estado);
 
-    void setPrincipal(Boolean principal);
     Boolean getPrincipal();
+
+    void setPrincipal(Boolean principal);
+
     Boolean isPrincipal();
 
     String getComplemento();
+
     void setComplemento(String complemento);
 
-    void setCliente(Cliente cliente);
     Cliente getCliente();
+
+    void setCliente(Cliente cliente);
 
     LocalDateTime getCreatedAt();
 

@@ -6,21 +6,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface Cliente {
+    void setId(Long id);
     Long getId();
 
     TipoCliente getTipo();
+
     void setTipo(TipoCliente tipo);
 
     String getEmail();
+
     void setEmail(String email);
 
-    void setEnderecos(List<Endereco> enderecos);
     List<Endereco> getEnderecos();
 
+    void setEnderecos(List<Endereco> enderecos);
+
+    void setCreatedAt(LocalDateTime createdAt);
     LocalDateTime getCreatedAt();
 
+    void setUpdatedAt(LocalDateTime updatedAt);
     LocalDateTime getUpdatedAt();
 
-    void setEstaAtivo(Boolean estaAtivo);
     Boolean getEstaAtivo();
+
+    void setEstaAtivo(Boolean estaAtivo);
 }

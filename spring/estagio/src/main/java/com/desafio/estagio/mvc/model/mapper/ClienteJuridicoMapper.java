@@ -4,8 +4,6 @@ import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
 import org.mapstruct.*;
 
-import java.util.List;
-
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,

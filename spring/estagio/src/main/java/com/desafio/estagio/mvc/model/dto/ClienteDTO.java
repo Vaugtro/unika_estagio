@@ -1,6 +1,5 @@
 package com.desafio.estagio.mvc.model.dto;
 
-import com.desafio.estagio.mvc.model.entity.Endereco;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 

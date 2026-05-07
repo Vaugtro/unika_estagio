@@ -2,21 +2,29 @@ package com.desafio.estagio.mvc.service;
 
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.repository.ClienteFisicoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface ClienteFisicoService
-        extends ClienteService<ClienteFisicoEntity, ClienteFisicoDTO.Response, ClienteFisicoRepository> {
+public interface ClienteFisicoService {
+    Page<ClienteFisicoDTO.Response> findAll(Pageable pageable);
 
-    ClienteFisicoDTO.Response getById(Long id);
+    List<ClienteFisicoDTO.Response> findAll(); // Keep for backward compatibility
 
-    List<ClienteFisicoDTO.Response> findAll();
+    ClienteFisicoEntity findById(Long id);
 
-    // Specific methods that the generic service doesn't know about
     ClienteFisicoDTO.Response create(ClienteFisicoDTO.Request request);
 
     ClienteFisicoDTO.Response update(Long id, ClienteFisicoDTO.Request request);
 
+    void delete(Long id);
+
+    void inativarCliente(Long id);
+
+    void ativarCliente(Long id);
+
     ClienteFisicoDTO.Response findByCpf(String cpf);
+
+    ClienteFisicoDTO.Response getById(Long id);
 }

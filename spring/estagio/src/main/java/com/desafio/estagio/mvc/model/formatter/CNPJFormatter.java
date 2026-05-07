@@ -16,8 +16,7 @@ public class CNPJFormatter {
      *
      * @param cnpj The CNPJ to clean (can be formatted or unformatted)
      * @return The cleaned CNPJ containing only digits, or null if input is null
-     * @example
-     * clean("12.345.678/0001-90") → "12345678000190"
+     * @example clean(" 12.345.678 / 0001-90 ") → "12345678000190"
      * clean("12.345.678/0001-90") → "12345678000190"
      */
     public static String unformat(String cnpj) {
@@ -32,8 +31,7 @@ public class CNPJFormatter {
      *
      * @param rawCnpj The raw CNPJ (14 digits only)
      * @return The formatted CNPJ (XX.XXX.XXX/XXXX-XX), or the original if invalid
-     * @example
-     * format("12345678000190") → "12.345.678/0001-90"
+     * @example format(" 12345678000190 ") → "12.345.678/0001-90"
      * format("1234567800019") → "1234567800019" (invalid length)
      */
     public static String format(String rawCnpj) {
@@ -111,7 +109,8 @@ public class CNPJFormatter {
      * Useful for logging or displaying partially hidden CNPJ.
      *
      * @param cnpj The CNPJ to mask
-     * @return Masked CNPJ (e.g., "12.345.***//****-90")
+     * @return Masked CNPJ (e.g., "12.345.***/
+    /****-90")
      */
     public static String mask(String cnpj) {
         String cleaned = unformat(cnpj);

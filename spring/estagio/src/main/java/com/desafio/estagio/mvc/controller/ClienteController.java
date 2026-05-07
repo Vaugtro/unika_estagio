@@ -3,8 +3,6 @@ package com.desafio.estagio.mvc.controller;
 import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
 import com.desafio.estagio.mvc.service.ClienteFisicoService;
 import com.desafio.estagio.mvc.service.ClienteJuridicoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,13 +10,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
@@ -30,14 +31,31 @@ public class ClienteController {
     private final ClienteJuridicoService juridicoService;
 
     // =====================================================
+    // EXCEPTION HANDLERS
+    // =====================================================
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Void> handleNotFound() {
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Void> handleBadRequest() {
+        return ResponseEntity.badRequest().build();
+    }
+
+    // =====================================================
     // CLIENTE FÍSICO ENDPOINTS
     // =====================================================
 
-    @Operation(summary = "Listar todos os clientes físicos", description = "Retorna uma lista com todos os clientes pessoa física cadastrados")
-    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    @Operation(summary = "Listar todos os clientes físicos (paginated)",
+            description = "Retorna uma página com os clientes pessoa física cadastrados")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
     @GetMapping("/fisicos")
-    public ResponseEntity<List<ClienteFisicoDTO.Response>> getAllFisicos() {
-        return ResponseEntity.ok(fisicoService.findAll());
+    public ResponseEntity<Page<ClienteFisicoDTO.Response>> getAllFisicos(
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(fisicoService.findAll(pageable));
     }
 
     @Operation(summary = "Buscar cliente físico por ID", description = "Retorna um cliente físico específico pelo seu ID")
@@ -46,8 +64,8 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/fisicos/{id}")
-    public ResponseEntity<ClienteFisicoEntity> getFisicoById(@PathVariable Long id) {
-        return ResponseEntity.ok(fisicoService.findById(id));
+    public ResponseEntity<ClienteFisicoDTO.Response> getFisicoById(@PathVariable Long id) {
+        return ResponseEntity.ok(fisicoService.getById(id));  // Changed to getById returning DTO
     }
 
     @Operation(summary = "Criar um novo cliente físico", description = "Cadastra um novo cliente pessoa física no sistema")
@@ -112,11 +130,14 @@ public class ClienteController {
     // CLIENTE JURÍDICO ENDPOINTS
     // =====================================================
 
-    @Operation(summary = "Listar todos os clientes jurídicos", description = "Retorna uma lista com todos os clientes pessoa jurídica cadastrados")
-    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    @Operation(summary = "Listar todos os clientes jurídicos (paginated)",
+            description = "Retorna uma página com os clientes pessoa jurídica cadastrados")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
     @GetMapping("/juridicos")
-    public ResponseEntity<List<ClienteJuridicoDTO.Response>> getAllJuridicos() {
-        return ResponseEntity.ok(juridicoService.findAll());
+    public ResponseEntity<Page<ClienteJuridicoDTO.Response>> getAllJuridicos(
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(juridicoService.findAll(pageable));
     }
 
     @Operation(summary = "Buscar cliente jurídico por ID", description = "Retorna um cliente jurídico específico pelo seu ID")
@@ -125,8 +146,8 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/juridicos/{id}")
-    public ResponseEntity<ClienteJuridicoEntity> getJuridicoById(@PathVariable Long id) {
-        return ResponseEntity.ok(juridicoService.findById(id));
+    public ResponseEntity<ClienteJuridicoDTO.Response> getJuridicoById(@PathVariable Long id) {
+        return ResponseEntity.ok(juridicoService.getById(id));  // Changed to getById returning DTO
     }
 
     @Operation(summary = "Criar um novo cliente jurídico", description = "Cadastra um novo cliente pessoa jurídica no sistema")
@@ -246,6 +267,13 @@ public class ClienteController {
     @Operation(summary = "Buscar cliente jurídico por CNPJ", description = "Retorna um cliente jurídico pelo número do CNPJ")
     @GetMapping("/juridicos/cnpj/{cnpj}")
     public ResponseEntity<ClienteJuridicoDTO.Response> getJuridicoByCnpj(@PathVariable String cnpj) {
-        return ResponseEntity.ok(juridicoService.findByCnpj(cnpj));
+        try {
+            return ResponseEntity.ok(juridicoService.findByCnpj(cnpj));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
+
 }

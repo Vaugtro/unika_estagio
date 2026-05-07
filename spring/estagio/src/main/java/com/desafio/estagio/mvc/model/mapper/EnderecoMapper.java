@@ -1,7 +1,6 @@
 package com.desafio.estagio.mvc.model.mapper;
 
 import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.model.entity.Endereco;
 import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
 import org.mapstruct.*;
 
@@ -14,7 +13,8 @@ import java.util.List;
 public interface EnderecoMapper {
 
     // Response mapping - IMPORTANT: ignore cliente to break circular reference
-    @Mapping(target = "cliente", ignore = true)  // This breaks the circular reference!
+    @Mapping(target = "cliente", ignore = true)
+    // This breaks the circular reference!
     EnderecoDTO.Response toResponse(EnderecoEntity entity);
 
     // List mapping

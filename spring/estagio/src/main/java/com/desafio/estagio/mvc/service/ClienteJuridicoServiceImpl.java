@@ -1,14 +1,15 @@
 package com.desafio.estagio.mvc.service;
 
-import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
 import com.desafio.estagio.mvc.model.dto.ClienteJuridicoDTO;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
+import com.desafio.estagio.mvc.model.dto.TipoCliente;
 import com.desafio.estagio.mvc.model.entity.ClienteJuridicoEntity;
 import com.desafio.estagio.mvc.model.formatter.CNPJFormatter;
 import com.desafio.estagio.mvc.model.mapper.ClienteJuridicoMapper;
 import com.desafio.estagio.repository.ClienteJuridicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,24 @@ public class ClienteJuridicoServiceImpl
         this.mapper = mapper;
     }
 
+    // Helper method to create response with formatted CNPJ
+    private ClienteJuridicoDTO.Response toResponseWithFormattedCnpj(ClienteJuridicoEntity entity) {
+        ClienteJuridicoDTO.Response response = mapper.toResponse(entity);
+        return new ClienteJuridicoDTO.Response(
+                response.id(),
+                response.tipo(),
+                response.email(),
+                CNPJFormatter.format(response.cnpj()),  // Formatted CNPJ
+                response.razaoSocial(),
+                response.inscricaoEstadual(),
+                response.estaAtivo(),
+                response.dataCriacaoEmpresa(),
+                response.enderecos(),
+                response.createdAt(),
+                response.updatedAt()
+        );
+    }
+
     @Override
     @Transactional
     public ClienteJuridicoDTO.Response create(ClienteJuridicoDTO.Request request) {
@@ -41,6 +60,7 @@ public class ClienteJuridicoServiceImpl
 
         // Map to entity
         ClienteJuridicoEntity entity = mapper.toEntity(request);
+        entity.setCnpj(cleanedCnpj);  // Set cleaned CNPJ
 
         // Set timestamps
         LocalDateTime now = LocalDateTime.now();
@@ -52,6 +72,9 @@ public class ClienteJuridicoServiceImpl
             entity.setEstaAtivo(true);
         }
 
+        // Set discriminator type
+        entity.setTipo(TipoCliente.JURIDICA);
+
         // Link enderecos to cliente
         if (entity.getEnderecos() != null) {
             entity.getEnderecos().forEach(endereco -> endereco.setCliente(entity));
@@ -62,26 +85,36 @@ public class ClienteJuridicoServiceImpl
 
         log.info("Created legal person client with ID: {}", saved.getId());
 
-        return mapper.toResponse(saved);
+        return toResponseWithFormattedCnpj(saved);
     }
 
-    @Override
     public ClienteJuridicoDTO.Response getById(Long id) {
         log.debug("Finding legal person client by ID: {}", id);
 
-        return repository.findById(id)
-                .map(mapper::toResponse)
+        ClienteJuridicoEntity entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Cliente jurídico com ID %d não encontrado", id)
                 ));
+
+        return toResponseWithFormattedCnpj(entity);
     }
 
     @Override
-    public List<ClienteJuridicoDTO.Response> findAll() {
-        log.debug("Finding all legal person clients");
+    public Page<ClienteJuridicoDTO.Response> findAll(Pageable pageable) {
+        log.debug("Finding all legal person clients with pagination: page={}, size={}, sort={}",
+                pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+
+        Page<ClienteJuridicoEntity> entityPage = repository.findAll(pageable);
+
+        return entityPage.map(this::toResponseWithFormattedCnpj);
+    }
+
+    // Non-paginated version if needed
+    public List<ClienteJuridicoDTO.Response> findAllList() {
+        log.debug("Finding all legal person clients (non-paginated)");
 
         return repository.findAll().stream()
-                .map(mapper::toResponse)
+                .map(this::toResponseWithFormattedCnpj)
                 .toList();
     }
 
@@ -113,6 +146,11 @@ public class ClienteJuridicoServiceImpl
         // Update fields using mapper
         mapper.updateEntityFromDTO(request, entity);
 
+        // If CNPJ is being updated, clean it
+        if (request.cnpj() != null) {
+            entity.setCnpj(CNPJFormatter.unformat(request.cnpj()));
+        }
+
         // Update timestamp
         entity.setUpdatedAt(LocalDateTime.now());
 
@@ -121,31 +159,21 @@ public class ClienteJuridicoServiceImpl
 
         log.info("Updated legal person client with ID: {}", saved.getId());
 
-        return mapper.toResponse(saved);
+        return toResponseWithFormattedCnpj(saved);
     }
 
     // =====================================================
     // CNPJ SEARCH METHODS
     // =====================================================
 
-    /**
-     * Find a legal person by CNPJ.
-     *
-     * @param cnpj The CNPJ (can be formatted or unformatted)
-     * @return The client DTO
-     * @throws EntityNotFoundException if client not found
-     * @throws IllegalArgumentException if CNPJ is invalid
-     */
     public ClienteJuridicoDTO.Response findByCnpj(String cnpj) {
-        // Validate input
+
+        String cleanedCnpj = CNPJFormatter.unformat(cnpj);
+
         if (cnpj == null || cnpj.isBlank()) {
             throw new IllegalArgumentException("CNPJ não pode ser nulo ou vazio");
         }
 
-        // Clean the CNPJ (remove dots, dashes, slashes)
-        String cleanedCnpj = CNPJFormatter.unformat(cnpj);
-
-        // Validate length
         if (cleanedCnpj.length() != 14) {
             throw new IllegalArgumentException(
                     String.format("CNPJ %s tem %d dígitos, mas deve ter 14 dígitos",
@@ -155,43 +183,29 @@ public class ClienteJuridicoServiceImpl
 
         log.debug("Searching for client with CNPJ: {} (cleaned: {})", cnpj, cleanedCnpj);
 
-        // Find by cleaned CNPJ
         ClienteJuridicoEntity entity = repository.findByCnpj(cleanedCnpj)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Cliente jurídico com CNPJ %s não encontrado", cnpj)
                 ));
 
-        // Convert to response DTO
-        return mapper.toResponse(entity);
+        return toResponseWithFormattedCnpj(entity);
     }
 
-    /**
-     * Alternative: Find by CNPJ returning Optional (doesn't throw exception).
-     *
-     * @param cnpj The CNPJ (can be formatted or unformatted)
-     * @return Optional containing the client DTO if found
-     */
     public java.util.Optional<ClienteJuridicoDTO.Response> findByCnpjOptional(String cnpj) {
+        String cleanedCnpj = CNPJFormatter.unformat(cnpj);
+
         if (cnpj == null || cnpj.isBlank()) {
             return java.util.Optional.empty();
         }
-
-        String cleanedCnpj = CNPJFormatter.unformat(cnpj);
 
         if (cleanedCnpj.length() != 14) {
             return java.util.Optional.empty();
         }
 
         return repository.findByCnpj(cleanedCnpj)
-                .map(mapper::toResponse);
+                .map(this::toResponseWithFormattedCnpj);
     }
 
-    /**
-     * Check if a CNPJ already exists.
-     *
-     * @param cnpj The CNPJ to check
-     * @return true if exists, false otherwise
-     */
     public boolean existsByCnpj(String cnpj) {
         if (cnpj == null) return false;
 
@@ -238,32 +252,39 @@ public class ClienteJuridicoServiceImpl
         log.info("Activated legal person client with ID: {}", id);
     }
 
+    @Override
+    public List<ClienteJuridicoDTO.Response> findAll() {
+        log.debug("Finding all legal person clients");
+
+        return repository.findAll()
+                .stream()
+                .map(this::toResponseWithFormattedCnpj)
+                .toList();
+    }
+
     // =====================================================
     // ADDITIONAL BUSINESS METHODS
     // =====================================================
 
-    /**
-     * Find all active legal person clients.
-     */
     public List<ClienteJuridicoDTO.Response> findAllActive() {
+        log.debug("Finding all active legal person clients");
+
         return repository.findByEstaAtivoTrue().stream()
-                .map(mapper::toResponse)
+                .map(this::toResponseWithFormattedCnpj)
                 .toList();
     }
 
-    /**
-     * Find all inactive legal person clients.
-     */
     public List<ClienteJuridicoDTO.Response> findAllInactive() {
+        log.debug("Finding all inactive legal person clients");
+
         return repository.findByEstaAtivoFalse().stream()
-                .map(mapper::toResponse)
+                .map(this::toResponseWithFormattedCnpj)
                 .toList();
     }
 
-    /**
-     * Get total count of legal person clients.
-     */
     public long count() {
+        log.debug("Counting total legal person clients");
+
         return repository.count();
     }
 }

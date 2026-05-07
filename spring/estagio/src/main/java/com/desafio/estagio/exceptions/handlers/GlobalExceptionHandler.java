@@ -1,6 +1,7 @@
 package com.desafio.estagio.exceptions.handlers;
 
 import com.desafio.estagio.exceptions.UserNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<APIErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+        APIErrorResponse error = APIErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(getPath())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<APIErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
         APIErrorResponse error = APIErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -141,6 +154,41 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    // Handle duplicate CNPJ specifically (RuntimeException from service)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<APIErrorResponse> handleRuntimeException(RuntimeException ex) {
+        if (ex.getMessage() != null && ex.getMessage().contains("CNPJ já cadastrado")) {
+            APIErrorResponse error = APIErrorResponse.builder()
+                    .timestamp(LocalDateTime.now())
+                    .status(HttpStatus.CONFLICT.value())
+                    .error(HttpStatus.CONFLICT.getReasonPhrase())
+                    .message(ex.getMessage())
+                    .path(getPath())
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
+        if (ex.getMessage() != null && ex.getMessage().contains("CPF já cadastrado")) {
+            APIErrorResponse error = APIErrorResponse.builder()
+                    .timestamp(LocalDateTime.now())
+                    .status(HttpStatus.CONFLICT.value())
+                    .error(HttpStatus.CONFLICT.getReasonPhrase())
+                    .message(ex.getMessage())
+                    .path(getPath())
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
+
+        // Generic RuntimeException falls back to 500
+        APIErrorResponse error = APIErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message("An unexpected error occurred: " + ex.getMessage())
+                .path(getPath())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     // ==================== 5xx - Server Errors ====================
 
     @ExceptionHandler(Exception.class)
@@ -165,21 +213,4 @@ public class GlobalExceptionHandler {
         // For now, return a placeholder or implement properly
         return "Request path not available";
     }
-
-    /*
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<APIErrorResponse> handleGlobalException(Exception ex) {
-        // Log the FULL error details
-        System.err.println("=== ERROR DETAILS ===");
-        System.err.println("Message: " + ex.getMessage());
-        System.err.println("Cause: " + ex.getCause());
-        System.err.println("Class: " + ex.getClass().getName());
-        ex.printStackTrace();
-
-        APIErrorResponse error = new APIErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Error: " + ex.getMessage()  // Show actual error temporarily
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
 }

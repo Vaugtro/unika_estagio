@@ -1,11 +1,6 @@
 package com.desafio.estagio.mvc.model.dto;
 
-import com.desafio.estagio.mvc.model.serializer.CNPJFormatDeserializer;
-import com.desafio.estagio.mvc.model.serializer.CNPJFormatSerializer;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -29,7 +24,6 @@ public interface ClienteJuridicoDTO extends ClienteDTO {
 
             @Schema(description = "CNPJ (formato: 00.000.000/0000-00)", example = "12.345.678/0001-90", requiredMode = Schema.RequiredMode.REQUIRED)
             @JsonProperty("cnpj")
-            @JsonDeserialize(using = CNPJFormatDeserializer.class)
             @NotNull @CNPJ String cnpj,
 
             @Schema(description = "Razão Social", example = "Empresa Exemplo LTDA", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -50,60 +44,6 @@ public interface ClienteJuridicoDTO extends ClienteDTO {
             List<EnderecoDTO.Request> enderecos
     ) implements ClienteDTO.Request, Serializable {
 
-        @JsonCreator
-        public static Request fromJson(
-                @JsonProperty("tipo") TipoCliente tipo,
-                @JsonProperty("email") String email,
-                @JsonProperty("cnpj") String cnpj,
-                @JsonProperty("razaoSocial") String razaoSocial,
-                @JsonProperty("inscricaoEstadual") String inscricaoEstadual,
-                @JsonProperty("estaAtivo") Boolean estaAtivo,
-                @JsonProperty("dataCriacaoEmpresa") LocalDate dataCriacaoEmpresa,
-                @JsonProperty("enderecos") List<EnderecoDTO.Request> enderecos
-        ) {
-            // Normalize Inscrição Estadual (remove all non-digits)
-            String normalizedIE = cleanInscricaoEstadual(inscricaoEstadual);
-
-            // Set default for estaAtivo
-            Boolean activeStatus = estaAtivo != null ? estaAtivo : true;
-
-            // Ensure enderecos is not null
-            List<EnderecoDTO.Request> safeEnderecos = enderecos != null ? enderecos : List.of();
-
-            // Validate company age (minimum 1 year)
-            validateCompanyAge(dataCriacaoEmpresa);
-
-            // Validate IE length after cleaning
-            validateInscricaoEstadualLength(normalizedIE);
-
-            return new Request(
-                    tipo,
-                    email,
-                    cnpj,
-                    razaoSocial,
-                    normalizedIE,
-                    activeStatus,
-                    dataCriacaoEmpresa,
-                    safeEnderecos
-            );
-        }
-
-        private static String cleanInscricaoEstadual(String ie) {
-            if (ie == null) return null;
-            return ie.replaceAll("\\D", "");
-        }
-
-        private static void validateCompanyAge(LocalDate dataCriacaoEmpresa) {
-            if (dataCriacaoEmpresa != null && dataCriacaoEmpresa.isAfter(LocalDate.now().minusYears(1))) {
-                throw new IllegalArgumentException("Empresa deve ter pelo menos 1 ano de existência");
-            }
-        }
-
-        private static void validateInscricaoEstadualLength(String ie) {
-            if (ie != null && (ie.length() < 8 || ie.length() > 14)) {
-                throw new IllegalArgumentException("Inscrição Estadual deve ter entre 8 e 14 dígitos");
-            }
-        }
     }
 
     @Schema(name = "ClienteJuridicoResponse", description = "Dados completos de um cliente pessoa jurídica")
@@ -118,7 +58,6 @@ public interface ClienteJuridicoDTO extends ClienteDTO {
             String email,
 
             @Schema(description = "CNPJ (formato: 00.000.000/0000-00)", example = "12.345.678/0001-90")
-            @JsonSerialize(using = CNPJFormatSerializer.class)
             String cnpj,
 
             @Schema(description = "Razão Social", example = "Empresa Exemplo LTDA")

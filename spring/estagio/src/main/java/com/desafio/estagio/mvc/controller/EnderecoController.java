@@ -3,6 +3,7 @@ package com.desafio.estagio.mvc.controller;
 import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
 import com.desafio.estagio.mvc.service.EnderecoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,12 @@ public class EnderecoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoDTO.Response> findById(@PathVariable Long id) {
-        EnderecoDTO.Response response = enderecoService.findById(id);
-        return ResponseEntity.ok(response);
+        try {
+            EnderecoDTO.Response response = enderecoService.findById(id);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/cliente/{clienteId}")
@@ -57,25 +62,41 @@ public class EnderecoController {
     public ResponseEntity<EnderecoDTO.Response> update(
             @PathVariable Long id,
             @Valid @RequestBody EnderecoDTO.Request request) {
-        EnderecoDTO.Response response = enderecoService.update(id, request);
-        return ResponseEntity.ok(response);
+        try {
+            EnderecoDTO.Response response = enderecoService.update(id, request);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PatchMapping("/{id}/principal")
     public ResponseEntity<EnderecoDTO.Response> setAsPrincipal(@PathVariable Long id) {
-        EnderecoDTO.Response response = enderecoService.setAsPrincipal(id);
-        return ResponseEntity.ok(response);
+        try {
+            EnderecoDTO.Response response = enderecoService.setAsPrincipal(id);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        enderecoService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            enderecoService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/cliente/{clienteId}/principal")
     public ResponseEntity<EnderecoDTO.Response> findPrincipalEnderecoByClienteId(@PathVariable Long clienteId) {
-        EnderecoDTO.Response response = enderecoService.findPrincipalEnderecoByClienteId(clienteId);
-        return ResponseEntity.ok(response);
+        try {
+            EnderecoDTO.Response response = enderecoService.findPrincipalEnderecoByClienteId(clienteId);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

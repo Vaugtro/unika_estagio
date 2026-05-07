@@ -2,7 +2,6 @@ package com.desafio.estagio.mvc.model.entity;
 
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,20 +42,24 @@ public abstract class ClienteEntity implements Cliente {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
-    @Getter @Setter
+    @Getter
+    @Setter
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
-    @Getter @Setter
+    @Getter
+    @Setter
     private LocalDateTime updatedAt;
 
     @Column(name = "ativo", nullable = false)
-    @Getter @Setter
+    @Getter
+    @Setter
     private Boolean estaAtivo = true;
 
     @OneToMany(targetEntity = EnderecoEntity.class, mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter @Setter
+    @Getter
+    @Setter
     @JsonIgnore
     private List<Endereco> enderecos;
 

@@ -13,4 +13,6 @@ public interface EnderecoRepository<T extends EnderecoEntity> extends JpaReposit
     Optional<EnderecoEntity> findByClienteIdAndPrincipalTrue(Long clienteId);
 
     List<EnderecoEntity> findByClienteId(Long clienteId);
+
+    long countByClienteId(Long clienteId);
 }
