@@ -2,6 +2,8 @@ package com.desafio.estagio.config;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.core.io.support.ResourcePatternUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,29 +27,38 @@ public class JasperReportsConfig {
     private final ResourcePatternResolver resourceResolver = ResourcePatternUtils.getResourcePatternResolver(null);
 
     @Bean
-    public Map<String, JasperReport> jasperReports() throws IOException {
+    public Map<String, JasperReport> jasperReports() {
         Map<String, JasperReport> reports = new HashMap<>();
 
-        // Compile all .jrxml files from classpath
-        Resource[] resources = resourceResolver.getResources("classpath:reports/*.jrxml");
+        try {
+            Resource[] resources = resourceResolver.getResources("classpath:reports/*.jrxml");
+            logger.info("Found {} .jrxml file(s) in classpath:reports/", resources.length);
 
-        if (resources.length == 0) {
-            logger.warn("No .jrxml files found in classpath:reports/ directory");
-            return reports;
-        }
+            for (Resource resource : resources) {
+                logger.info("Processing: {}", resource.getFilename());
 
-        for (Resource resource : resources) {
-            try (InputStream inputStream = resource.getInputStream()) {
-                String reportName = Objects.requireNonNull(resource.getFilename()).replace(".jrxml", "");
-                JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
-                reports.put(reportName, jasperReport);
-                logger.info("Successfully compiled report: {}", reportName);
-            } catch (Exception e) {
-                logger.error("Failed to compile report: {}", resource.getFilename(), e);
+                try (InputStream inputStream = resource.getInputStream()) {
+                    String reportName = Objects.requireNonNull(resource.getFilename()).replace(".jrxml", "");
+
+                    // Load as JasperDesign first
+                    JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+
+                    // Then compile to JasperReport
+                    JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+
+                    reports.put(reportName, jasperReport);
+                    logger.info("Successfully loaded and compiled report: {}", reportName);
+
+                } catch (Exception e) {
+                    logger.error("Failed to load report: {}", resource.getFilename(), e);
+                }
             }
+
+        } catch (IOException e) {
+            logger.error("Failed to scan reports directory", e);
         }
 
-        logger.info("Total reports compiled: {}", reports.size());
+        logger.info("Total reports loaded: {}", reports.size());
         return reports;
     }
 }

@@ -3,6 +3,7 @@ package com.desafio.estagio.mvc.service;
 import com.desafio.estagio.mvc.model.dto.TipoCliente;
 import net.sf.jasperreports.engine.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public interface JasperReportService {
      * @return byte array containing the PDF report
      * @throws RuntimeException if report not found or generation fails
      */
-    byte[] generatePdf(String reportName, Collection<?> data, Map<String, Object> parameters);
+    byte[] generatePdf(String reportName, List<?> data, Map<String, Object> parameters);
 
     /**
      * Generate PDF report from a single object

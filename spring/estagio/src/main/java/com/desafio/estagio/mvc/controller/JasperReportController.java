@@ -32,7 +32,7 @@ public class JasperReportController {
         parameters.put("reportTitle", "Relatório de Clientes Físicos");
         parameters.put("generatedDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 
-        byte[] pdfReport = reportService.generateForCliente("ClientesFisicosReport.jrxml", parameters, TipoCliente.FISICA);
+        byte[] pdfReport = reportService.generateForCliente("ClienteFisicoReport", parameters, TipoCliente.FISICA);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesFisicosReport.pdf")

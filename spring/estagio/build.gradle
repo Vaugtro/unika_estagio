@@ -46,6 +46,7 @@ dependencies {
 
 	//JasperReport
 	implementation("net.sf.jasperreports:jasperreports:7.0.6")
+	implementation("net.sf.jasperreports:jasperreports-pdf:7.0.6")
 
 	// Mapstruct
 	implementation 'org.mapstruct:mapstruct:1.6.3'

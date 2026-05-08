@@ -83,4 +83,14 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             LocalDateTime updatedAt
     ) implements ClienteDTO.Response, Serializable {
     }
+
+    record ReportResponse(
+            String nome,
+            String cpf,
+            String rg,
+            String email,
+            LocalDate dataNascimento
+    ) implements Serializable {
+
+    }
 }
