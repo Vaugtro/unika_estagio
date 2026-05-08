@@ -1,8 +1,8 @@
 package com.desafio.estagio;
 
-import com.desafio.estagio.mvc.controller.EnderecoController;
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.service.EnderecoService;
+import com.desafio.estagio.controller.EnderecoController;
+import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.service.EnderecoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

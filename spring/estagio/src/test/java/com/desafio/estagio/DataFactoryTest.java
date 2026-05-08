@@ -1,8 +1,8 @@
 package com.desafio.estagio;
 
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
+import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.model.ClienteFisicoEntity;
+import com.desafio.estagio.model.EnderecoEntity;
 
 public class DataFactoryTest {
 

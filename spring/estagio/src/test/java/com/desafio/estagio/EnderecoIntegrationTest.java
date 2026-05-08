@@ -1,9 +1,9 @@
 package com.desafio.estagio;
 
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.model.dto.TipoCliente;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
+import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.model.ClienteFisicoEntity;
+import com.desafio.estagio.model.EnderecoEntity;
+import com.desafio.estagio.model.enums.TipoCliente;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,18 +44,7 @@ class EnderecoIntegrationTest {
             .withUsername("test")
             .withPassword("test")
             .withReuse(true);
-
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mariadb::getJdbcUrl);
-        registry.add("spring.datasource.username", mariadb::getUsername);
-        registry.add("spring.datasource.password", mariadb::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "org.mariadb.jdbc.Driver");
-        registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.MariaDBDialect");
-        registry.add("spring.flyway.locations", () -> "classpath:db/migration/test");
-        registry.add("spring.flyway.enabled", () -> "false");
-    }
-
+    private static volatile boolean migrationsApplied = false;
     @Autowired
     private MockMvc mockMvc;
 
@@ -70,7 +59,16 @@ class EnderecoIntegrationTest {
 
     private Long clienteId;
 
-    private static volatile boolean migrationsApplied = false;
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mariadb::getJdbcUrl);
+        registry.add("spring.datasource.username", mariadb::getUsername);
+        registry.add("spring.datasource.password", mariadb::getPassword);
+        registry.add("spring.datasource.driver-class-name", () -> "org.mariadb.jdbc.Driver");
+        registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.MariaDBDialect");
+        registry.add("spring.flyway.locations", () -> "classpath:db/migration/test");
+        registry.add("spring.flyway.enabled", () -> "false");
+    }
 
     @BeforeAll
     static void runFlywayMigrations() {

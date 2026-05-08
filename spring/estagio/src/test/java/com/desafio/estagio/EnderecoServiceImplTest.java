@@ -1,12 +1,12 @@
 package com.desafio.estagio;
 
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.model.entity.ClienteFisicoEntity;
-import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
-import com.desafio.estagio.mvc.model.mapper.EnderecoMapper;
-import com.desafio.estagio.mvc.service.EnderecoServiceImpl;
+import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.mapper.EnderecoMapper;
+import com.desafio.estagio.model.ClienteFisicoEntity;
+import com.desafio.estagio.model.EnderecoEntity;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
+import com.desafio.estagio.service.EnderecoServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

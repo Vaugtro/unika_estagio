@@ -1,0 +1,127 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'eclipse-wtp'
+}
+
+group = 'com.desafio'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://repository.apache.org/content/repositories/snapshots/'
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+}
+
+configurations {
+    // Não usar esta configuração se não precisar de ferramentas específicas
+}
+
+dependencies {
+    // WICKET 7 DEPENDENCIES
+    implementation 'org.apache.wicket:wicket-core:7.18.0'
+    // Descomente se precisar de wicket-extensions
+    // implementation 'org.apache.wicket:wicket-extensions:7.18.0'
+
+    // LOGGING DEPENDENCIES - LOG4J
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.6.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.6.2'
+
+    // JUNIT DEPENDENCY FOR TESTING
+    testImplementation 'junit:junit:4.12'
+
+    // JETTY DEPENDENCIES FOR TESTING
+    testImplementation 'org.eclipse.jetty.aggregate:jetty-all:9.2.19.v20160908'
+}
+
+// Configuração para incluir recursos não-Java do diretório src/main/java
+// Equivalente ao resource filtering do Maven
+sourceSets {
+    main {
+        resources {
+            // Inclui arquivos não-Java do diretório java
+            srcDirs = ['src/main/java', 'src/main/resources']
+            exclude '**/*.java'
+        }
+    }
+    test {
+        resources {
+            srcDirs = ['src/test/java', 'src/test/resources']
+            exclude '**/*.java'
+        }
+    }
+}
+
+// Configurações do WAR plugin
+war {
+    archiveBaseName.set('estagio')
+    archiveVersion.set('1.0-SNAPSHOT')
+
+    // Garante que os recursos HTML do Wicket sejam incluídos
+    from('src/main/webapp') {
+        include '**/*.html'
+        include '**/*.css'
+        include '**/*.js'
+    }
+}
+
+// Configuração do Eclipse WTP (equivalente ao maven-eclipse-plugin)
+eclipse {
+    wtp {
+        facet {
+            facet name: 'jst.web', version: '3.1'
+            facet name: 'java', version: '1.7'
+        }
+    }
+
+    classpath {
+        downloadSources = true
+        downloadJavadoc = false
+    }
+}
+
+// Task para rodar Jetty (similar ao jetty-maven-plugin)
+tasks.register('jettyRun', JavaExec) {
+    dependsOn testClasses
+    group = 'application'
+    description = 'Executa o aplicativo Wicket no servidor Jetty para testes'
+
+    mainClass = 'org.eclipse.jetty.runner.Runner'
+    classpath = configurations.testRuntimeClasspath + sourceSets.test.output + sourceSets.main.output
+
+    // Argumentos do Jetty
+    args = [
+            '--port', '8080',
+            '--path', '/',
+            war.archiveFile.get().asFile.absolutePath
+    ]
+
+    // Configurações do sistema (equivalentes ao systemProperties do Maven)
+    systemProperty 'maven.project.build.directory.test-classes', sourceSets.test.output.classesDirs.asPath
+}
+
+// Task para limpar o ambiente
+tasks.register('cleanJetty') {
+    group = 'build'
+    description = 'Limpa os arquivos temporários do Jetty'
+    doLast {
+        delete fileTree(dir: project.buildDir, include: 'jetty-*')
+    }
+}
+
+// Configuração do compilador
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << '-Xlint:deprecation'
+    options.compilerArgs << '-Werror'
+}

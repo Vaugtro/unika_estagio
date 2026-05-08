@@ -6,13 +6,13 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		// Re-adding this here is the key fix
 		classpath "org.flywaydb:flyway-mysql:12.5.0"
 	}
 }
 
 plugins {
 	id 'java'
+	id 'war'
 	id 'org.springframework.boot' version '4.0.6'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id "org.flywaydb.flyway" version "11.14.1"
@@ -29,67 +29,112 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repository.apache.org/content/repositories/snapshots/'
+		mavenContent {
+			snapshotsOnly()
+		}
+	}
 }
 
 dependencies {
+	// Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j:9.7.0'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// Database
+	runtimeOnly 'com.mysql:mysql-connector-j:9.7.0'
 
 	// Flyway
 	implementation 'org.flywaydb:flyway-core:12.5.0'
 	implementation 'org.flywaydb:flyway-mysql:12.5.0'
 
-	//JasperReport
-	implementation("net.sf.jasperreports:jasperreports:7.0.6")
-	implementation("net.sf.jasperreports:jasperreports-pdf:7.0.6")
+	// JasperReports
+	implementation 'net.sf.jasperreports:jasperreports:7.0.6'
+	implementation 'net.sf.jasperreports:jasperreports-pdf:7.0.6'
 
-	// Mapstruct
+	// MapStruct
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
-	// Excel (POI)
-	implementation 'org.apache.poi:poi:5.2.5'
-	implementation 'org.apache.poi:poi-ooxml:5.2.5'
+	// Apache POI (Excel)
+	implementation 'org.apache.poi:poi:5.5.1'
+	implementation 'org.apache.poi:poi-ooxml:5.5.1'
+
+	// Logging (já compatível com Spring Boot)
+	// O Spring Boot já inclui logging, mas garantindo compatibilidade
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.25.4'
+	implementation 'org.apache.logging.log4j:log4j-core:2.25.4'
+
+	// Servlet API (necessário para Wicket)
+	providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
 
 	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.testcontainers:testcontainers:1.19.3'
 	testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
-	testImplementation 'org.testcontainers:mariadb:1.19.3'  // MariaDB Testcontainer
-	testImplementation 'org.testcontainers:testcontainers'
-	testImplementation "org.mariadb.jdbc:mariadb-java-client:3.5.8"
+	testImplementation 'org.testcontainers:mariadb:1.19.3'
+	testImplementation 'org.mariadb.jdbc:mariadb-java-client:3.5.8'
+
+	// Wicket Test (opcional)
+	testImplementation 'org.apache.wicket:wicket-util:7.18.0'
+
+	// JUnit (Wicket usa JUnit 4, mas é compatível)
+	testImplementation 'junit:junit:4.13.2'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
+// Configuração do Flyway
 flyway {
 	url = 'jdbc:mysql://localhost:3306/dummy_db'
 	user = 'root'
 	password = 'mariadb'
 	validateMigrationNaming = true
-	cleanDisabled=false
+	cleanDisabled = false
 	locations = ['classpath:db/migration/main']
+}
+
+// Configuração para o plugin WAR
+war {
+	// Nome do arquivo WAR
+	archiveBaseName.set('estagio')
+	archiveVersion.set('1.0-SNAPSHOT')
+
+	// Garantir que os recursos do Wicket sejam incluídos
+	from('src/main/webapp') {
+		include '**/*.html'
+		include '**/*.css'
+		include '**/*.js'
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// Task para criar o arquivo WAR
+tasks.register('buildWar', War) {
+	dependsOn classes
+	archiveClassifier.set('standalone')
+}
+
+// Tasks do Flyway para teste
 tasks.register('flywayTestMigrate', FlywayMigrateTask) {
-	// These will be overridden by Testcontainers, but kept as fallback
 	url = 'jdbc:mysql://localhost:3306/testdb'
 	user = 'test'
 	password = 'test'
@@ -98,14 +143,12 @@ tasks.register('flywayTestMigrate', FlywayMigrateTask) {
 	baselineOnMigrate = true
 	validateOnMigrate = true
 
-	// Configure to use the test profile
 	doFirst {
 		println "Running Flyway migrations for test database"
 		println "Make sure Docker is running and Testcontainers will start MariaDB"
 	}
 }
 
-// Task to clean test database
 tasks.register('flywayTestClean', FlywayCleanTask) {
 	url = 'jdbc:mysql://localhost:3306/testdb'
 	user = 'test'

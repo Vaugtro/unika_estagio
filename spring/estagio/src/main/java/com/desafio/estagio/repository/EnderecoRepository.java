@@ -1,6 +1,6 @@
 package com.desafio.estagio.repository;
 
-import com.desafio.estagio.mvc.model.entity.EnderecoEntity;
+import com.desafio.estagio.model.EnderecoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

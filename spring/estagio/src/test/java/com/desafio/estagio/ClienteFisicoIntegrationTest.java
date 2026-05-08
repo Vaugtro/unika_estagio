@@ -1,8 +1,8 @@
 package com.desafio.estagio;
 
-import com.desafio.estagio.mvc.model.dto.ClienteFisicoDTO;
-import com.desafio.estagio.mvc.model.dto.EnderecoDTO;
-import com.desafio.estagio.mvc.model.dto.TipoCliente;
+import com.desafio.estagio.dto.ClienteFisicoDTO;
+import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.model.enums.TipoCliente;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,6 +42,14 @@ class ClienteFisicoIntegrationTest {
             .withUsername("test")
             .withPassword("test")
             .withReuse(true);
+    private static volatile boolean migrationsApplied = false;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private ClienteFisicoDTO.Request request;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -53,16 +61,6 @@ class ClienteFisicoIntegrationTest {
         registry.add("spring.flyway.locations", () -> "classpath:db/migration/test");
         registry.add("spring.flyway.enabled", () -> "false");
     }
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private ClienteFisicoDTO.Request request;
-
-    private static volatile boolean migrationsApplied = false;
 
     @BeforeAll
     static void runFlywayMigrations() {

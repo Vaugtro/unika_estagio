@@ -1,0 +1,26 @@
+package com.desafio.estagio.service;
+
+import com.desafio.estagio.dto.ClienteDTO;
+import com.desafio.estagio.model.ClienteEntity;
+import com.desafio.estagio.repository.ClienteRepository;
+
+import java.util.List;
+
+// Use R extends ClienteRepository<T> to keep it dynamic
+public interface ClienteService<T extends ClienteEntity, S extends ClienteDTO.Response, R extends ClienteRepository<T>> {
+    void inativarCliente(Long id);
+
+    void ativarCliente(Long id);
+
+    boolean existsById(Long id);
+
+    T findEntityById(Long id);
+
+    List<S> findAll();
+
+    void delete(Long id);
+
+    T findById(Long id);
+
+    long count();
+}
