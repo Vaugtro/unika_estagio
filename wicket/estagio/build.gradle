@@ -8,8 +8,8 @@ group = 'com.desafio'
 version = '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -64,9 +64,11 @@ sourceSets {
 // Configurações do WAR plugin
 war {
     archiveBaseName.set('estagio')
-    archiveVersion.set('1.0-SNAPSHOT')
+    archiveVersion.set('0.0.1-SNAPSHOT')
 
-    // Garante que os recursos HTML do Wicket sejam incluídos
+    // Define a estratégia para arquivos duplicados (EXCLUDE ignora duplicatas)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     from('src/main/webapp') {
         include '**/*.html'
         include '**/*.css'
@@ -91,22 +93,19 @@ eclipse {
 
 // Task para rodar Jetty (similar ao jetty-maven-plugin)
 tasks.register('jettyRun', JavaExec) {
-    dependsOn testClasses
+    dependsOn war
     group = 'application'
-    description = 'Executa o aplicativo Wicket no servidor Jetty para testes'
+    description = 'Executa o aplicativo Wicket no servidor Jetty'
 
     mainClass = 'org.eclipse.jetty.runner.Runner'
-    classpath = configurations.testRuntimeClasspath + sourceSets.test.output + sourceSets.main.output
+    // Inclui a configuração 'runtimeClasspath' que conterá a dependência 'implementation'
+    classpath = configurations.runtimeClasspath
 
-    // Argumentos do Jetty
     args = [
-            '--port', '8080',
+            '--port', '8081',
             '--path', '/',
             war.archiveFile.get().asFile.absolutePath
     ]
-
-    // Configurações do sistema (equivalentes ao systemProperties do Maven)
-    systemProperty 'maven.project.build.directory.test-classes', sourceSets.test.output.classesDirs.asPath
 }
 
 // Task para limpar o ambiente
