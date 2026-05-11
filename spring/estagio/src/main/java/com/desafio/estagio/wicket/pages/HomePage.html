@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <title>Home - Clientes</title>
+</head>
+<body>
+<wicket:extend>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a wicket:id="btnFisicos" class="btn btn-outline-primary">
+                    <i data-lucide="users"></i> Clientes Físicos
+                </a>
+                <a wicket:id="btnJuridicos" class="btn btn-outline-secondary">
+                    <i data-lucide="building"></i> Clientes Jurídicos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div wicket:id="panelContainer">
+                <div wicket:id="currentPanel"></div>
+            </div>
+        </div>
+    </div>
+</wicket:extend>
+</body>
+</html>

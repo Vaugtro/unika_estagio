@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="pt-BR">
+<wicket:head>
+    <style>
+        .pages {
+            align-self: center;
+            margin-left: 2rem;
+            margin-right: 2rem;
+        }
+    </style>
+</wicket:head>
+<wicket:panel>
+    <div class="lucide-paginator">
+        <ul class="pagination">
+            <!-- Primeira página -->
+            <li wicket:id="firstLink" class="page-item">
+                <a href="#" class="page-link">
+                    <i class="lucide" data-lucide="chevrons-left"></i>
+                    <span class="sr-only">Primeira</span>
+                </a>
+            </li>
+
+            <!-- Página anterior -->
+            <li wicket:id="prevLink" class="page-item">
+                <a href="#" class="page-link">
+                    <i class="lucide" data-lucide="chevron-left"></i>
+                    <span class="sr-only">Anterior</span>
+                </a>
+            </li>
+
+            <!-- Links das páginas -->
+            <li wicket:id="pageLinks" class="page-item pages">
+                <a href="#" wicket:id="pageLink" class="page-link">
+                    <span wicket:id="pageNumber"></span>
+                </a>
+            </li>
+
+            <!-- Próxima página -->
+            <li wicket:id="nextLink" class="page-item">
+                <a href="#" class="page-link">
+                    <i class="lucide" data-lucide="chevron-right"></i>
+                    <span class="sr-only">Próxima</span>
+                </a>
+            </li>
+
+            <!-- Última página -->
+            <li wicket:id="lastLink" class="page-item">
+                <a href="#" class="page-link">
+                    <i class="lucide" data-lucide="chevrons-right"></i>
+                    <span class="sr-only">Última</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</wicket:panel>
+</html>

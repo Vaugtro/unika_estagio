@@ -22,6 +22,10 @@ public interface Cliente {
 
     void setEnderecos(List<Endereco> enderecos);
 
+    void addEndereco(Endereco endereco);
+
+    void removeEndereco(Endereco endereco);
+
     LocalDateTime getCreatedAt();
 
     void setCreatedAt(LocalDateTime createdAt);

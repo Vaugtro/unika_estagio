@@ -106,4 +106,11 @@ public class EnderecoEntity implements Endereco {
     public Boolean isPrincipal() {
         return this.principal;
     }
+
+    @PreRemove
+    private void preRemove() {
+        if (cliente != null && principal) {
+            throw new IllegalStateException("Não é possível remover o endereço principal sem definir outro como principal");
+        }
+    }
 }

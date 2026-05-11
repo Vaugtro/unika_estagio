@@ -6,7 +6,7 @@ import com.desafio.estagio.model.ClienteFisicoEntity;
 import com.desafio.estagio.model.EnderecoEntity;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
-import com.desafio.estagio.service.EnderecoServiceImpl;
+import com.desafio.estagio.service.impl.EnderecoServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

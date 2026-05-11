@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Cadastro de Cliente</h3>
+            </div>
+
+            <div class="card-body">
+                <!-- Feedback panel para mensagens -->
+                <div wicket:id="feedback" class="mb-3"></div>
+
+                <!-- Formulário principal -->
+                <form wicket:id="form">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Tipo de Cliente *</label>
+                            <select wicket:id="tipoCliente" class="form-select">
+                                <option value="">Selecione o tipo</option>
+                            </select>
+                            <small class="form-text text-muted">
+                                Selecione se é Pessoa Física ou Jurídica
+                            </small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Email *</label>
+                            <input type="email" wicket:id="email" class="form-control"
+                                   placeholder="cliente@exemplo.com" />
+                            <small class="form-text text-muted">
+                                Email válido para contato
+                            </small>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select wicket:id="estaAtivo" class="form-select">
+                                <option value="true">Ativo</option>
+                                <option value="false">Inativo</option>
+                            </select>
+                            <small class="form-text text-muted">
+                                Cliente ativo ou inativo
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Container para formulários dinâmicos (PF ou PJ) -->
+                    <div wicket:id="dynamicForm" class="mt-4">
+                        <!-- O conteúdo dinâmico será inserido aqui -->
+                        <div wicket:id="content"></div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="button" wicket:id="adicionarEndereco" class="btn btn-info">
+                            <i class="fas fa-plus"></i> Adicionar Endereço
+                        </button>
+
+                        <button type="submit" wicket:id="salvar" class="btn btn-success ms-2">
+                            <i class="fas fa-save"></i> Salvar Cliente
+                        </button>
+
+                        <button type="button" wicket:id="limpar" class="btn btn-secondary ms-2">
+                            <i class="fas fa-eraser"></i> Limpar Formulário
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</wicket:panel>
+</html>

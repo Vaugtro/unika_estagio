@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClienteRepository<T extends ClienteEntity> extends JpaRepository<T, Long> {
+    long countByEstaAtivoTrue();
+
+    long countByEstaAtivoFalse();
 }
