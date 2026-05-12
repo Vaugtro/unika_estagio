@@ -31,7 +31,7 @@ public class JasperReportController {
         parameters.put("reportTitle", "Relatório de Clientes Físicos");
         parameters.put("generatedDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 
-        byte[] pdfReport = reportService.generateForCliente("ClienteFisicoReport", parameters, TipoCliente.FISICA);
+        byte[] pdfReport = reportService.generateForClientes("ClienteFisicoReport", parameters, TipoCliente.FISICA);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesFisicosReport.pdf")
@@ -47,7 +47,7 @@ public class JasperReportController {
         parameters.put("reportTitle", "Relatório de Clientes Jurídicos");
         parameters.put("generatedDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 
-        byte[] pdfReport = reportService.generateForCliente("ClientesJuridicosReport", parameters, TipoCliente.JURIDICA);
+        byte[] pdfReport = reportService.generateForClientes("ClientesJuridicosReport", parameters, TipoCliente.JURIDICA);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesJuridicosReport.pdf")

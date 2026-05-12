@@ -1,8 +1,12 @@
 package com.desafio.estagio.exceptions.handlers;
 
+import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,34 +23,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ==================== 4xx - Client Errors ====================
+    private final HttpServletRequest request;
+
+    public GlobalExceptionHandler(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    // ==================== Business Exceptions ====================
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<APIErrorResponse> handleBusinessException(BusinessException ex) {
+        log.warn("Business rule violation: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<APIErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        log.warn("Resource not found: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<APIErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(getPath())
-                .build();
+        log.warn("User not found: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<APIErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(getPath())
-                .build();
+        log.warn("Entity not found: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    // ==================== Validation Errors ====================
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<APIErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -63,19 +80,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message("Validation failed")
                 .validationErrors(validationErrors)
-                .path(getPath())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<APIErrorResponse> handleIllegalArgs(IllegalArgumentException ex) {
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(getPath())
+                .path(request.getRequestURI())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -86,131 +91,75 @@ public class GlobalExceptionHandler {
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.joining(", "));
 
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Constraint violation: " + errors)
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.BAD_REQUEST, "Constraint violation: " + errors);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<APIErrorResponse> handleIllegalArgs(IllegalArgumentException ex) {
+        log.warn("Invalid argument: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<APIErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        assert ex.getRequiredType() != null;
         String message = String.format("Parameter '%s' should be of type '%s'",
-                ex.getName(), ex.getRequiredType().getSimpleName());
+                ex.getName(), ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown");
 
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(message)
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.BAD_REQUEST, message);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<APIErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Required parameter '" + ex.getParameterName() + "' is missing")
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.BAD_REQUEST,
+                "Required parameter '" + ex.getParameterName() + "' is missing");
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<APIErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Malformed JSON request. Please check your request body syntax.")
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.BAD_REQUEST,
+                "Malformed JSON request. Please check your request body syntax.");
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    // ==================== Data Integrity ====================
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<APIErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         String message = "Database constraint violation";
 
-        if (ex.getMessage().contains("Unique index") || ex.getMessage().contains("Duplicate entry")) {
-            message = "Resource already exists (possible duplicate CPF, email, or RG)";
+        if (ex.getMessage() != null &&
+                (ex.getMessage().contains("Unique index") || ex.getMessage().contains("Duplicate entry"))) {
+            message = "Resource already exists (possible duplicate CPF, CNPJ, email, or RG)";
         }
 
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.CONFLICT.value())
-                .error(HttpStatus.CONFLICT.getReasonPhrase())
-                .message(message)
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.CONFLICT, message);
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // Handle duplicate CNPJ specifically (RuntimeException from service)
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<APIErrorResponse> handleRuntimeException(RuntimeException ex) {
-        if (ex.getMessage() != null && ex.getMessage().contains("CNPJ já cadastrado")) {
-            APIErrorResponse error = APIErrorResponse.builder()
-                    .timestamp(LocalDateTime.now())
-                    .status(HttpStatus.CONFLICT.value())
-                    .error(HttpStatus.CONFLICT.getReasonPhrase())
-                    .message(ex.getMessage())
-                    .path(getPath())
-                    .build();
-            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
-        }
-        if (ex.getMessage() != null && ex.getMessage().contains("CPF já cadastrado")) {
-            APIErrorResponse error = APIErrorResponse.builder()
-                    .timestamp(LocalDateTime.now())
-                    .status(HttpStatus.CONFLICT.value())
-                    .error(HttpStatus.CONFLICT.getReasonPhrase())
-                    .message(ex.getMessage())
-                    .path(getPath())
-                    .build();
-            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
-        }
-
-        // Generic RuntimeException falls back to 500
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message("An unexpected error occurred: " + ex.getMessage())
-                .path(getPath())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    // ==================== 5xx - Server Errors ====================
+    // ==================== Fallback ====================
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIErrorResponse> handleGlobalException(Exception ex) {
-        // Log the exception for debugging (add proper logging)
-        ex.printStackTrace();
+        log.error("Unexpected error occurred", ex);
 
-        APIErrorResponse error = APIErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message("An unexpected error occurred. Please try again later.")
-                .path(getPath())
-                .build();
+        APIErrorResponse error = buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred. Please try again later.");
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // ==================== Helper Methods ====================
 
-    private String getPath() {
-        // You can inject HttpServletRequest to get the actual path
-        // For now, return a placeholder or implement properly
-        return "Request path not available";
+    private APIErrorResponse buildErrorResponse(HttpStatus status, String message) {
+        return APIErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(message)
+                .path(request.getRequestURI())
+                .build();
     }
 }

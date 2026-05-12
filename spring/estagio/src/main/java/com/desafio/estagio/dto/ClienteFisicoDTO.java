@@ -80,14 +80,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             LocalDate dataNascimento,
 
             @Schema(
-                    description = "Telefone do cliente",
-                    example = "(11) 98765-4321",
-                    maxLength = 20
-            )
-            @Size(max = 20, message = "Telefone deve ter no máximo 20 caracteres")
-            String telefone,
-
-            @Schema(
                     description = "Lista de endereços do cliente",
                     requiredMode = Schema.RequiredMode.REQUIRED,
                     minContains = 1
@@ -95,7 +87,7 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             @NotEmpty(message = "O cliente deve ter pelo menos um endereço")
             @Valid
             List<EnderecoDTO.CreateRequest> enderecos
-    ) implements ClienteDTO.Request, Serializable {
+    ) implements Serializable {
         @Serial
         private static final long serialVersionUID = 1L;
     }
@@ -125,14 +117,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             @Email(message = "E-mail inválido")
             @Size(max = 150, message = "E-mail deve ter no máximo 150 caracteres")
             String email,
-
-            @Schema(
-                    description = "Telefone do cliente",
-                    example = "(11) 98765-4321",
-                    maxLength = 20
-            )
-            @Size(max = 20, message = "Telefone deve ter no máximo 20 caracteres")
-            String telefone,
 
             @Schema(
                     description = "Data de nascimento",
@@ -179,9 +163,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
 
             @Schema(description = "E-mail do cliente", example = "joao.silva@exemplo.com", format = "email")
             String email,
-
-            @Schema(description = "Telefone do cliente", example = "(11) 98765-4321")
-            String telefone,
 
             @Schema(description = "Data de nascimento", example = "1990-05-15")
             @JsonFormat(pattern = "yyyy-MM-dd")
@@ -233,9 +214,6 @@ public interface ClienteFisicoDTO extends ClienteDTO {
             @Schema(description = "Data de nascimento", example = "1990-05-15")
             @JsonFormat(pattern = "yyyy-MM-dd")
             LocalDate dataNascimento,
-
-            @Schema(description = "Telefone do cliente", example = "(11) 98765-4321")
-            String telefone,
 
             @Schema(description = "Status do cliente", example = "true")
             Boolean estaAtivo,

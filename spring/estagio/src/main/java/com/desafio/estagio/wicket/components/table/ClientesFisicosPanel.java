@@ -1,7 +1,7 @@
 package com.desafio.estagio.wicket.components.table;
 
+import com.desafio.estagio.dto.ClienteFisicoDTO;
 import com.desafio.estagio.model.ClienteFisico;
-import com.desafio.estagio.model.ClienteFisicoEntity;
 import com.desafio.estagio.model.enums.TipoCliente;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.components.form.ClienteFormPanel;
@@ -11,6 +11,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -20,17 +21,22 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Iterator;
 
 public class ClientesFisicosPanel extends Panel {
+
+    private static final long serialVersionUID = 1L;
 
     @SpringBean
     private ClienteFisicoService clienteFisicoService;
 
     private WebMarkupContainer tableContainer;
     private ModalWindow modal;
-    private DataView<ClienteFisicoEntity> dataView;
+    private DataView<ClienteFisicoDTO.ListResponse> dataView;
 
     public ClientesFisicosPanel(String id) {
         super(id);
@@ -50,19 +56,21 @@ public class ClientesFisicosPanel extends Panel {
         add(modal);
 
         // Botão Novo Cliente
+        Form<Void> novoClienteForm = new Form<>("novoClienteBtnForm");
+        novoClienteForm.setOutputMarkupId(true);
+        add(novoClienteForm);
+
         AjaxButton novoClienteBtn = new AjaxButton("novoClienteBtn") {
-            @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 showClienteForm(target, null);
             }
 
-            @Override
             protected void onError(AjaxRequestTarget target) {
                 // Não faz nada
             }
         };
         novoClienteBtn.setDefaultFormProcessing(false);
-        add(novoClienteBtn);
+        novoClienteForm.add(novoClienteBtn);
 
         // Container da tabela
         tableContainer = new WebMarkupContainer("tableContainer");
@@ -70,10 +78,12 @@ public class ClientesFisicosPanel extends Panel {
         add(tableContainer);
 
         // Data Provider para clientes físicos
-        IDataProvider<ClienteFisicoEntity> dataProvider = new IDataProvider<ClienteFisicoEntity>() {
+        IDataProvider<ClienteFisicoDTO.ListResponse> dataProvider = new IDataProvider<ClienteFisicoDTO.ListResponse>() {
             @Override
-            public Iterator<? extends ClienteFisicoEntity> iterator(long first, long count) {
-                return clienteFisicoService.findAllPaginated((int) first, (int) count).iterator();
+            public Iterator<? extends ClienteFisicoDTO.ListResponse> iterator(long first, long count) {
+                Pageable pageable = PageRequest.of((int) (first / count), (int) count);
+                Page<ClienteFisicoDTO.ListResponse> page = clienteFisicoService.findAll(pageable);
+                return page.getContent().iterator();
             }
 
             @Override
@@ -82,7 +92,7 @@ public class ClientesFisicosPanel extends Panel {
             }
 
             @Override
-            public IModel<ClienteFisicoEntity> model(ClienteFisicoEntity object) {
+            public IModel<ClienteFisicoDTO.ListResponse> model(ClienteFisicoDTO.ListResponse object) {
                 return new CompoundPropertyModel<>(Model.of(object));
             }
 
@@ -93,26 +103,29 @@ public class ClientesFisicosPanel extends Panel {
         };
 
         // DataView para exibir os clientes
-        dataView = new DataView<ClienteFisicoEntity>("rows", dataProvider, 10) {
+        dataView = new DataView<ClienteFisicoDTO.ListResponse>("rows", dataProvider, 10) {
             @Override
-            protected void populateItem(Item<ClienteFisicoEntity> item) {
-                ClienteFisicoEntity cliente = item.getModelObject();
+            protected void populateItem(Item<ClienteFisicoDTO.ListResponse> item) {
+                ClienteFisicoDTO.ListResponse cliente = item.getModelObject();
 
-                item.add(new Label("id", cliente.getId()));
-                item.add(new Label("nome", cliente.getNome()));
-                item.add(new Label("cpf", cliente.getCpf()));
-                item.add(new Label("rg", cliente.getRg()));
-                item.add(new Label("email", cliente.getEmail()));
+                item.add(new Label("id", String.valueOf(cliente.id())));
+                item.add(new Label("nome", cliente.nome()));
+                item.add(new Label("cpf", cliente.cpf()));
+                item.add(new Label("email", cliente.email()));
 
                 // Status com badge
-                Label status = new Label("status", cliente.getEstaAtivo() ? "Ativo" : "Inativo");
-                status.add(new AttributeModifier("class", cliente.getEstaAtivo() ? "badge bg-success" : "badge bg-danger"));
+                Label status = new Label("status", cliente.estaAtivo() ? "Ativo" : "Inativo");
+                status.add(new AttributeModifier("class", cliente.estaAtivo() ? "badge bg-success" : "badge bg-danger"));
                 item.add(status);
 
-                // Botão de edição
+                // Botão de edição - Add form wrapper
+                Form<Void> editarForm = new Form<>("editarBtnForm");
+                editarForm.setOutputMarkupId(true);
+
                 AjaxButton editarBtn = new AjaxButton("editarBtn") {
                     protected void onSubmit(AjaxRequestTarget target) {
-                        showClienteForm(target, cliente);
+                        ClienteFisicoDTO.Response clienteCompleto = clienteFisicoService.findById(cliente.id());
+                        showClienteForm(target, clienteCompleto);
                     }
 
                     protected void onError(AjaxRequestTarget target) {
@@ -120,7 +133,8 @@ public class ClientesFisicosPanel extends Panel {
                     }
                 };
                 editarBtn.setDefaultFormProcessing(false);
-                item.add(editarBtn);
+                editarForm.add(editarBtn);
+                item.add(editarForm);
             }
         };
 
@@ -131,31 +145,23 @@ public class ClientesFisicosPanel extends Panel {
         add(navigator);
     }
 
-    private void showClienteForm(AjaxRequestTarget target, ClienteFisicoEntity cliente) {
-        // Cria o formulário
+    private void showClienteForm(AjaxRequestTarget target, ClienteFisicoDTO.Response cliente) {
         ClienteFormPanel clienteFormPanel;
 
         if (cliente == null) {
-            // Novo cliente - passa apenas o tipo
             clienteFormPanel = new ClienteFormPanel("content", TipoCliente.FISICA);
         } else {
-            // Edição - passa o cliente existente
-            clienteFormPanel = new ClienteFormPanel("content", cliente);
+            ClienteFisico clienteEntity = clienteFisicoService.findEntityById(cliente.id());
+            clienteFormPanel = new ClienteFormPanel("content", clienteEntity);
         }
 
         clienteFormPanel.setOutputMarkupId(true);
-
-        // Configura o modal
         modal.setContent(clienteFormPanel);
         modal.show(target);
 
-        // Listener para quando o modal fechar, recarregar a tabela
-        modal.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-            @Override
-            public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-                target.add(tableContainer);
-                return true;
-            }
+        modal.setCloseButtonCallback(ajaxTarget -> {
+            ajaxTarget.add(tableContainer);
+            return true;
         });
     }
 }

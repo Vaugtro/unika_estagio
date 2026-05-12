@@ -1,30 +1,44 @@
 package com.desafio.estagio.service;
 
 import com.desafio.estagio.dto.ClienteJuridicoDTO;
-import com.desafio.estagio.model.ClienteJuridicoEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**
+ * Service interface for ClienteJuridico (Business Client).
+ * Standardized with ClienteFisicoService for project consistency.
+ */
 public interface ClienteJuridicoService {
-    Page<ClienteJuridicoDTO.Response> findAll(Pageable pageable);
 
-    List<ClienteJuridicoDTO.Response> findAll(); // Keep for backward compatibility
+    ClienteJuridicoDTO.Response create(ClienteJuridicoDTO.CreateRequest request);
 
-    ClienteJuridicoEntity findById(Long id);
+    ClienteJuridicoDTO.Response update(Long id, ClienteJuridicoDTO.UpdateRequest request);
 
-    ClienteJuridicoDTO.Response create(ClienteJuridicoDTO.Request request);
+    // Standardized name (removed DTO suffix)
+    ClienteJuridicoDTO.Response findById(Long id);
 
-    ClienteJuridicoDTO.Response update(Long id, ClienteJuridicoDTO.Request request);
+    // Standardized name (consistent with Fisico)
+    Page<ClienteJuridicoDTO.ListResponse> findAll(Pageable pageable);
+    List<ClienteJuridicoDTO.Response> findAll();
 
-    void delete(Long id);
+    // Standardized name (consistent with Fisico)
+    Page<ClienteJuridicoDTO.ListResponse> findAllActive(Pageable pageable);
 
-    void inativarCliente(Long id);
+    Page<ClienteJuridicoDTO.ReportResponse> findAllForReport(Pageable pageable);
 
-    void ativarCliente(Long id);
+    boolean existsByCnpj(String cnpj);
 
     ClienteJuridicoDTO.Response findByCnpj(String cnpj);
 
-    ClienteJuridicoDTO.Response getById(Long id);
+    // Renamed to match the "soft delete" logic
+    void delete(Long id);
+
+    void hardDelete(Long id);
+
+    void activate(Long id);
+
+    void inactivate(Long id);
+
 }

@@ -1,94 +1,36 @@
 package com.desafio.estagio.service;
 
+import com.desafio.estagio.dto.ClienteFisicoDTO;
+import com.desafio.estagio.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.model.enums.TipoCliente;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service interface for generating JasperReports
- */
 public interface JasperReportService {
 
-    byte[] generateForCliente(
-            String reportName,
-            Map<String, Object> parameters,
-            TipoCliente type);
+    // Report generation by client type
+    byte[] generateForFisicos(String reportName, Map<String, Object> parameters);
+    byte[] generateForJuridicos(String reportName, Map<String, Object> parameters);
+    byte[] generateForClientes(String reportName, Map<String, Object> parameters, TipoCliente type);
 
-    /**
-     * Generate PDF report from a collection of data
-     *
-     * @param reportName Name of the report (matches the .jrxml filename without extension)
-     * @param data       Collection of data objects to be used in the report
-     * @param parameters Additional parameters to pass to the report
-     * @return byte array containing the PDF report
-     * @throws RuntimeException if report not found or generation fails
-     */
+    // Report generation with pagination (memory safe)
+    byte[] generateForFisicos(String reportName, Map<String, Object> parameters, Pageable pageable);
+    byte[] generateForJuridicos(String reportName, Map<String, Object> parameters, Pageable pageable);
+
+    // Generic generation methods
     byte[] generatePdf(String reportName, List<?> data, Map<String, Object> parameters);
-
-    /**
-     * Generate PDF report from a single object
-     *
-     * @param reportName Name of the report (matches the .jrxml filename without extension)
-     * @param data       Single data object to be used in the report
-     * @param parameters Additional parameters to pass to the report
-     * @return byte array containing the PDF report
-     * @throws RuntimeException if report not found or generation fails
-     */
+    byte[] generatePdfWithPagination(String reportName, Page<?> page, Map<String, Object> parameters);
     byte[] generatePdfFromObject(String reportName, Object data, Map<String, Object> parameters);
-
-    /**
-     * Generate PDF report with custom fields only (no data source)
-     * Useful for reports that don't require a data source or use subreports
-     *
-     * @param reportName Name of the report (matches the .jrxml filename without extension)
-     * @param parameters Additional parameters to pass to the report
-     * @return byte array containing the PDF report
-     * @throws RuntimeException if report not found or generation fails
-     */
     byte[] generatePdfWithFields(String reportName, Map<String, Object> parameters);
+    byte[] generatePdfWithDataSource(String reportName, JRDataSource dataSource, Map<String, Object> parameters);
 
-    /**
-     * Generate PDF report with a custom data source
-     *
-     * @param reportName Name of the report (matches the .jrxml filename without extension)
-     * @param dataSource Custom JRDataSource implementation
-     * @param parameters Additional parameters to pass to the report
-     * @return byte array containing the PDF report
-     * @throws RuntimeException if report not found or generation fails
-     */
-    default byte[] generatePdfWithDataSource(String reportName, JRDataSource dataSource, Map<String, Object> parameters) {
-        try {
-            JasperReport jasperReport = getJasperReport(reportName);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-            return JasperExportManager.exportReportToPdf(jasperPrint);
-        } catch (JRException e) {
-            throw new RuntimeException("Failed to generate PDF report: " + reportName, e);
-        }
-    }
-
-    /**
-     * Get the compiled JasperReport object by name
-     *
-     * @param reportName Name of the report
-     * @return Compiled JasperReport object
-     * @throws RuntimeException if report not found
-     */
+    // Utility methods
     JasperReport getJasperReport(String reportName);
-
-    /**
-     * Check if a report exists
-     *
-     * @param reportName Name of the report
-     * @return true if report exists, false otherwise
-     */
     boolean reportExists(String reportName);
-
-    /**
-     * Get all available report names
-     *
-     * @return List of report names
-     */
     List<String> getAvailableReports();
 }

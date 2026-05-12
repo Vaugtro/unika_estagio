@@ -2,7 +2,6 @@ package com.desafio.estagio.factory;
 
 
 import com.desafio.estagio.model.Cliente;
-import com.desafio.estagio.model.Endereco;
 import com.desafio.estagio.model.enums.TipoCliente;
 
 public interface ClienteFactory {

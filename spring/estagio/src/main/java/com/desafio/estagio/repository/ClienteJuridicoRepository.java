@@ -1,32 +1,101 @@
 package com.desafio.estagio.repository;
-
-import com.desafio.estagio.model.ClienteJuridicoEntity;
+import com.desafio.estagio.model.ClienteJuridico;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridicoEntity, Long>, ClienteRepository<ClienteJuridicoEntity> {
+public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico, Long> {
 
-    // Find by CNPJ (exact match)
-    Optional<ClienteJuridicoEntity> findByCnpj(String cnpj);
+    // ========== CNPJ Operations ==========
 
-    // Check if CNPJ exists
+    /**
+     * Find by exact CNPJ (cleaned, 14 digits)
+     */
+    Optional<ClienteJuridico> findByCnpj(String cnpj);
+
+    /**
+     * Check if CNPJ exists
+     */
     boolean existsByCnpj(String cnpj);
 
-    // Find by active status
-    List<ClienteJuridicoEntity> findByEstaAtivoTrue();
+    /**
+     * Find by CNPJ with active status
+     */
+    Optional<ClienteJuridico> findByCnpjAndEstaAtivoTrue(String cnpj);
 
-    List<ClienteJuridicoEntity> findByEstaAtivoFalse();
+    // ========== Status Operations ==========
 
-    // Find by CNPJ containing (for search functionality)
-    List<ClienteJuridicoEntity> findByCnpjContaining(String cnpj);
+    /**
+     * Find all active clients with pagination
+     */
+    Page<ClienteJuridico> findByEstaAtivoTrue(Pageable pageable);
 
-    // Find by Razão Social (partial match)
-    List<ClienteJuridicoEntity> findByRazaoSocialContainingIgnoreCase(String razaoSocial);
+    /**
+     * Find all inactive clients with pagination
+     */
+    Page<ClienteJuridico> findByEstaAtivoFalse(Pageable pageable);
 
-    // Find by Inscrição Estadual
-    Optional<ClienteJuridicoEntity> findByInscricaoEstadual(String inscricaoEstadual);
+    /**
+     * Count active clients
+     */
+    long countByEstaAtivoTrue();
+
+    /**
+     * Count inactive clients
+     */
+    long countByEstaAtivoFalse();
+
+    // ========== Search Operations ==========
+
+    /**
+     * Search by CNPJ with LIKE (for partial matches)
+     */
+    @Query("SELECT c FROM ClienteJuridico c WHERE c.cnpj LIKE %:cnpj%")
+    Page<ClienteJuridico> searchByCnpj(@Param("cnpj") String cnpj, Pageable pageable);
+
+    /**
+     * Search by razão social (company name)
+     */
+    Page<ClienteJuridico> findByRazaoSocialContainingIgnoreCase(String razaoSocial, Pageable pageable);
+
+    /**
+     * Search by email
+     */
+    Optional<ClienteJuridico> findByEmail(String email);
+
+    // ========== Date Range Operations ==========
+
+    /**
+     * Find companies created after a specific date
+     */
+    Page<ClienteJuridico> findByDataCriacaoEmpresaAfter(java.time.LocalDate date, Pageable pageable);
+
+    /**
+     * Find companies created between dates
+     */
+    Page<ClienteJuridico> findByDataCriacaoEmpresaBetween(java.time.LocalDate startDate, java.time.LocalDate endDate, Pageable pageable);
+
+    // ========== Bulk Operations ==========
+
+    /**
+     * Inactivate all clients by list of IDs
+     */
+    @Modifying
+    @Query("UPDATE ClienteJuridico c SET c.estaAtivo = false WHERE c.id IN :ids")
+    void inactivateAllByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * Activate all clients by list of IDs
+     */
+    @Modifying
+    @Query("UPDATE ClienteJuridico c SET c.estaAtivo = true WHERE c.id IN :ids")
+    void activateAllByIds(@Param("ids") List<Long> ids);
 }

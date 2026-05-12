@@ -1,8 +1,8 @@
 package com.desafio.estagio.factory;
 
 import com.desafio.estagio.model.Cliente;
-import com.desafio.estagio.model.ClienteFisicoEntity;
-import com.desafio.estagio.model.ClienteJuridicoEntity;
+import com.desafio.estagio.model.ClienteFisico;
+import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.model.Endereco;
 import com.desafio.estagio.model.enums.TipoCliente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,9 @@ public class ClienteFactoryImpl implements ClienteFactory {
         Cliente cliente;
 
         if (tipo == TipoCliente.FISICA) {
-            cliente = new ClienteFisicoEntity();
+            cliente = new ClienteFisico();
         } else {
-            cliente = new ClienteJuridicoEntity();
+            cliente = new ClienteJuridico();
         }
 
         // Cria com um endereço inicial
@@ -33,7 +33,7 @@ public class ClienteFactoryImpl implements ClienteFactory {
 
     @Override
     public Cliente createClienteFisico() {
-        ClienteFisicoEntity cliente = new ClienteFisicoEntity();
+        ClienteFisico cliente = new ClienteFisico();
 
         // Cria com um endereço inicial
         Endereco enderecoInicial = enderecoFactory.createEndereco();
@@ -44,7 +44,7 @@ public class ClienteFactoryImpl implements ClienteFactory {
 
     @Override
     public Cliente createClienteJuridico() {
-        ClienteJuridicoEntity cliente = new ClienteJuridicoEntity();
+        ClienteJuridico cliente = new ClienteJuridico();
 
         // Cria com um endereço inicial
         Endereco enderecoInicial = enderecoFactory.createEndereco();
@@ -65,16 +65,16 @@ public class ClienteFactoryImpl implements ClienteFactory {
 
         // Atributos específicos (com casting)
         if (source.getTipo() == TipoCliente.FISICA) {
-            ClienteFisicoEntity sourceFisico = (ClienteFisicoEntity) source;
-            ClienteFisicoEntity cloneFisico = (ClienteFisicoEntity) clone;
+            ClienteFisico sourceFisico = (ClienteFisico) source;
+            ClienteFisico cloneFisico = (ClienteFisico) clone;
 
             cloneFisico.setNome(sourceFisico.getNome());
             cloneFisico.setCpf(sourceFisico.getCpf());
             cloneFisico.setRg(sourceFisico.getRg());
             cloneFisico.setDataNascimento(sourceFisico.getDataNascimento());
         } else {
-            ClienteJuridicoEntity sourceJuridico = (ClienteJuridicoEntity) source;
-            ClienteJuridicoEntity cloneJuridico = (ClienteJuridicoEntity) clone;
+            ClienteJuridico sourceJuridico = (ClienteJuridico) source;
+            ClienteJuridico cloneJuridico = (ClienteJuridico) clone;
 
             cloneJuridico.setRazaoSocial(sourceJuridico.getRazaoSocial());
             cloneJuridico.setCnpj(sourceJuridico.getCnpj());

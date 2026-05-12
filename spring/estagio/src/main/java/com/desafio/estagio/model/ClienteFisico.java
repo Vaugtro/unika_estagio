@@ -1,22 +1,47 @@
 package com.desafio.estagio.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 
-public interface ClienteFisico extends Cliente {
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "ClienteFisico")
+@SuperBuilder
+@Table(name = "cliente_fisico")
+public class ClienteFisico extends Cliente {
 
-    String getCpf();
+    // Manual getter and setter for CPF with cleaning
+    @Column(name = "cpf", unique = true, nullable = false, length = 11)
+    private String cpf;  // Removed Lombok annotation - we control the setter
 
-    void setCpf(String cpf);
+    @Column(name = "nome", nullable = false)
+    private String nome;
 
-    String getNome();
+    @Column(name = "rg", nullable = false, length = 9)
+    private String rg;
 
-    void setNome(String nome);
+    @Column(name = "data_nascimento", nullable = false)
+    private LocalDate dataNascimento;
 
-    String getRg();
+    public void setCpf(String cpf) {
+        // Clean the CPF before storing
+        if (cpf == null) {
+            this.cpf = null;
+        } else {
+            this.cpf = cpf.replaceAll("\\D", "");
+        }
+    }
 
-    void setRg(String rg);
-
-    LocalDate getDataNascimento();
-
-    void setDataNascimento(LocalDate dataNascimento);
+    @PrePersist
+    @PreUpdate
+    private void validateCpf() {
+        if (cpf != null && cpf.length() != 11) {
+            throw new IllegalStateException("CPF must have exactly 11 digits");
+        }
+    }
 }

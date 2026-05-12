@@ -18,7 +18,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 
 public class ClienteFisicoFormPanel extends Panel {
 
-    private Cliente cliente;
+    private final Cliente cliente;
 
     public ClienteFisicoFormPanel(String id, Cliente cliente) {
         super(id, new CompoundPropertyModel<>(cliente));

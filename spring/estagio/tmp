@@ -1,9 +1,0 @@
-
-ALTER TABLE endereco
-    ADD CONSTRAINT FK_ENDERECO_ON_CLIENTE FOREIGN KEY (cliente_id) REFERENCES cliente (pk),
-    ADD COLUMN un_endereco_principal TINYINT(1)
-        AS (CASE WHEN endereco_principal = 1 THEN 1 ELSE NULL END)
-        PERSISTENT;
-
-CREATE UNIQUE INDEX uk_cliente_endereco_principal_unico
-    ON endereco (cliente_id, un_endereco_principal);

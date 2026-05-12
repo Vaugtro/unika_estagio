@@ -44,7 +44,11 @@ public interface ClienteDTO {
      */
     @Schema(name = "ClienteCreateRequest", description = "Dados para criar um novo cliente")
     interface CreateRequest extends Request, Serializable {
-        // Marker interface - implementations define specific fields
+        Long id();
+        @Schema(description = "Tipo do cliente", example = "FISICA", accessMode = Schema.AccessMode.READ_ONLY)
+        TipoCliente tipo();
+        LocalDateTime createdAt();
+        LocalDateTime updatedAt();
     }
 
     /**
@@ -173,7 +177,7 @@ public interface ClienteDTO {
         @Schema(description = "ID único do cliente", example = "1")
         Long id();
 
-        @Schema(description = "Tipo do cliente (FISICA ou JURIDICA)", example = "FISICA")
+        @Schema(description = "Tipo do cliente (FISICA ou JURIDICA)", example = "FISICA", accessMode = Schema.AccessMode.READ_ONLY)
         TipoCliente tipo();
 
         @Schema(description = "E-mail do cliente", example = "cliente@exemplo.com")

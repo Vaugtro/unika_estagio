@@ -1,48 +1,56 @@
-
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:wicket="http://www.w3.org/1999/xhtml">
-    <wicket:head></wicket:head>
-    <wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i data-lucide="users"></i> Clientes Físicos
-                </h5>
-                <div>
+<wicket:head></wicket:head>
+<wicket:panel>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i data-lucide="users"></i> Clientes Físicos
+            </h5>
+            <div>
+                <form wicket:id="novoClienteBtnForm">
                     <button class="btn btn-sm btn-primary" wicket:id="novoClienteBtn">
                         <i data-lucide="plus"></i> Novo Cliente
                     </button>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>RG</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr wicket:id="rows">
-                            <td wicket:id="id"></td>
-                            <td wicket:id="nome"></td>
-                            <td wicket:id="cpf"></td>
-                            <td wicket:id="rg"></td>
-                            <td wicket:id="email"></td>
-                            <td><span wicket:id="status"></span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer bg-white">
-                <div wicket:id="navigator" class="d-flex justify-content-center"></div>
+                </form>
             </div>
         </div>
-    </wicket:panel>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" wicket:id="tableContainer">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr wicket:id="rows">
+                        <td wicket:id="id"></td>
+                        <td wicket:id="nome"></td>
+                        <td wicket:id="cpf"></td>
+                        <td wicket:id="email"></td>
+                        <td><span wicket:id="status"></span></td>
+                        <td>
+                            <form wicket:id="editarBtnForm">
+                                <button class="btn btn-sm btn-warning" wicket:id="editarBtn">
+                                    Editar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <div wicket:id="navigator" class="d-flex justify-content-center"></div>
+        </div>
+    </div>
+    <div wicket:id="modal"></div>
+</wicket:panel>
 </html>

@@ -1,7 +1,6 @@
 package com.desafio.estagio.factory;
 
 import com.desafio.estagio.model.Endereco;
-import com.desafio.estagio.model.EnderecoEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,7 +8,7 @@ public class EnderecoFactoryImpl implements EnderecoFactory {
 
     @Override
     public Endereco createEndereco() {
-        Endereco endereco = new EnderecoEntity();
+        Endereco endereco = new Endereco();
         endereco.setPrincipal(false);
         return endereco;
     }

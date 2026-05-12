@@ -1,10 +1,8 @@
 package com.desafio.estagio.mapper;
 
 import com.desafio.estagio.dto.EnderecoDTO;
-import com.desafio.estagio.model.EnderecoEntity;
+import com.desafio.estagio.model.Endereco;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
@@ -12,26 +10,29 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface EnderecoMapper {
 
-    // Response mapping - IMPORTANT: ignore cliente to break circular reference
-    //@Mapping(target = "cliente", ignore = true)
-    // This breaks the circular reference!
-    EnderecoDTO.Response toResponse(EnderecoEntity entity);
+    // ========== Response Mappings ==========
 
-    // List mapping
-    List<EnderecoDTO.Response> toResponseList(List<EnderecoEntity> entities);
+    @Mapping(target = "clienteId", source = "cliente.id")
+    EnderecoDTO.Response toResponse(Endereco entity);
 
-    // Request to Entity - ignore id and cliente (cliente will be set in service)
+    @Mapping(target = "clienteId", source = "cliente.id")
+    EnderecoDTO.ListResponse toListResponse(Endereco entity);
+
+    // ========== Create Mappings ==========
+
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cliente", ignore = true)  // Don't map cliente from request
+    @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    EnderecoEntity toEntity(EnderecoDTO.Request request);
+    @Mapping(target = "principal", defaultValue = "false")
+    Endereco toEntity(EnderecoDTO.CreateRequest request);
 
-    // Update mapping
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cliente", ignore = true)  // Don't update cliente reference
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+    // ========== Update Mappings ==========
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDTO(EnderecoDTO.Request request, @MappingTarget EnderecoEntity entity);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "cliente", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    void updateEntity(EnderecoDTO.UpdateRequest request, @MappingTarget Endereco entity);
 }
