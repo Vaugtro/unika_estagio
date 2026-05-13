@@ -1,6 +1,6 @@
 package com.desafio.estagio.service.impl;
 
-import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.dto.endereco.*;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.EnderecoMapper;
@@ -34,7 +34,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     @Transactional
-    public EnderecoDTO.Response create(EnderecoDTO.CreateRequest request) {
+    public EnderecoResponse create(EnderecoCreateRequest request) {
         log.debug("Creating endereco");
 
         if (request.clienteId() == null) {
@@ -55,7 +55,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     @Transactional
-    public EnderecoDTO.Response createForCliente(Long clienteId, EnderecoDTO.CreateRequest request) {
+    public EnderecoResponse createForCliente(Long clienteId, EnderecoWithinClienteCreateRequest request) {
         log.debug("Creating endereco for cliente ID: {}", clienteId);
 
         Cliente cliente = findClienteById(clienteId);
@@ -75,14 +75,14 @@ public class EnderecoServiceImpl implements EnderecoService {
     // =====================================================
 
     @Override
-    public EnderecoDTO.Response findById(Long id) {
+    public EnderecoResponse findById(Long id) {
         log.debug("Finding endereco by ID: {}", id);
         Endereco entity = findEntityById(id);
         return enderecoMapper.toResponse(entity);
     }
 
     @Override
-    public Page<EnderecoDTO.ListResponse> findAllByClienteId(Long clienteId, Pageable pageable) {
+    public Page<EnderecoListResponse> findAllByClienteId(Long clienteId, Pageable pageable) {
         log.debug("Finding all enderecos for cliente ID: {} with pagination", clienteId);
 
         // Verify cliente exists
@@ -93,7 +93,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
-    public List<EnderecoDTO.Response> findAllByClienteId(Long clienteId) {
+    public List<EnderecoResponse> findAllByClienteId(Long clienteId) {
         log.debug("Finding all enderecos for cliente ID: {}", clienteId);
 
         // Verify cliente exists
@@ -105,7 +105,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
-    public EnderecoDTO.Response findPrincipalByClienteId(Long clienteId) {
+    public EnderecoResponse findPrincipalByClienteId(Long clienteId) {
         log.debug("Finding principal endereco for cliente ID: {}", clienteId);
 
         findClienteById(clienteId);
@@ -129,7 +129,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     @Transactional
-    public EnderecoDTO.Response update(Long id, EnderecoDTO.UpdateRequest request) {
+    public EnderecoResponse update(Long id, EnderecoUpdateRequest request) {
         log.debug("Updating endereco with ID: {}", id);
 
         Endereco existing = findEntityById(id);
@@ -138,10 +138,10 @@ public class EnderecoServiceImpl implements EnderecoService {
         // Update fields
         enderecoMapper.updateEntity(request, existing);
 
-        // Handle principal flag
+        // Handle principal flag — delegate to model
         if (Boolean.TRUE.equals(request.principal())) {
-            ensurePrincipalUniqueness(clienteId, id);
-            existing.setPrincipal(true);
+            Cliente cliente = existing.getCliente();
+            cliente.setEnderecoPrincipal(existing);
         } else if (Boolean.FALSE.equals(request.principal()) && existing.getPrincipal()) {
             // Prevent removing principal if it's the only address
             long addressCount = enderecoRepository.countByClienteId(clienteId);
@@ -159,17 +159,17 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     @Transactional
-    public EnderecoDTO.Response setAsPrincipal(Long id) {
+    public EnderecoResponse setAsPrincipal(Long id) {
         log.debug("Setting endereco as principal: {}", id);
 
         Endereco entity = findEntityById(id);
-        Long clienteId = entity.getCliente().getId();
+        Cliente cliente = entity.getCliente();
 
-        ensurePrincipalUniqueness(clienteId, id);
-        entity.setPrincipal(true);
+        // Delegate to model — handles uniqueness (demotes current principal)
+        cliente.setEnderecoPrincipal(entity);
 
         Endereco updated = enderecoRepository.save(entity);
-        log.info("Set endereco {} as principal for cliente {}", id, clienteId);
+        log.info("Set endereco {} as principal for cliente {}", id, cliente.getId());
 
         return enderecoMapper.toResponse(updated);
     }
@@ -184,19 +184,13 @@ public class EnderecoServiceImpl implements EnderecoService {
         log.debug("Deleting endereco with ID: {}", id);
 
         Endereco entity = findEntityById(id);
-        Long clienteId = entity.getCliente().getId();
-        long addressCount = enderecoRepository.countByClienteId(clienteId);
+        Cliente cliente = entity.getCliente();
 
-        // Prevent deleting the last address
-        if (addressCount <= 1) {
-            throw new BusinessException(
-                    String.format("Cliente ID: %d deve ter pelo menos um endereço. Não é possível deletar o único endereço.", clienteId)
-            );
-        }
-
-        // If deleting principal, promote another address
-        if (entity.getPrincipal()) {
-            promoteNewPrincipal(clienteId, id);
+        // Delegate to model — enforces at-least-one and principal promotion rules
+        try {
+            cliente.removeEndereco(entity);
+        } catch (IllegalStateException e) {
+            throw new BusinessException(e.getMessage());
         }
 
         enderecoRepository.delete(entity);
@@ -247,39 +241,23 @@ public class EnderecoServiceImpl implements EnderecoService {
                 ));
     }
 
+    /**
+     * Delegates principal logic to the model's addEndereco method.
+     * The model ensures first address is principal and handles principal uniqueness.
+     */
     private void handlePrincipalLogic(Endereco entity, Long clienteId) {
+        // The model's addEndereco() already handles:
+        // - First address must be principal
+        // - If new address is principal, demotes others
+        // So we only need to handle the case where this is the first address
         long addressCount = enderecoRepository.countByClienteId(clienteId);
-        boolean isFirstAddress = addressCount == 0;
-
-        if (isFirstAddress) {
-            // First address MUST be principal
+        if (addressCount == 0) {
             entity.setPrincipal(true);
             log.debug("First address for cliente {}, setting as principal", clienteId);
         } else if (entity.getPrincipal()) {
-            // If explicitly set as principal in request
-            ensurePrincipalUniqueness(clienteId, null);
+            // Demote existing principal via model
+            Cliente cliente = findClienteById(clienteId);
+            cliente.getEnderecos().forEach(e -> e.setPrincipal(false));
         }
-    }
-
-    private void ensurePrincipalUniqueness(Long clienteId, Long excludeId) {
-        enderecoRepository.findByClienteIdAndPrincipalTrue(clienteId).ifPresent(principal -> {
-            if (!principal.getId().equals(excludeId)) {
-                throw new BusinessException(
-                        String.format("Cliente ID: %d já possui um endereço principal. Remova o principal atual antes de definir outro.", clienteId)
-                );
-            }
-        });
-    }
-
-    private void promoteNewPrincipal(Long clienteId, Long deletedEnderecoId) {
-
-        enderecoRepository.findByClienteId(clienteId).stream()
-                .filter(e -> !e.getId().equals(deletedEnderecoId))
-                .findFirst()
-                .ifPresent(newPrincipal -> {
-                    newPrincipal.setPrincipal(true);
-                    enderecoRepository.save(newPrincipal);
-                    log.info("Promoted endereco {} as new principal for cliente {}", newPrincipal.getId(), clienteId);
-                });
     }
 }

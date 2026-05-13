@@ -5,24 +5,34 @@ import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.model.Endereco;
 import com.desafio.estagio.model.enums.TipoCliente;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 @Component
 public class ClienteFactoryImpl implements ClienteFactory {
 
-    @Autowired
-    private EnderecoFactory enderecoFactory;
+    private final EnderecoFactory enderecoFactory;
+    private final Map<TipoCliente, Supplier<Cliente>> creators;
+
+    public ClienteFactoryImpl(EnderecoFactory enderecoFactory) {
+        this.enderecoFactory = enderecoFactory;
+        this.creators = new EnumMap<>(TipoCliente.class);
+        this.creators.put(TipoCliente.FISICA, ClienteFisico::new);
+        this.creators.put(TipoCliente.JURIDICA, ClienteJuridico::new);
+    }
 
     @Override
     public Cliente createCliente(TipoCliente tipo) {
-        Cliente cliente;
-
-        if (tipo == TipoCliente.FISICA) {
-            cliente = new ClienteFisico();
-        } else {
-            cliente = new ClienteJuridico();
+        Supplier<Cliente> creator = creators.get(tipo);
+        if (creator == null) {
+            throw new IllegalArgumentException("Unsupported client type: " + tipo);
         }
+
+        Cliente cliente = creator.get();
+        cliente.setTipo(tipo);
 
         // Cria com um endereço inicial
         Endereco enderecoInicial = enderecoFactory.createEndereco();
@@ -33,24 +43,12 @@ public class ClienteFactoryImpl implements ClienteFactory {
 
     @Override
     public Cliente createClienteFisico() {
-        ClienteFisico cliente = new ClienteFisico();
-
-        // Cria com um endereço inicial
-        Endereco enderecoInicial = enderecoFactory.createEndereco();
-        cliente.addEndereco(enderecoInicial);
-
-        return cliente;
+        return createCliente(TipoCliente.FISICA);
     }
 
     @Override
     public Cliente createClienteJuridico() {
-        ClienteJuridico cliente = new ClienteJuridico();
-
-        // Cria com um endereço inicial
-        Endereco enderecoInicial = enderecoFactory.createEndereco();
-        cliente.addEndereco(enderecoInicial);
-
-        return cliente;
+        return createCliente(TipoCliente.JURIDICA);
     }
 
     @Override
@@ -63,33 +61,18 @@ public class ClienteFactoryImpl implements ClienteFactory {
         clone.setEmail(source.getEmail());
         clone.setEstaAtivo(source.getEstaAtivo());
 
-        // Atributos específicos (com casting)
-        if (source.getTipo() == TipoCliente.FISICA) {
-            ClienteFisico sourceFisico = (ClienteFisico) source;
-            ClienteFisico cloneFisico = (ClienteFisico) clone;
-
-            cloneFisico.setNome(sourceFisico.getNome());
-            cloneFisico.setCpf(sourceFisico.getCpf());
-            cloneFisico.setRg(sourceFisico.getRg());
-            cloneFisico.setDataNascimento(sourceFisico.getDataNascimento());
-        } else {
-            ClienteJuridico sourceJuridico = (ClienteJuridico) source;
-            ClienteJuridico cloneJuridico = (ClienteJuridico) clone;
-
-            cloneJuridico.setRazaoSocial(sourceJuridico.getRazaoSocial());
-            cloneJuridico.setCnpj(sourceJuridico.getCnpj());
-            cloneJuridico.setInscricaoEstadual(sourceJuridico.getInscricaoEstadual());
-        }
+        // Atributos específicos (polymorphically)
+        clone.copyFrom(source);
 
         // Clona endereços (mantém a regra de pelo menos um)
         if (source.getEnderecos() != null && !source.getEnderecos().isEmpty()) {
+            // Clear the default address created by createCliente to have an exact clone of addresses
+            clone.getEnderecos().clear();
             for (Endereco end : source.getEnderecos()) {
                 clone.addEndereco(enderecoFactory.cloneEndereco(end));
             }
-        } else {
-            // Garante que o clone tenha pelo menos um endereço
-            clone.addEndereco(enderecoFactory.createEndereco());
         }
+        // else: createCliente already added one default address
 
         return clone;
     }

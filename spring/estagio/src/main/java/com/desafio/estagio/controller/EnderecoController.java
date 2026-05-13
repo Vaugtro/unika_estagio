@@ -1,6 +1,6 @@
 package com.desafio.estagio.controller;
 
-import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.dto.endereco.*;
 import com.desafio.estagio.service.EnderecoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,8 +36,8 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @PostMapping
-    public ResponseEntity<EnderecoDTO.Response> create(@Valid @RequestBody EnderecoDTO.CreateRequest request) {
-        EnderecoDTO.Response response = enderecoService.create(request);
+    public ResponseEntity<EnderecoResponse> create(@Valid @RequestBody EnderecoCreateRequest request) {
+        EnderecoResponse response = enderecoService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -48,10 +48,10 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @PostMapping("/clientes/{clienteId}")
-    public ResponseEntity<EnderecoDTO.Response> createForCliente(
+    public ResponseEntity<EnderecoResponse> createForCliente(
             @Parameter(description = "ID do cliente", required = true) @PathVariable Long clienteId,
-            @Valid @RequestBody EnderecoDTO.CreateRequest request) {
-        EnderecoDTO.Response response = enderecoService.createForCliente(clienteId, request);
+            @Valid @RequestBody EnderecoWithinClienteCreateRequest request) {
+        EnderecoResponse response = enderecoService.createForCliente(clienteId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -65,7 +65,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<EnderecoDTO.Response> findById(@PathVariable Long id) {
+    public ResponseEntity<EnderecoResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(enderecoService.findById(id));
     }
 
@@ -75,10 +75,10 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/clientes/{clienteId}")
-    public ResponseEntity<Page<EnderecoDTO.ListResponse>> findAllByClienteId(
+    public ResponseEntity<Page<EnderecoListResponse>> findAllByClienteId(
             @Parameter(description = "ID do cliente", required = true) @PathVariable Long clienteId,
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(enderecoService.findAllByClienteId(clienteId, pageable));
     }
 
@@ -88,7 +88,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Cliente ou endereço principal não encontrado")
     })
     @GetMapping("/clientes/{clienteId}/principal")
-    public ResponseEntity<EnderecoDTO.Response> findPrincipalByClienteId(@PathVariable Long clienteId) {
+    public ResponseEntity<EnderecoResponse> findPrincipalByClienteId(@PathVariable Long clienteId) {
         return ResponseEntity.ok(enderecoService.findPrincipalByClienteId(clienteId));
     }
 
@@ -110,9 +110,9 @@ public class EnderecoController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<EnderecoDTO.Response> update(
+    public ResponseEntity<EnderecoResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody EnderecoDTO.UpdateRequest request) {
+            @Valid @RequestBody EnderecoUpdateRequest request) {
         return ResponseEntity.ok(enderecoService.update(id, request));
     }
 
@@ -123,7 +123,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "400", description = "Endereço já é principal ou cliente sem endereços")
     })
     @PatchMapping("/{id}/principal")
-    public ResponseEntity<EnderecoDTO.Response> setAsPrincipal(@PathVariable Long id) {
+    public ResponseEntity<EnderecoResponse> setAsPrincipal(@PathVariable Long id) {
         return ResponseEntity.ok(enderecoService.setAsPrincipal(id));
     }
 

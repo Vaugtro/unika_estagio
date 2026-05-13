@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i data-lucide="users"></i> Clientes Físicos
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" wicket:id="tableContainer">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr wicket:id="rows">
+                        <td wicket:id="id">?</td>
+                        <td wicket:id="nome">?</td>
+                        <td wicket:id="cpf">?</td>
+                        <td wicket:id="email">?</td>
+                        <td><span wicket:id="status"></span></td>
+                        <td>
+                            <form wicket:id="editarBtnForm">
+                                <button class="btn btn-sm btn-warning" wicket:id="editarBtn">
+                                    <i data-lucide="edit-2"></i> Editar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <div wicket:id="navigator" class="d-flex justify-content-center"></div>
+        </div>
+    </div>
+</wicket:panel>
+</html>

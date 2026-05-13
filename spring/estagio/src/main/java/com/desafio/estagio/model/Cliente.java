@@ -179,4 +179,9 @@ public abstract class Cliente {
     public boolean hasEnderecoPrincipal() {
         return getEnderecoPrincipal() != null;
     }
+
+    /**
+     * Copies properties from another cliente
+     */
+    public abstract void copyFrom(Cliente source);
 }

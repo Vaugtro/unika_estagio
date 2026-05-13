@@ -37,11 +37,14 @@ public class ClienteFisico extends Cliente {
         }
     }
 
-    @PrePersist
-    @PreUpdate
-    private void validateCpf() {
-        if (cpf != null && cpf.length() != 11) {
-            throw new IllegalStateException("CPF must have exactly 11 digits");
+    @Override
+    public void copyFrom(Cliente source) {
+        if (!(source instanceof ClienteFisico s)) {
+            throw new IllegalArgumentException("Source must be an instance of ClienteFisico");
         }
+        this.setNome(s.getNome());
+        this.setCpf(s.getCpf());
+        this.setRg(s.getRg());
+        this.setDataNascimento(s.getDataNascimento());
     }
 }

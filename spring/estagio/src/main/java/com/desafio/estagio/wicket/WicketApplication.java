@@ -1,19 +1,14 @@
 package com.desafio.estagio.wicket;
 
-import com.desafio.estagio.wicket.pages.HomePage;
+import com.desafio.estagio.wicket.page.HomePage;
 import org.apache.wicket.Page;
-import org.apache.wicket.Session;
-import org.apache.wicket.core.util.objects.checker.CheckingObjectOutputStream;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.serialize.java.JavaSerializer;
 import org.apache.wicket.settings.ExceptionSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-
-import static org.apache.wicket.ThreadContext.getSession;
 
 @Component
 public class WicketApplication extends WebApplication {
@@ -28,43 +23,37 @@ public class WicketApplication extends WebApplication {
     protected void init() {
         super.init();
 
-        // Enable Spring injection
+        // Enable Spring injection (apenas uma vez)
         getComponentInstantiationListeners().add(
                 new SpringComponentInjector(this, applicationContext)
         );
 
-        // Mount the home page to root
+        // Mount pages
         mountPage("/", HomePage.class);
+        // Adicione outros mapeamentos aqui
+        // mountPage("/clientes-fisicos", ClientesFisicosPage.class);
 
-
-        getSessionStore().bind(null, null);
-        getSession().invalidate();
-
-        // Configure resource settings - IMPORTANT for finding HTML files
+        // Resource settings
         getResourceSettings().setUseDefaultOnMissingResource(true);
-        getResourceSettings().setResourcePollFrequency(null);
+        getResourceSettings().setResourcePollFrequency(Duration.seconds(2));
         getMarkupSettings().setStripWicketTags(false);
         getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
-        getResourceSettings().setResourcePollFrequency(Duration.seconds(2));
+
+        // Store settings
         getStoreSettings().setInmemoryCacheSize(0);
-        getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(0));
+        getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(1024));
 
-        // Debug
-        getComponentInstantiationListeners().add(
-                new SpringComponentInjector(this, applicationContext)
-        );
-
+        // Debug settings
         getDebugSettings().setDevelopmentUtilitiesEnabled(true);
-
         getDebugSettings().setAjaxDebugModeEnabled(true);
 
+        // Exception settings
         getExceptionSettings().setUnexpectedExceptionDisplay(
                 ExceptionSettings.SHOW_EXCEPTION_PAGE
         );
 
+        // Page settings
         getPageSettings().setVersionPagesByDefault(false);
-
-        getStoreSettings().setInmemoryCacheSize(0);
     }
 
     @Override

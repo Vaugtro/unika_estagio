@@ -1,8 +1,8 @@
 package com.desafio.estagio.exceptions.handlers;
 
 import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.exceptions.ConflictException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
-import com.desafio.estagio.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<APIErrorResponse> handleBusinessException(BusinessException ex) {
         log.warn("Business rule violation: {}", ex.getMessage());
-        APIErrorResponse error = buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+        APIErrorResponse error = buildErrorResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_CONTENT);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -49,11 +49,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<APIErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-        log.warn("User not found: {}", ex.getMessage());
-        APIErrorResponse error = buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<APIErrorResponse> handleConflict(ConflictException ex) {
+        log.warn("Conflict: {}", ex.getMessage());
+        APIErrorResponse error = buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

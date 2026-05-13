@@ -1,10 +1,10 @@
 package com.desafio.estagio.service.impl;
 
-import com.desafio.estagio.dto.ClienteJuridicoDTO;
+import com.desafio.estagio.dto.clientejuridico.*;
 import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.exceptions.ConflictException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteJuridicoMapper;
-import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.model.formatter.CNPJFormatter;
 import com.desafio.estagio.repository.ClienteJuridicoRepository;
@@ -29,7 +29,7 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
 
     @Override
     @Transactional
-    public ClienteJuridicoDTO.Response create(ClienteJuridicoDTO.CreateRequest request) {
+    public ClienteJuridicoResponse create(ClienteJuridicoCreateRequest request) {
         log.debug("Creating ClienteJuridico with CNPJ: {}", request.cnpj());
 
         validateCnpjUniqueness(request.cnpj());
@@ -43,7 +43,7 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
 
     @Override
     @Transactional
-    public ClienteJuridicoDTO.Response update(Long id, ClienteJuridicoDTO.UpdateRequest request) {
+    public ClienteJuridicoResponse update(Long id, ClienteJuridicoUpdateRequest request) {
         log.debug("Updating ClienteJuridico with ID: {}", id);
 
         ClienteJuridico model = findModelById(id);
@@ -108,32 +108,32 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
     }
 
     @Override
-    public ClienteJuridicoDTO.Response findById(Long id) {
+    public ClienteJuridicoResponse findById(Long id) {
         log.debug("Finding ClienteJuridico by ID: {}", id);
         return mapper.toResponse(findModelById(id));
     }
 
     @Override
-    public Page<ClienteJuridicoDTO.ListResponse> findAllActive(Pageable pageable) {
+    public Page<ClienteJuridicoListResponse> findAllActive(Pageable pageable) {
         log.debug("Finding all active ClienteJuridico with pagination");
         return repository.findByEstaAtivoTrue(pageable)
                 .map(mapper::toListResponse);
     }
 
     @Override
-    public Page<ClienteJuridicoDTO.ListResponse> findAll(Pageable pageable) {
+    public Page<ClienteJuridicoListResponse> findAll(Pageable pageable) {
         log.debug("Finding all ClienteJuridico with pagination");
         return repository.findAll(pageable)
                 .map(mapper::toListResponse);
     }
 
     @Override
-    public List<ClienteJuridicoDTO.Response> findAll() {
+    public List<ClienteJuridicoResponse> findAll() {
         return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public Page<ClienteJuridicoDTO.ReportResponse> findAllForReport(Pageable pageable) {
+    public Page<ClienteJuridicoReportResponse> findAllForReport(Pageable pageable) {
         log.debug("Finding all ClienteJuridico for report generation with pagination");
         return repository.findAll(pageable)
                 .map(mapper::toReportResponse);
@@ -145,11 +145,16 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
     }
 
     @Override
-    public ClienteJuridicoDTO.Response findByCnpj(String cnpj) {
+    public ClienteJuridicoResponse findByCnpj(String cnpj) {
         String cleanedCnpj = CNPJFormatter.unformat(cnpj);
         return repository.findByCnpj(cleanedCnpj)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("ClienteJuridico não encontrado com o CNPJ: " + cnpj));
+    }
+
+    @Override
+    public long count() {
+        return repository.count();
     }
 
     // ==================== Private Helper Methods ====================
@@ -168,7 +173,7 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
     private void validateCnpjUniqueness(String cnpj) {
         String cleanedCnpj = CNPJFormatter.unformat(cnpj);
         if (repository.existsByCnpj(cleanedCnpj)) {
-            throw new BusinessException("Já existe um cliente cadastrado com este CNPJ.");
+            throw new ConflictException("Já existe um cliente cadastrado com este CNPJ.");
         }
     }
 }

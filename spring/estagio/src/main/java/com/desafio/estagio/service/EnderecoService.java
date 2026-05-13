@@ -1,6 +1,6 @@
 package com.desafio.estagio.service;
 
-import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.dto.endereco.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +17,7 @@ public interface EnderecoService {
      * @param request the address data
      * @return the created address
      */
-    EnderecoDTO.Response create(EnderecoDTO.CreateRequest request);
+    EnderecoResponse create(EnderecoCreateRequest request);
 
     /**
      * Creates a new address for a specific client
@@ -25,7 +25,7 @@ public interface EnderecoService {
      * @param request the address data
      * @return the created address
      */
-    EnderecoDTO.Response createForCliente(Long clienteId, EnderecoDTO.CreateRequest request);
+    EnderecoResponse createForCliente(Long clienteId, EnderecoWithinClienteCreateRequest request);
 
     // =====================================================
     // READ OPERATIONS
@@ -37,7 +37,7 @@ public interface EnderecoService {
      * @return the address
      * @throws com.desafio.estagio.exceptions.ResourceNotFoundException if address not found
      */
-    EnderecoDTO.Response findById(Long id);
+    EnderecoResponse findById(Long id);
 
     /**
      * Finds all addresses for a client (with pagination)
@@ -45,14 +45,14 @@ public interface EnderecoService {
      * @param pageable pagination parameters
      * @return a page of addresses
      */
-    Page<EnderecoDTO.ListResponse> findAllByClienteId(Long clienteId, Pageable pageable);
+    Page<EnderecoListResponse> findAllByClienteId(Long clienteId, Pageable pageable);
 
     /**
      * Finds all addresses for a client (without pagination - use with caution)
      * @param clienteId the client ID
      * @return list of all addresses for the client
      */
-    List<EnderecoDTO.Response> findAllByClienteId(Long clienteId);
+    List<EnderecoResponse> findAllByClienteId(Long clienteId);
 
     /**
      * Finds the principal address for a client
@@ -60,7 +60,7 @@ public interface EnderecoService {
      * @return the principal address
      * @throws com.desafio.estagio.exceptions.ResourceNotFoundException if no principal address found
      */
-    EnderecoDTO.Response findPrincipalByClienteId(Long clienteId);
+    EnderecoResponse findPrincipalByClienteId(Long clienteId);
 
     /**
      * Counts how many addresses a client has
@@ -79,14 +79,14 @@ public interface EnderecoService {
      * @param request the updated address data
      * @return the updated address
      */
-    EnderecoDTO.Response update(Long id, EnderecoDTO.UpdateRequest request);
+    EnderecoResponse update(Long id, EnderecoUpdateRequest request);
 
     /**
      * Sets an address as the principal for its client
      * @param id the address ID
      * @return the updated address
      */
-    EnderecoDTO.Response setAsPrincipal(Long id);
+    EnderecoResponse setAsPrincipal(Long id);
 
     // =====================================================
     // DELETE OPERATIONS

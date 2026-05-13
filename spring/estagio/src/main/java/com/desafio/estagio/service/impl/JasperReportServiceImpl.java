@@ -1,13 +1,9 @@
 package com.desafio.estagio.service.impl;
 
-import com.desafio.estagio.dto.ClienteFisicoDTO;
-import com.desafio.estagio.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.exceptions.BusinessException;
-import com.desafio.estagio.model.ClienteFisico;
-import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.model.enums.TipoCliente;
-import com.desafio.estagio.repository.ClienteFisicoRepository;
-import com.desafio.estagio.repository.ClienteJuridicoRepository;
+import com.desafio.estagio.service.ClienteFisicoService;
+import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.JasperReportService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
@@ -19,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,17 +26,22 @@ public class JasperReportServiceImpl implements JasperReportService {
     private static final int DEFAULT_PAGE_SIZE = 1000;
 
     private final Map<String, JasperReport> jasperReports;
-    private final ClienteFisicoRepository fisicoRepository;
-    private final ClienteJuridicoRepository juridicoRepository;
+    private final ClienteFisicoService fisicoService;
+    private final ClienteJuridicoService juridicoService;
+    private final Map<TipoCliente, Function<Pageable, Page<?>>> reportDataProviders;
 
     public JasperReportServiceImpl(
             Map<String, JasperReport> jasperReports,
-            ClienteFisicoRepository fisicoRepository,
-            ClienteJuridicoRepository juridicoRepository) {
+            ClienteFisicoService fisicoService,
+            ClienteJuridicoService juridicoService) {
 
         this.jasperReports = jasperReports;
-        this.fisicoRepository = fisicoRepository;
-        this.juridicoRepository = juridicoRepository;
+        this.fisicoService = fisicoService;
+        this.juridicoService = juridicoService;
+
+        this.reportDataProviders = new EnumMap<>(TipoCliente.class);
+        this.reportDataProviders.put(TipoCliente.FISICA, pageable -> fisicoService.findAllForReport(pageable));
+        this.reportDataProviders.put(TipoCliente.JURIDICA, pageable -> juridicoService.findAllForReport(pageable));
     }
 
     // =====================================================
@@ -48,37 +50,29 @@ public class JasperReportServiceImpl implements JasperReportService {
 
     @Override
     public byte[] generateForFisicos(String reportName, Map<String, Object> parameters) {
-        log.debug("Generating report '{}' for all physical clients", reportName);
-
-        List<ClienteFisicoDTO.ReportResponse> data = fisicoRepository.findAll().stream()
-                .map(this::toFisicoReportResponse)
-                .collect(Collectors.toList());
-
-        return generatePdfWithClientType(reportName, data, parameters, TipoCliente.FISICA);
+        return generateForClientes(reportName, parameters, TipoCliente.FISICA);
     }
 
     @Override
     public byte[] generateForJuridicos(String reportName, Map<String, Object> parameters) {
-        log.debug("Generating report '{}' for all legal clients", reportName);
-
-        List<ClienteJuridicoDTO.ReportResponse> data = juridicoRepository.findAll().stream()
-                .map(this::toJuridicoReportResponse)
-                .collect(Collectors.toList());
-
-        return generatePdfWithClientType(reportName, data, parameters, TipoCliente.JURIDICA);
+        return generateForClientes(reportName, parameters, TipoCliente.JURIDICA);
     }
 
     @Override
     public byte[] generateForClientes(String reportName, Map<String, Object> parameters, TipoCliente type) {
         log.debug("Generating report '{}' for client type: {}", reportName, type);
 
-        if (type == TipoCliente.FISICA) {
-            return generateForFisicos(reportName, parameters);
-        } else if (type == TipoCliente.JURIDICA) {
-            return generateForJuridicos(reportName, parameters);
+        Function<Pageable, Page<?>> provider = reportDataProviders.get(type);
+        if (provider == null) {
+            throw new BusinessException("Tipo de cliente não suportado: " + type);
         }
 
-        throw new BusinessException("Tipo de cliente não suportado: " + type);
+        // Load all data via service layer (which uses MapStruct mappers)
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        Page<?> page = provider.apply(pageable);
+        List<?> data = page.getContent();
+
+        return generatePdfWithClientType(reportName, data, parameters, type);
     }
 
     // =====================================================
@@ -90,9 +84,7 @@ public class JasperReportServiceImpl implements JasperReportService {
         log.debug("Generating report '{}' for physical clients with pagination: page={}, size={}",
                 reportName, pageable.getPageNumber(), pageable.getPageSize());
 
-        Page<ClienteFisicoDTO.ReportResponse> page = fisicoRepository.findAll(pageable)
-                .map(this::toFisicoReportResponse);
-
+        Page<?> page = fisicoService.findAllForReport(pageable);
         return generatePdfWithPagination(reportName, page, parameters, TipoCliente.FISICA);
     }
 
@@ -101,9 +93,7 @@ public class JasperReportServiceImpl implements JasperReportService {
         log.debug("Generating report '{}' for legal clients with pagination: page={}, size={}",
                 reportName, pageable.getPageNumber(), pageable.getPageSize());
 
-        Page<ClienteJuridicoDTO.ReportResponse> page = juridicoRepository.findAll(pageable)
-                .map(this::toJuridicoReportResponse);
-
+        Page<?> page = juridicoService.findAllForReport(pageable);
         return generatePdfWithPagination(reportName, page, parameters, TipoCliente.JURIDICA);
     }
 
@@ -236,74 +226,93 @@ public class JasperReportServiceImpl implements JasperReportService {
         return generatePdfWithPagination(reportName, page, mergedParams);
     }
 
-    // =====================================================
-    // MAPPING METHODS (can be replaced with MapStruct later)
-    // =====================================================
-
-    private ClienteFisicoDTO.ReportResponse toFisicoReportResponse(ClienteFisico entity) {
-        if (entity == null) return null;
-
-        return ClienteFisicoDTO.ReportResponse.builder()
-                .id(entity.getId())
-                .nome(entity.getNome())
-                .cpf(entity.getCpf())
-                .rg(entity.getRg())
-                .email(entity.getEmail())
-                .dataNascimento(entity.getDataNascimento())
-                .estaAtivo(entity.getEstaAtivo())
-                .createdAt(entity.getCreatedAt() != null ? entity.getCreatedAt().toLocalDate() : null)
-                .build();
-    }
-
-    private ClienteJuridicoDTO.ReportResponse toJuridicoReportResponse(ClienteJuridico entity) {
-        if (entity == null) return null;
-
-        return ClienteJuridicoDTO.ReportResponse.builder()
-                .id(entity.getId())
-                .razaoSocial(entity.getRazaoSocial())
-                .cnpj(entity.getCnpj())
-                .inscricaoEstadual(entity.getInscricaoEstadual())
-                .email(entity.getEmail())
-                .dataCriacaoEmpresa(entity.getDataCriacaoEmpresa())
-                .estaAtivo(entity.getEstaAtivo())
-                .createdAt(entity.getCreatedAt() != null ? entity.getCreatedAt() : null)
-                .build();
-    }
 
     // =====================================================
     // OPTIONAL: STREAMING FOR VERY LARGE DATASETS
     // =====================================================
 
     /**
-     * Generates report using streaming for very large datasets (>10,000 records)
-     * This method loads data in chunks to avoid memory issues
+     * Generates report using true incremental streaming for very large datasets (>10,000 records).
+     * Uses JRDataSource to feed data to JasperReports page-by-page, avoiding loading all records into memory.
      */
     public byte[] generateWithStreaming(String reportName, TipoCliente type, Map<String, Object> parameters) {
         log.debug("Generating report '{}' with streaming for type: {}", reportName, type);
 
-        List<Object> allData = new ArrayList<>();
-        int pageNumber = 0;
-        Pageable pageable = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE);
-        Page<?> page;
+        Function<Pageable, Page<?>> provider = reportDataProviders.get(type);
+        if (provider == null) {
+            throw new BusinessException("Tipo de cliente não suportado: " + type);
+        }
 
-        do {
-            if (type == TipoCliente.FISICA) {
-                page = fisicoRepository.findAll(pageable).map(this::toFisicoReportResponse);
-            } else {
-                page = juridicoRepository.findAll(pageable).map(this::toJuridicoReportResponse);
+        // Use a paginated JRDataSource that loads chunks on demand
+        JRDataSource streamingDataSource = new PaginatedJRDataSource(provider, DEFAULT_PAGE_SIZE);
+
+        Map<String, Object> mergedParams = parameters != null ? new HashMap<>(parameters) : new HashMap<>();
+        mergedParams.put("TIPO_CLIENTE", type.name());
+        mergedParams.put("DATA_EMISSAO", new Date());
+
+        return generatePdfWithDataSource(reportName, streamingDataSource, mergedParams);
+    }
+
+    /**
+     * A JRDataSource that loads data in pages on demand, keeping only one page in memory at a time.
+     */
+    private static class PaginatedJRDataSource implements JRDataSource {
+
+        private final Function<Pageable, Page<?>> provider;
+        private final int pageSize;
+        private int currentPageNumber = 0;
+        private List<?> currentPageData = Collections.emptyList();
+        private int indexInPage = -1;
+        private boolean exhausted = false;
+        private Object currentBean;
+
+        PaginatedJRDataSource(Function<Pageable, Page<?>> provider, int pageSize) {
+            this.provider = provider;
+            this.pageSize = pageSize;
+        }
+
+        @Override
+        public boolean next() {
+            indexInPage++;
+            if (indexInPage < currentPageData.size()) {
+                currentBean = currentPageData.get(indexInPage);
+                return true;
             }
+            if (exhausted) {
+                return false;
+            }
+            // Load next page
+            Page<?> page = provider.apply(PageRequest.of(currentPageNumber, pageSize));
+            currentPageData = page.getContent();
+            currentPageNumber++;
+            exhausted = !page.hasNext();
+            indexInPage = 0;
+            if (currentPageData.isEmpty()) {
+                return false;
+            }
+            currentBean = currentPageData.get(0);
+            return true;
+        }
 
-            allData.addAll(page.getContent());
-            pageNumber++;
-            pageable = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE);
-
-            log.debug("Loaded page {} with {} records. Total: {}",
-                    pageNumber, page.getNumberOfElements(), allData.size());
-
-        } while (page.hasNext());
-
-        log.info("Streaming complete. Loaded {} records for report: {}", allData.size(), reportName);
-
-        return generatePdfWithClientType(reportName, allData, parameters, type);
+        @Override
+        public Object getFieldValue(JRField jrField) throws JRException {
+            if (currentBean == null) {
+                return null;
+            }
+            try {
+                var field = currentBean.getClass().getDeclaredField(jrField.getName());
+                field.setAccessible(true);
+                return field.get(currentBean);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                // Try getter method
+                try {
+                    String getterName = "get" + Character.toUpperCase(jrField.getName().charAt(0)) + jrField.getName().substring(1);
+                    var method = currentBean.getClass().getMethod(getterName);
+                    return method.invoke(currentBean);
+                } catch (Exception ex) {
+                    throw new JRException("Cannot get field value: " + jrField.getName(), ex);
+                }
+            }
+        }
     }
 }

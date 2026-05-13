@@ -70,4 +70,15 @@ public class ClienteJuridico extends Cliente {
             throw new IllegalStateException("Empresa deve ter pelo menos 1 ano de existência");
         }
     }
+
+    @Override
+    public void copyFrom(Cliente source) {
+        if (!(source instanceof ClienteJuridico s)) {
+            throw new IllegalArgumentException("Source must be an instance of ClienteJuridico");
+        }
+        this.setRazaoSocial(s.getRazaoSocial());
+        this.setCnpj(s.getCnpj());
+        this.setInscricaoEstadual(s.getInscricaoEstadual());
+        this.setDataCriacaoEmpresa(s.getDataCriacaoEmpresa());
+    }
 }

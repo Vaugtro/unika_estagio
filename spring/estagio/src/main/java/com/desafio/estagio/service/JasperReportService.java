@@ -1,7 +1,5 @@
 package com.desafio.estagio.service;
 
-import com.desafio.estagio.dto.ClienteFisicoDTO;
-import com.desafio.estagio.dto.ClienteJuridicoDTO;
 import com.desafio.estagio.model.enums.TipoCliente;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
