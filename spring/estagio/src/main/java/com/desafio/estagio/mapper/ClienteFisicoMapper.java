@@ -1,6 +1,6 @@
 package com.desafio.estagio.mapper;
 
-import com.desafio.estagio.dto.ClienteFisicoDTO;
+import com.desafio.estagio.dto.clientefisico.*;
 import com.desafio.estagio.model.ClienteFisico;
 import org.mapstruct.*;
 
@@ -13,11 +13,11 @@ public interface ClienteFisicoMapper {
 
     // Response mappings
     @Mapping(target = "tipo", constant = "FISICA")
-    ClienteFisicoDTO.Response toResponse(ClienteFisico entity);
+    ClienteFisicoResponse toResponse(ClienteFisico entity);
 
-    ClienteFisicoDTO.ListResponse toListResponse(ClienteFisico entity);
+    ClienteFisicoListResponse toListResponse(ClienteFisico entity);
 
-    ClienteFisicoDTO.ReportResponse toReportResponse(ClienteFisico entity);
+    ClienteFisicoReportResponse toReportResponse(ClienteFisico entity);
 
     // Create mapping
     @Mapping(target = "id", ignore = true)
@@ -26,7 +26,7 @@ public interface ClienteFisicoMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "estaAtivo", constant = "true")
     @Mapping(target = "enderecos", ignore = true) // Handled by EnderecoService
-    ClienteFisico toEntity(ClienteFisicoDTO.CreateRequest request);
+    ClienteFisico toEntity(ClienteFisicoCreateRequest request);
 
     // Update mapping (partial update)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -39,5 +39,5 @@ public interface ClienteFisicoMapper {
     @Mapping(target = "estaAtivo", ignore = true)
     @Mapping(target = "enderecos", ignore = true) // Handled by EnderecoService
     @Mapping(target = "enderecoPrincipal", ignore = true)
-    void updateEntity(ClienteFisicoDTO.UpdateRequest request, @MappingTarget ClienteFisico entity);
+    void updateEntity(ClienteFisicoUpdateRequest request, @MappingTarget ClienteFisico entity);
 }

@@ -53,6 +53,7 @@ dependencies {
 	implementation 'org.apache.wicket:wicket-datetime:7.17.0'
 	implementation 'org.apache.wicket:wicket-request:7.17.0'
 	implementation 'org.apache.wicket:wicket-util:7.17.0'
+	implementation 'org.apache.wicket:wicket-devutils:7.17.0'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'

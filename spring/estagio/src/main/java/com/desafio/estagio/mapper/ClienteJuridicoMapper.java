@@ -1,6 +1,6 @@
 package com.desafio.estagio.mapper;
 
-import com.desafio.estagio.dto.ClienteJuridicoDTO;
+import com.desafio.estagio.dto.clientejuridico.*;
 import com.desafio.estagio.model.ClienteJuridico;
 import org.mapstruct.*;
 
@@ -13,12 +13,12 @@ public interface ClienteJuridicoMapper {
 
     // Response mappings
     @Mapping(target = "tipo", constant = "JURIDICA")
-    ClienteJuridicoDTO.Response toResponse(ClienteJuridico entity);
+    ClienteJuridicoResponse toResponse(ClienteJuridico entity);
 
-    ClienteJuridicoDTO.ListResponse toListResponse(ClienteJuridico entity);
+    ClienteJuridicoListResponse toListResponse(ClienteJuridico entity);
 
     @Mapping(target = "tipo", constant = "JURIDICA")
-    ClienteJuridicoDTO.ReportResponse toReportResponse(ClienteJuridico entity);
+    ClienteJuridicoReportResponse toReportResponse(ClienteJuridico entity);
 
     // Create mapping
     @Mapping(target = "id", ignore = true)
@@ -27,7 +27,7 @@ public interface ClienteJuridicoMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "estaAtivo", constant = "true")
     @Mapping(target = "enderecos", ignore = true) // Handled by EnderecoService
-    ClienteJuridico toEntity(ClienteJuridicoDTO.CreateRequest request);
+    ClienteJuridico toEntity(ClienteJuridicoCreateRequest request);
 
     // Update mapping (partial update)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -39,5 +39,5 @@ public interface ClienteJuridicoMapper {
     @Mapping(target = "estaAtivo", ignore = true)
     @Mapping(target = "enderecos", ignore = true) // Handled by EnderecoService
     @Mapping(target = "enderecoPrincipal", ignore = true)
-    void updateEntity(ClienteJuridicoDTO.UpdateRequest request, @MappingTarget ClienteJuridico entity);
+    void updateEntity(ClienteJuridicoUpdateRequest request, @MappingTarget ClienteJuridico entity);
 }

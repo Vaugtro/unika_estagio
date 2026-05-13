@@ -1,6 +1,6 @@
 package com.desafio.estagio.mapper;
 
-import com.desafio.estagio.dto.EnderecoDTO;
+import com.desafio.estagio.dto.endereco.*;
 import com.desafio.estagio.model.Endereco;
 import org.mapstruct.*;
 
@@ -13,10 +13,10 @@ public interface EnderecoMapper {
     // ========== Response Mappings ==========
 
     @Mapping(target = "clienteId", source = "cliente.id")
-    EnderecoDTO.Response toResponse(Endereco entity);
+    EnderecoResponse toResponse(Endereco entity);
 
     @Mapping(target = "clienteId", source = "cliente.id")
-    EnderecoDTO.ListResponse toListResponse(Endereco entity);
+    EnderecoListResponse toListResponse(Endereco entity);
 
     // ========== Create Mappings ==========
 
@@ -25,7 +25,14 @@ public interface EnderecoMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "principal", defaultValue = "false")
-    Endereco toEntity(EnderecoDTO.CreateRequest request);
+    Endereco toEntity(EnderecoCreateRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "cliente", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "principal", defaultValue = "false")
+    Endereco toEntity(EnderecoWithinClienteCreateRequest request);
 
     // ========== Update Mappings ==========
 
@@ -34,5 +41,5 @@ public interface EnderecoMapper {
     @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateEntity(EnderecoDTO.UpdateRequest request, @MappingTarget Endereco entity);
+    void updateEntity(EnderecoUpdateRequest request, @MappingTarget Endereco entity);
 }

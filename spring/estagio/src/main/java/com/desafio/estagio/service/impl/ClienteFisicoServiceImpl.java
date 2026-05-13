@@ -1,7 +1,8 @@
 package com.desafio.estagio.service.impl;
 
-import com.desafio.estagio.dto.ClienteFisicoDTO;
+import com.desafio.estagio.dto.clientefisico.*;
 import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.exceptions.ConflictException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteFisicoMapper;
 import com.desafio.estagio.model.ClienteFisico;
@@ -28,7 +29,7 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
     @Override
     @Transactional
-    public ClienteFisicoDTO.Response create(ClienteFisicoDTO.CreateRequest request) {
+    public ClienteFisicoResponse create(ClienteFisicoCreateRequest request) {
         log.debug("Creating ClienteFisico with CPF: {}", request.cpf());
 
         // Validation
@@ -62,7 +63,7 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
     @Override
     @Transactional
-    public ClienteFisicoDTO.Response update(Long id, ClienteFisicoDTO.UpdateRequest request) {
+    public ClienteFisicoResponse update(Long id, ClienteFisicoUpdateRequest request) {
         log.debug("Updating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
 
@@ -77,11 +78,6 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     @Override
     @Transactional
     public void delete(Long id) {
-        // Validate cliente has addresses before soft delete
-        if (!enderecoService.hasAtLeastOneAddress(id)) {
-            throw new BusinessException("Não é possível deletar um cliente sem endereços.");
-        }
-
         // Soft delete
         this.inactivate(id);
     }
@@ -122,12 +118,6 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     }
 
     @Override
-    public ClienteFisico findEntityById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + id));
-    }
-
-    @Override
     @Transactional
     public void hardDelete(Long id) {
         log.debug("Hard deleting ClienteFisico with ID: {}", id);
@@ -137,24 +127,24 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     }
 
     @Override
-    public ClienteFisicoDTO.Response findById(Long id) {
+    public ClienteFisicoResponse findById(Long id) {
         return mapper.toResponse(findModelById(id));
     }
 
     @Override
-    public Page<ClienteFisicoDTO.ListResponse> findAllActive(Pageable pageable) {
+    public Page<ClienteFisicoListResponse> findAllActive(Pageable pageable) {
         return repository.findByEstaAtivoTrue(pageable)
                 .map(mapper::toListResponse);
     }
 
     @Override
-    public Page<ClienteFisicoDTO.ListResponse> findAll(Pageable pageable) {
+    public Page<ClienteFisicoListResponse> findAll(Pageable pageable) {
         return repository.findAll(pageable)
                 .map(mapper::toListResponse);
     }
 
     @Override
-    public Page<ClienteFisicoDTO.ReportResponse> findAllForReport(Pageable pageable) {
+    public Page<ClienteFisicoReportResponse> findAllForReport(Pageable pageable) {
         return repository.findAll(pageable)
                 .map(mapper::toReportResponse);
     }
@@ -165,7 +155,7 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     }
 
     @Override
-    public ClienteFisicoDTO.Response findByCpf(String cpf) {
+    public ClienteFisicoResponse findByCpf(String cpf) {
         return repository.findByCpf(cpf)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o CPF: " + cpf));
@@ -186,28 +176,8 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
     private void validateCpfUniqueness(String cpf) {
         if (repository.existsByCpf(cpf)) {
-            throw new BusinessException("Já existe um cliente cadastrado com este CPF.");
+            throw new ConflictException("Já existe um cliente cadastrado com este CPF.");
         }
     }
 
-    private void validateAtLeastOneAddress(ClienteFisicoDTO.UpdateRequest request, Long clienteId) {
-        if (request.enderecos() != null && request.enderecos().isEmpty()) {
-            // Check if cliente has existing addresses
-            if (!enderecoService.hasAtLeastOneAddress(clienteId)) {
-                throw new BusinessException("Cliente deve ter pelo menos um endereço cadastrado.");
-            }
-        }
-
-        if (request.enderecos() != null) {
-            boolean hasPrincipal = request.enderecos().stream()
-                    .anyMatch(endereco -> Boolean.TRUE.equals(endereco.principal()));
-
-            if (!hasPrincipal && enderecoService.hasAtLeastOneAddress(clienteId)) {
-                // Check if there's already a principal address
-                if (!enderecoService.hasPrincipalAddress(clienteId)) {
-                    throw new BusinessException("Cliente deve ter pelo menos um endereço marcado como principal.");
-                }
-            }
-        }
-    }
 }
