@@ -5,11 +5,4 @@ import org.apache.wicket.devutils.DevUtilsPage;
 import java.io.Serial;
 
 public abstract class BasePage extends DevUtilsPage {
-    @Serial
-    private static final long serialVersionUID = 1L;
-    public BasePage() {
-        super();
-
-        this.setOutputMarkupId(true);
-    }
 }

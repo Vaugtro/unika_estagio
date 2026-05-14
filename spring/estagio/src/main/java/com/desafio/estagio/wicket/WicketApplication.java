@@ -10,7 +10,10 @@ import org.apache.wicket.request.Url;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.settings.ExceptionSettings;
+import org.apache.wicket.settings.JavaScriptLibrarySettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.time.Duration;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +36,22 @@ public class WicketApplication extends WebApplication {
         getComponentInstantiationListeners().add(
                 new SpringComponentInjector(this, applicationContext)
         );
+
+        JavaScriptLibrarySettings jsSettings = getJavaScriptLibrarySettings();
+
+        // Criar referência para seu jQuery 3.7.1
+        ResourceReference jqueryReference = new UrlResourceReference(
+                org.apache.wicket.request.Url.parse("https://code.jquery.com/jquery-3.7.1.min.js")
+        );
+
+        // Set para usar seu jQuery
+        jsSettings.setJQueryReference(jqueryReference);
+
+        // IMPORTANTE: Desabilitar a compressão de JavaScript para evitar conflitos
+        getResourceSettings().setUseMinifiedResources(false);
+
+        // Configurações adicionais para compatibilidade
+        getRequestCycleSettings().setTimeout(Duration.valueOf(60000)); // 60 seconds timeout
 
         // Mount pages
         mountPage("/", HomePage.class);
@@ -57,7 +76,7 @@ public class WicketApplication extends WebApplication {
         );
 
         // Page settings
-        //getPageSettings().setVersionPagesByDefault(false);
+        getPageSettings().setVersionPagesByDefault(false);
     }
 
     @Override

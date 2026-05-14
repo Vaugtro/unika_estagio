@@ -3,6 +3,7 @@ package com.desafio.estagio.wicket.page;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
 import com.desafio.estagio.wicket.page.abs.BasePage;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -11,8 +12,6 @@ import java.io.Serial;
 
 public class HomePage extends BasePage {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
     private static final String CONTAINER_ID = "currentPanel";
     private final WebMarkupContainer panelContainer;
 
@@ -28,20 +27,37 @@ public class HomePage extends BasePage {
         showFisicosPanel(null);
 
         // Then add buttons
-        add(new AjaxLink<Void>("btnFisicos") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                showFisicosPanel(target);
-            }
-        });
+        Component BtnFisicos = new BtnFisicos("btnFisicos");
+        add(BtnFisicos);
 
-        add(new AjaxLink<Void>("btnJuridicos") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                showJuridicosPanel(target);
-            }
-        });
+        Component BtnJuridicos = new BtnJuridicos("btnJuridicos");
+        add(BtnJuridicos);
     }
+
+    class BtnFisicos extends AjaxLink<Void> {
+        @Serial
+        private static final long serialVersionUID = 1L;
+        public BtnFisicos(String id) {
+            super("btnFisicos");
+        }
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+            showFisicosPanel(target);
+        }
+    }
+
+    class BtnJuridicos extends AjaxLink<Void> {
+        @Serial
+        private static final long serialVersionUID = 1L;
+        public BtnJuridicos(String id) {
+            super("btnJuridicos");
+        }
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+            showJuridicosPanel(target);
+        }
+    }
+
 
     private void showFisicosPanel(AjaxRequestTarget target) {
         ClientesFisicosTablePanel panel = new ClientesFisicosTablePanel(CONTAINER_ID);
