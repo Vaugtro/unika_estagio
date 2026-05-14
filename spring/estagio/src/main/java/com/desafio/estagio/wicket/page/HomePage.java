@@ -7,39 +7,45 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
+import java.io.Serial;
+
 public class HomePage extends BasePage {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private static final String CONTAINER_ID = "currentPanel";
     private final WebMarkupContainer panelContainer;
 
     public HomePage() {
-        // Create container with FIXED ID
+        super();
+
+        // Create the container FIRST
         panelContainer = new WebMarkupContainer("panelContainer");
         panelContainer.setOutputMarkupId(true);
-        panelContainer.setMarkupId("panelContainer");
         add(panelContainer);
 
+        // Add default panel
         showFisicosPanel(null);
 
+        // Then add buttons
         add(new AjaxLink<Void>("btnFisicos") {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 showFisicosPanel(target);
             }
         });
-        /*
-        // Button for Jurídicos
+
         add(new AjaxLink<Void>("btnJuridicos") {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 showJuridicosPanel(target);
             }
-        });*/
+        });
     }
 
     private void showFisicosPanel(AjaxRequestTarget target) {
-        ClientesFisicosTablePanel panel = new ClientesFisicosTablePanel("currentPanel");
+        ClientesFisicosTablePanel panel = new ClientesFisicosTablePanel(CONTAINER_ID);
         panel.setOutputMarkupId(true);
-        panel.setMarkupId("currentPanel");
         panelContainer.addOrReplace(panel);
 
         if (target != null) {
@@ -47,16 +53,15 @@ public class HomePage extends BasePage {
             target.appendJavaScript("lucide.createIcons();");
         }
     }
-    /*
+
     private void showJuridicosPanel(AjaxRequestTarget target) {
-        ClientesJuridicosTablePanel panel = new ClientesJuridicosTablePanel("currentPanel");
+        ClientesJuridicosTablePanel panel = new ClientesJuridicosTablePanel(CONTAINER_ID);
         panel.setOutputMarkupId(true);
-        panel.setMarkupId("currentPanel");
         panelContainer.addOrReplace(panel);
 
         if (target != null) {
             target.add(panelContainer);
             target.appendJavaScript("lucide.createIcons();");
         }
-    }*/
+    }
 }

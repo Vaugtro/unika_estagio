@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org" lang="pt-BR">
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
     <div class="card shadow-sm">
         <div class="card-header bg-white">
             <h5 class="mb-0">
-                <i data-lucide="users"></i> Clientes Físicos
+                <i data-lucide="users"></i> Clientes Juridico
             </h5>
         </div>
 
@@ -27,6 +27,13 @@
                         <td wicket:id="cnpj">?</td>
                         <td wicket:id="email">?</td>
                         <td><span wicket:id="status"></span></td>
+                        <td>
+                            <form wicket:id="editarBtnForm">
+                                <button class="btn btn-sm btn-warning" wicket:id="editarBtn">
+                                    <i data-lucide="edit-2"></i> Editar
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -34,7 +41,7 @@
         </div>
 
         <div class="card-footer bg-white">
-            <div wicket:id="navigator" class="d-flex justify-content-center"></div>
+            <div class="d-flex justify-content-center" wicket:id="navigator"></div>
         </div>
     </div>
 </wicket:panel>

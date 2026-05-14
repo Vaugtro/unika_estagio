@@ -14,6 +14,7 @@ public interface EnderecoService {
 
     /**
      * Creates a new address
+     *
      * @param request the address data
      * @return the created address
      */
@@ -21,8 +22,9 @@ public interface EnderecoService {
 
     /**
      * Creates a new address for a specific client
+     *
      * @param clienteId the client ID
-     * @param request the address data
+     * @param request   the address data
      * @return the created address
      */
     EnderecoResponse createForCliente(Long clienteId, EnderecoWithinClienteCreateRequest request);
@@ -33,6 +35,7 @@ public interface EnderecoService {
 
     /**
      * Finds an address by its ID
+     *
      * @param id the address ID
      * @return the address
      * @throws com.desafio.estagio.exceptions.ResourceNotFoundException if address not found
@@ -41,14 +44,16 @@ public interface EnderecoService {
 
     /**
      * Finds all addresses for a client (with pagination)
+     *
      * @param clienteId the client ID
-     * @param pageable pagination parameters
+     * @param pageable  pagination parameters
      * @return a page of addresses
      */
     Page<EnderecoListResponse> findAllByClienteId(Long clienteId, Pageable pageable);
 
     /**
      * Finds all addresses for a client (without pagination - use with caution)
+     *
      * @param clienteId the client ID
      * @return list of all addresses for the client
      */
@@ -56,6 +61,7 @@ public interface EnderecoService {
 
     /**
      * Finds the principal address for a client
+     *
      * @param clienteId the client ID
      * @return the principal address
      * @throws com.desafio.estagio.exceptions.ResourceNotFoundException if no principal address found
@@ -64,6 +70,7 @@ public interface EnderecoService {
 
     /**
      * Counts how many addresses a client has
+     *
      * @param clienteId the client ID
      * @return the number of addresses
      */
@@ -75,7 +82,8 @@ public interface EnderecoService {
 
     /**
      * Updates an existing address
-     * @param id the address ID
+     *
+     * @param id      the address ID
      * @param request the updated address data
      * @return the updated address
      */
@@ -83,6 +91,7 @@ public interface EnderecoService {
 
     /**
      * Sets an address as the principal for its client
+     *
      * @param id the address ID
      * @return the updated address
      */
@@ -94,6 +103,7 @@ public interface EnderecoService {
 
     /**
      * Deletes an address (soft delete)
+     *
      * @param id the address ID
      * @throws com.desafio.estagio.exceptions.BusinessException if it's the last address of the client
      */
@@ -101,6 +111,7 @@ public interface EnderecoService {
 
     /**
      * Deletes all addresses for a client
+     *
      * @param clienteId the client ID
      */
     void deleteAllByClienteId(Long clienteId);
@@ -111,6 +122,7 @@ public interface EnderecoService {
 
     /**
      * Checks if a client has at least one address
+     *
      * @param clienteId the client ID
      * @return true if client has at least one address
      */
@@ -118,6 +130,7 @@ public interface EnderecoService {
 
     /**
      * Checks if a client has a principal address
+     *
      * @param clienteId the client ID
      * @return true if client has a principal address
      */

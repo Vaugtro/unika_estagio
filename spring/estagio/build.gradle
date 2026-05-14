@@ -54,6 +54,8 @@ dependencies {
 	implementation 'org.apache.wicket:wicket-request:7.17.0'
 	implementation 'org.apache.wicket:wicket-util:7.17.0'
 	implementation 'org.apache.wicket:wicket-devutils:7.17.0'
+	implementation 'org.apache.wicket:wicket-ioc:7.17.0'
+	implementation "org.objenesis:objenesis:3.5"
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -107,6 +109,31 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Applies to all Java execution tasks (including standard run and debug via Gradle)
+tasks.withType(JavaExec).configureEach {
+	jvmArgs(
+			'--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+			'--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+	)
+}
+
+// Specifically for Spring Boot's run task
+tasks.named('bootRun') {
+	jvmArgs(
+			'--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+			'--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+	)
+}
+
+// For your test suites
+tasks.named('test') {
+	useJUnitPlatform()
+	jvmArgs(
+			'--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+			'--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+	)
 }
 
 // Configuração do Flyway

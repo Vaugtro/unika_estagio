@@ -1,8 +1,15 @@
 package com.desafio.estagio.wicket.page.abs;
 
 import org.apache.wicket.devutils.DevUtilsPage;
-import org.apache.wicket.markup.html.WebPage;
+
+import java.io.Serial;
 
 public abstract class BasePage extends DevUtilsPage {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    public BasePage() {
+        super();
 
+        this.setOutputMarkupId(true);
+    }
 }

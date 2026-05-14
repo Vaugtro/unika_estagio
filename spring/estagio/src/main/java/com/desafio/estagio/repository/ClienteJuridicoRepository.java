@@ -1,4 +1,5 @@
 package com.desafio.estagio.repository;
+
 import com.desafio.estagio.model.ClienteJuridico;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

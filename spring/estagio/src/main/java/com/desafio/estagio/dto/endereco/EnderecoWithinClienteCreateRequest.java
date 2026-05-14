@@ -55,10 +55,11 @@ public record EnderecoWithinClienteCreateRequest(
         String complemento
 ) implements Serializable {
 
-        public EnderecoWithinClienteCreateRequest {
-                cep = CEPSanitizer.sanitize(cep);
-                telefone = TelefoneSanitizer.sanitize(telefone);
-        }
     @Serial
     private static final long serialVersionUID = 1L;
+
+    public EnderecoWithinClienteCreateRequest {
+        cep = CEPSanitizer.sanitize(cep);
+        telefone = TelefoneSanitizer.sanitize(telefone);
+    }
 }

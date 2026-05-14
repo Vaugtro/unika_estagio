@@ -1,15 +1,22 @@
 package com.desafio.estagio.wicket;
 
 import com.desafio.estagio.wicket.page.HomePage;
+import lombok.Getter;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Url;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.settings.ExceptionSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 public class WicketApplication extends WebApplication {
 
@@ -23,15 +30,12 @@ public class WicketApplication extends WebApplication {
     protected void init() {
         super.init();
 
-        // Enable Spring injection (apenas uma vez)
         getComponentInstantiationListeners().add(
                 new SpringComponentInjector(this, applicationContext)
         );
 
         // Mount pages
         mountPage("/", HomePage.class);
-        // Adicione outros mapeamentos aqui
-        // mountPage("/clientes-fisicos", ClientesFisicosPage.class);
 
         // Resource settings
         getResourceSettings().setUseDefaultOnMissingResource(true);
@@ -40,8 +44,8 @@ public class WicketApplication extends WebApplication {
         getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
 
         // Store settings
-        getStoreSettings().setInmemoryCacheSize(0);
-        getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(1024));
+        //getStoreSettings().setInmemoryCacheSize(0);
+        //getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(1024));
 
         // Debug settings
         getDebugSettings().setDevelopmentUtilitiesEnabled(true);
@@ -53,7 +57,7 @@ public class WicketApplication extends WebApplication {
         );
 
         // Page settings
-        getPageSettings().setVersionPagesByDefault(false);
+        //getPageSettings().setVersionPagesByDefault(false);
     }
 
     @Override

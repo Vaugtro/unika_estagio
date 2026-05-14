@@ -113,6 +113,12 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
         return mapper.toResponse(findModelById(id));
     }
 
+
+    @Override
+    public ClienteJuridicoListResponse findByIdList(Long id) {
+        return mapper.toListResponse(findModelById(id));
+    }
+
     @Override
     public Page<ClienteJuridicoListResponse> findAllActive(Pageable pageable) {
         log.debug("Finding all active ClienteJuridico with pagination");

@@ -26,7 +26,8 @@ public interface ClienteJuridicoMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "estaAtivo", constant = "true")
-    @Mapping(target = "enderecos", ignore = true) // Handled by EnderecoService
+    @Mapping(target = "enderecos", ignore = true)
+    // Handled by EnderecoService
     ClienteJuridico toEntity(ClienteJuridicoCreateRequest request);
 
     // Update mapping (partial update)

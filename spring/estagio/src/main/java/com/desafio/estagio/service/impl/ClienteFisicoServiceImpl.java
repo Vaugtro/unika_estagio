@@ -132,6 +132,11 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     }
 
     @Override
+    public ClienteFisicoListResponse findByIdList(Long id) {
+        return mapper.toListResponse(findModelById(id));
+    }
+
+    @Override
     public Page<ClienteFisicoListResponse> findAllActive(Pageable pageable) {
         return repository.findByEstaAtivoTrue(pageable)
                 .map(mapper::toListResponse);

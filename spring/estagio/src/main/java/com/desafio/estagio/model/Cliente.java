@@ -115,6 +115,20 @@ public abstract class Cliente {
     }
 
     /**
+     * Obtém o endereço principal
+     */
+    public Endereco getEnderecoPrincipal() {
+        if (enderecos == null || enderecos.isEmpty()) {
+            return null;
+        }
+
+        return enderecos.stream()
+                .filter(Endereco::isPrincipal)
+                .findFirst()
+                .orElse(enderecos.get(0));
+    }
+
+    /**
      * Define um endereço como principal
      */
     public void setEnderecoPrincipal(Endereco endereco) {
@@ -131,20 +145,6 @@ public abstract class Cliente {
 
         // Define o novo endereço como principal
         endereco.setPrincipal(true);
-    }
-
-    /**
-     * Obtém o endereço principal
-     */
-    public Endereco getEnderecoPrincipal() {
-        if (enderecos == null || enderecos.isEmpty()) {
-            return null;
-        }
-
-        return enderecos.stream()
-                .filter(Endereco::isPrincipal)
-                .findFirst()
-                .orElse(enderecos.get(0));
     }
 
     /**

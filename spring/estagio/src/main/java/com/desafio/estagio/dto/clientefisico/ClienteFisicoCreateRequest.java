@@ -79,12 +79,12 @@ public record ClienteFisicoCreateRequest(
         List<EnderecoWithinClienteCreateRequest> enderecos
 ) implements Serializable {
 
-        public ClienteFisicoCreateRequest {
-                if (cpf != null) {
-                        cpf = cpf.replaceAll("\\D", "");
-                }
-        }
-
     @Serial
     private static final long serialVersionUID = 1L;
+
+    public ClienteFisicoCreateRequest {
+        if (cpf != null) {
+            cpf = cpf.replaceAll("\\D", "");
+        }
+    }
 }
