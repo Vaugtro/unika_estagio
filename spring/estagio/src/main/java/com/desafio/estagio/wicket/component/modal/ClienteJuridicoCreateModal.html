@@ -1,0 +1,54 @@
+<wicket:panel>
+    <style>
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+        .feedbackPanelERROR {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+    <!-- Include jQuery Mask -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('[data-mask]').each(function() {
+                $(this).mask($(this).data('mask'));
+            });
+        });
+    </script>
+    <div class="modal fade" id="createClienteJuridicoModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form wicket:id="form">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Novo Cliente Jurídico</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" wicket:id="cnpj" class="form-control"/>
+                            <span wicket:id="cnpjFeedback" class="invalid-feedback"></span>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" wicket:id="razaoSocial" class="form-control"/>
+                            <span wicket:id="razaoSocialFeedback" class="invalid-feedback"></span>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" wicket:id="inscricaoEstadual" class="form-control"/>
+                            <span wicket:id="ieFeedback" class="invalid-feedback"></span>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" wicket:id="email" class="form-control"/>
+                            <span wicket:id="emailFeedback" class="invalid-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" wicket:id="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</wicket:panel>
