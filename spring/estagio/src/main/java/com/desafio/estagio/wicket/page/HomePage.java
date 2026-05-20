@@ -1,5 +1,6 @@
 package com.desafio.estagio.wicket.page;
 
+import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
 import com.desafio.estagio.wicket.page.abs.BasePage;
@@ -7,6 +8,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
 
@@ -14,6 +16,9 @@ public class HomePage extends BasePage {
 
     private static final String CONTAINER_ID = "currentPanel";
     private final WebMarkupContainer panelContainer;
+
+    @SpringBean
+    private ClienteFisicoService clienteFisicoService;
 
     public HomePage() {
         super();
@@ -27,40 +32,26 @@ public class HomePage extends BasePage {
         showFisicosPanel(null);
 
         // Then add buttons
-        Component BtnFisicos = new BtnFisicos("btnFisicos");
-        add(BtnFisicos);
+        add(new AjaxLink<Void>("btnFisicos") {
 
-        Component BtnJuridicos = new BtnJuridicos("btnJuridicos");
-        add(BtnJuridicos);
-    }
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                showFisicosPanel(target);
+            }
+        });
 
-    class BtnFisicos extends AjaxLink<Void> {
-        @Serial
-        private static final long serialVersionUID = 1L;
-        public BtnFisicos(String id) {
-            super("btnFisicos");
-        }
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-            showFisicosPanel(target);
-        }
-    }
+        add(new AjaxLink<Void>("btnJuridicos") {
 
-    class BtnJuridicos extends AjaxLink<Void> {
-        @Serial
-        private static final long serialVersionUID = 1L;
-        public BtnJuridicos(String id) {
-            super("btnJuridicos");
-        }
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-            showJuridicosPanel(target);
-        }
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                showJuridicosPanel(target);
+            }
+        });
     }
 
 
     private void showFisicosPanel(AjaxRequestTarget target) {
-        ClientesFisicosTablePanel panel = new ClientesFisicosTablePanel(CONTAINER_ID);
+        ClientesFisicosTablePanel panel = new ClientesFisicosTablePanel(CONTAINER_ID, clienteFisicoService);
         panel.setOutputMarkupId(true);
         panelContainer.addOrReplace(panel);
 

@@ -37,21 +37,8 @@ public record ClienteFisicoUpdateRequest(
         @Size(max = 150, message = "E-mail deve ter no máximo 150 caracteres")
         String email,
 
-        @Schema(
-                description = "Data de nascimento",
-                example = "1990-05-15"
-        )
-        @PastOrPresent(message = "Data de nascimento não pode ser no futuro")
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate dataNascimento,
-
-        @Schema(
-                description = "Lista de endereços do cliente",
-                minContains = 1
-        )
-        @NotEmpty(message = "O cliente deve ter pelo menos um endereço")
-        @Valid
-        List<EnderecoUpdateRequest> enderecos
+        @Schema(description = "Status do cliente", example = "true")
+        Boolean estaAtivo
 ) implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

@@ -35,6 +35,7 @@ public interface ClienteFisicoMapper {
     @Mapping(target = "tipo", ignore = true)
     @Mapping(target = "rg", ignore = true)
     @Mapping(target = "cpf", ignore = true) // CPF should never change
+    @Mapping(target = "dataNascimento", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "estaAtivo", ignore = true)

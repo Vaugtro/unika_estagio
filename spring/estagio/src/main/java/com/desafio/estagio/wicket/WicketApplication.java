@@ -76,7 +76,7 @@ public class WicketApplication extends WebApplication {
         );
 
         // Page settings
-        getPageSettings().setVersionPagesByDefault(false);
+        getPageSettings().setVersionPagesByDefault(true);
     }
 
     @Override
