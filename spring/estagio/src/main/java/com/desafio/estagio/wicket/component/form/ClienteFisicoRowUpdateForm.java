@@ -4,24 +4,25 @@ import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
-import com.desafio.estagio.wicket.models.ClienteFisicoModel;
+import com.desafio.estagio.wicket.model.ClienteFisicoModel;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.jspecify.annotations.NonNull;
-import org.apache.wicket.feedback.FeedbackMessage;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
 
 import java.io.Serial;
 
@@ -35,8 +36,6 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoModel> {
 
     @Getter
     private final Item<ClienteFisicoListResponse> parentItem;
-
-    private final AjaxButton editButton;
 
     public ClienteFisicoRowUpdateForm(String id, ClienteFisicoListResponse cliente, Item<ClienteFisicoListResponse> parentItem) {
         super(id);
@@ -96,7 +95,16 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoModel> {
         this.add(toggleBtn);
 
         // Store reference to edit button
-        editButton = new AjaxButton("editarBtn", this) {
+        // Force refresh: explicitly clear model or re-bind
+        // Refresh the entire form to update all components
+        // Re-attach any JavaScript initializations if needed
+        // Show validation errors as toast
+        AjaxButton editButton = getEditButton();
+        this.add(editButton);
+    }
+
+    private @NonNull AjaxButton getEditButton() {
+        AjaxButton editButton = new AjaxButton("editarBtn", this) {
             @Serial
             private static final long serialVersionUID = 1L;
 
@@ -117,10 +125,10 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoModel> {
                     );
 
                     clienteFisicoService.update(model.getId(), updateRequest);
-                    
+
                     // Force refresh: explicitly clear model or re-bind
                     form.setDefaultModelObject(new ClienteFisicoModel(clienteFisicoService.findById(model.getId())));
-                    
+
                     showToast(target, "success", "Cliente atualizado com sucesso!");
 
                     // Refresh the entire form to update all components
@@ -160,7 +168,7 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoModel> {
 
         editButton.setOutputMarkupId(true);
         editButton.setDefaultFormProcessing(true);
-        this.add(editButton);
+        return editButton;
     }
 
     void showToast(AjaxRequestTarget target, String type, String message) {

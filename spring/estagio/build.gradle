@@ -54,6 +54,7 @@ dependencies {
 	implementation 'org.apache.wicket:wicket-util:7.17.0'
 	implementation 'org.apache.wicket:wicket-devutils:7.17.0'
 	implementation 'org.apache.wicket:wicket-ioc:7.17.0'
+	implementation 'org.apache.wicket:wicket-bean-validation:7.17.0'
 	implementation "org.objenesis:objenesis:3.5"
 
 	// Lombok
