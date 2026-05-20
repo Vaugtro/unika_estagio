@@ -7,10 +7,10 @@ import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteFisicoMapper;
 import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.repository.ClienteFisicoRepository;
+import com.desafio.estagio.service.AbstractClienteService;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.EnderecoService;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -18,32 +18,35 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @Slf4j
-@RequiredArgsConstructor
+@Service
 @Transactional(readOnly = true)
-public class ClienteFisicoServiceImpl implements ClienteFisicoService {
+public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisico, ClienteFisicoRepository>
+        implements ClienteFisicoService {
 
-    private final ClienteFisicoRepository repository;
     private final ClienteFisicoMapper mapper;
-
     private final EnderecoService enderecoService;
     private final EntityManager entityManager;
+
+    public ClienteFisicoServiceImpl(ClienteFisicoRepository repository, ClienteFisicoMapper mapper,
+                                    EnderecoService enderecoService, EntityManager entityManager) {
+        super(repository);
+        this.mapper = mapper;
+        this.enderecoService = enderecoService;
+        this.entityManager = entityManager;
+    }
 
     @Override
     @Transactional
     public ClienteFisicoResponse create(ClienteFisicoCreateRequest request) {
         log.debug("Creating ClienteFisico with CPF: {}", request.cpf());
 
-        // Validation
         validateCpfUniqueness(request.cpf());
 
-        // Ensure at least one address is provided
         if (request.enderecos() == null || request.enderecos().isEmpty()) {
             throw new BusinessException("Cliente deve ter pelo menos um endereço cadastrado.");
         }
 
-        // Ensure at least one principal address
         boolean hasPrincipal = request.enderecos().stream()
                 .anyMatch(endereco -> Boolean.TRUE.equals(endereco.principal()));
 
@@ -51,14 +54,11 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
             throw new BusinessException("Cliente deve ter pelo menos um endereço marcado como principal.");
         }
 
-        // Create cliente
         ClienteFisico model = mapper.toEntity(request);
         ClienteFisico savedModel = repository.save(model);
 
-        // Create endereços
-        request.enderecos().forEach(enderecoRequest -> {
-            enderecoService.createForCliente(savedModel.getId(), enderecoRequest);
-        });
+        request.enderecos().forEach(enderecoRequest ->
+                enderecoService.createForCliente(savedModel.getId(), enderecoRequest));
 
         log.info("Created ClienteFisico with ID: {} and {} endereços", savedModel.getId(), request.enderecos().size());
         return mapper.toResponse(savedModel);
@@ -69,20 +69,11 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     public ClienteFisicoResponse update(Long id, ClienteFisicoUpdateRequest request) {
         log.debug("Updating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
-
-        ensureClientIsActive(model);
+        ensureIsActive(model);
         mapper.updateEntity(request, model);
-
         ClienteFisico updatedModel = repository.save(model);
         log.info("Updated ClienteFisico with ID: {}", id);
         return mapper.toResponse(updatedModel);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        // Soft delete
-        this.inactivate(id);
     }
 
     @Override
@@ -91,11 +82,9 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     public void activate(Long id) {
         log.debug("Activating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
-
         if (Boolean.TRUE.equals(model.getEstaAtivo())) {
             throw new BusinessException("Este cliente já está ativo.");
         }
-
         model.setEstaAtivo(true);
         repository.save(model);
         entityManager.flush();
@@ -109,30 +98,14 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     public void inactivate(Long id) {
         log.debug("Inactivating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
-
         if (Boolean.FALSE.equals(model.getEstaAtivo())) {
             throw new BusinessException("Este cliente já está inativo.");
         }
-
         model.setEstaAtivo(false);
         repository.save(model);
         entityManager.flush();
         entityManager.detach(model);
         log.info("Inactivated ClienteFisico with ID: {}", id);
-    }
-
-    @Override
-    public long count() {
-        return repository.count();
-    }
-
-    @Override
-    @Transactional
-    public void hardDelete(Long id) {
-        log.debug("Hard deleting ClienteFisico with ID: {}", id);
-        ClienteFisico model = findModelById(id);
-        repository.delete(model);
-        log.info("Hard deleted ClienteFisico with ID: {}", id);
     }
 
     @Override
@@ -175,20 +148,13 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     public ClienteFisicoResponse findByCpf(String cpf) {
         return repository.findByCpf(cpf)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o CPF: " + cpf));
+                .orElseThrow(() -> new com.desafio.estagio.exceptions.ResourceNotFoundException(
+                        "Cliente não encontrado com o CPF: " + cpf));
     }
 
-    // ==================== Private Helper Methods ====================
-
-    private ClienteFisico findModelById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
-    }
-
-    private void ensureClientIsActive(ClienteFisico model) {
-        if (Boolean.FALSE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Operação não permitida: O cliente está inativo.");
-        }
+    @Override
+    protected String getEntityName() {
+        return "ClienteFisico";
     }
 
     private void validateCpfUniqueness(String cpf) {
@@ -196,5 +162,4 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
             throw new ConflictException("Já existe um cliente cadastrado com este CPF.");
         }
     }
-
 }

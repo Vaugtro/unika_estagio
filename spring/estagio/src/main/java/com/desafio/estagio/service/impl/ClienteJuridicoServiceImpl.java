@@ -1,15 +1,13 @@
 package com.desafio.estagio.service.impl;
 
 import com.desafio.estagio.dto.clientejuridico.*;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.exceptions.ConflictException;
-import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteJuridicoMapper;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.model.formatter.CNPJFormatter;
 import com.desafio.estagio.repository.ClienteJuridicoRepository;
+import com.desafio.estagio.service.AbstractClienteService;
 import com.desafio.estagio.service.ClienteJuridicoService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,18 +18,21 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
+public class ClienteJuridicoServiceImpl extends AbstractClienteService<ClienteJuridico, ClienteJuridicoRepository>
+        implements ClienteJuridicoService {
 
-    private final ClienteJuridicoRepository repository;
     private final ClienteJuridicoMapper mapper;
+
+    public ClienteJuridicoServiceImpl(ClienteJuridicoRepository repository, ClienteJuridicoMapper mapper) {
+        super(repository);
+        this.mapper = mapper;
+    }
 
     @Override
     @Transactional
     public ClienteJuridicoResponse create(ClienteJuridicoCreateRequest request) {
         log.debug("Creating ClienteJuridico with CNPJ: {}", request.cnpj());
-
         validateCnpjUniqueness(request.cnpj());
 
         ClienteJuridico model = mapper.toEntity(request);
@@ -45,66 +46,12 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
     @Transactional
     public ClienteJuridicoResponse update(Long id, ClienteJuridicoUpdateRequest request) {
         log.debug("Updating ClienteJuridico with ID: {}", id);
-
         ClienteJuridico model = findModelById(id);
-        ensureClientIsActive(model);
-
+        ensureIsActive(model);
         mapper.updateEntity(request, model);
-
         ClienteJuridico updatedModel = repository.save(model);
         log.info("Updated ClienteJuridico with ID: {}", id);
-
         return mapper.toResponse(updatedModel);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        // Standardizing delete to use the inactivate logic
-        this.inactivate(id);
-    }
-
-    @Override
-    @Transactional
-    public void hardDelete(Long id) {
-        log.debug("Hard deleting ClienteFisico with ID: {}", id);
-        ClienteJuridico model = findModelById(id);
-        repository.delete(model);
-        log.info("Hard deleted ClienteFisico with ID: {}", id);
-    }
-
-    @Override
-    @Transactional
-    public void activate(Long id) {
-        log.debug("Activating ClienteJuridico with ID: {}", id);
-
-        ClienteJuridico model = findModelById(id);
-
-        if (Boolean.TRUE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Este cliente já está ativo.");
-        }
-
-        model.setEstaAtivo(true);
-        repository.save(model);
-
-        log.info("Activated ClienteJuridico with ID: {}", id);
-    }
-
-    @Override
-    @Transactional
-    public void inactivate(Long id) {
-        log.debug("Inactivating ClienteJuridico with ID: {}", id);
-
-        ClienteJuridico model = findModelById(id);
-
-        if (Boolean.FALSE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Este cliente já está inativo.");
-        }
-
-        model.setEstaAtivo(false);
-        repository.save(model);
-
-        log.info("Inactivated ClienteJuridico with ID: {}", id);
     }
 
     @Override
@@ -113,7 +60,6 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
         return mapper.toResponse(findModelById(id));
     }
 
-
     @Override
     public ClienteJuridicoListResponse findByIdList(Long id) {
         return mapper.toListResponse(findModelById(id));
@@ -121,14 +67,12 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
 
     @Override
     public Page<ClienteJuridicoListResponse> findAllActive(Pageable pageable) {
-        log.debug("Finding all active ClienteJuridico with pagination");
         return repository.findByEstaAtivoTrue(pageable)
                 .map(mapper::toListResponse);
     }
 
     @Override
     public Page<ClienteJuridicoListResponse> findAll(Pageable pageable) {
-        log.debug("Finding all ClienteJuridico with pagination");
         return repository.findAll(pageable)
                 .map(mapper::toListResponse);
     }
@@ -140,7 +84,6 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
 
     @Override
     public Page<ClienteJuridicoReportResponse> findAllForReport(Pageable pageable) {
-        log.debug("Finding all ClienteJuridico for report generation with pagination");
         return repository.findAll(pageable)
                 .map(mapper::toReportResponse);
     }
@@ -155,25 +98,13 @@ public class ClienteJuridicoServiceImpl implements ClienteJuridicoService {
         String cleanedCnpj = CNPJFormatter.unformat(cnpj);
         return repository.findByCnpj(cleanedCnpj)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new ResourceNotFoundException("ClienteJuridico não encontrado com o CNPJ: " + cnpj));
+                .orElseThrow(() -> new com.desafio.estagio.exceptions.ResourceNotFoundException(
+                        "ClienteJuridico não encontrado com o CNPJ: " + cnpj));
     }
 
     @Override
-    public long count() {
-        return repository.count();
-    }
-
-    // ==================== Private Helper Methods ====================
-
-    private ClienteJuridico findModelById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("ClienteJuridico não encontrado com o ID: " + id));
-    }
-
-    private void ensureClientIsActive(ClienteJuridico model) {
-        if (Boolean.FALSE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Operação não permitida: O cliente está inativo.");
-        }
+    protected String getEntityName() {
+        return "ClienteJuridico";
     }
 
     private void validateCnpjUniqueness(String cnpj) {
