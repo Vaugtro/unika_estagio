@@ -73,9 +73,6 @@ public abstract class AbstractClienteService<T extends Cliente, R extends JpaRep
         return repository.count();
     }
 
-    public Page<T> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
 
     protected abstract String getEntityName();
 }

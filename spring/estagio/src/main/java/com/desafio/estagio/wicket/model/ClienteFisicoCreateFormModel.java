@@ -5,7 +5,8 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,5 +18,6 @@ public class ClienteFisicoCreateFormModel implements Serializable {
     private String nome;
     private String rg;
     private String email;
-    private LocalDate dataNascimento;
+    private String dataNascimento;
+    private List<EnderecoCreateFormModel> enderecos = new ArrayList<>();
 }

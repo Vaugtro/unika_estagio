@@ -9,8 +9,18 @@
             font-size: 0.8rem;
             margin-top: 0.25rem;
         }
+        .endereco-table th {
+            white-space: nowrap;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .endereco-table td {
+            vertical-align: middle;
+        }
+        .endereco-table .form-control-sm {
+            font-size: 0.8rem;
+        }
     </style>
-    <!-- Include jQuery Mask -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -20,7 +30,7 @@
         });
     </script>
     <div class="modal fade" id="createClienteJuridicoModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <form wicket:id="form">
                     <div class="modal-header">
@@ -42,6 +52,51 @@
                         <div class="mb-3">
                             <input type="text" wicket:id="email" class="form-control"/>
                             <span wicket:id="emailFeedback" class="invalid-feedback"></span>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" wicket:id="dataCriacaoEmpresa" class="form-control" placeholder="YYYY-MM-DD"/>
+                            <span wicket:id="dataCriacaoEmpresaFeedback" class="invalid-feedback"></span>
+                        </div>
+                        <hr>
+                        <h6>Endereços</h6>
+                        <div wicket:id="enderecosContainer">
+                            <table class="table table-bordered table-sm mb-2 endereco-table">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Logradouro</th>
+                                        <th>Nº</th>
+                                        <th>Bairro</th>
+                                        <th>CEP</th>
+                                        <th>Cidade</th>
+                                        <th>UF</th>
+                                        <th>Telefone</th>
+                                        <th>Complemento</th>
+                                        <th>Principal</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr wicket:id="enderecosRow">
+                                        <td><input type="text" wicket:id="logradouro" class="form-control form-control-sm"/></td>
+                                        <td><input type="text" wicket:id="numero" class="form-control form-control-sm" style="width:80px"/></td>
+                                        <td><input type="text" wicket:id="bairro" class="form-control form-control-sm"/></td>
+                                        <td><input type="text" wicket:id="cep" class="form-control form-control-sm" style="width:120px"/></td>
+                                        <td><input type="text" wicket:id="cidade" class="form-control form-control-sm"/></td>
+                                        <td><input type="text" wicket:id="estado" class="form-control form-control-sm" style="width:60px"/></td>
+                                        <td><input type="text" wicket:id="telefone" class="form-control form-control-sm" style="width:140px"/></td>
+                                        <td><input type="text" wicket:id="complemento" class="form-control form-control-sm"/></td>
+                                        <td class="text-center"><input type="checkbox" wicket:id="principal"/></td>
+                                        <td class="text-center">
+                                            <a class="btn btn-sm btn-outline-danger" wicket:id="removeBtn">
+                                                <i data-lucide="trash-2"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="btn btn-sm btn-outline-secondary" wicket:id="addEndereco">
+                                <i data-lucide="plus"></i> Adicionar Endereço
+                            </a>
                         </div>
                     </div>
                     <div class="modal-footer">
