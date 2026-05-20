@@ -9,8 +9,10 @@ import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.repository.ClienteFisicoRepository;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.EnderecoService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     private final ClienteFisicoMapper mapper;
 
     private final EnderecoService enderecoService;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -84,6 +87,7 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "clientes", key = "#id")
     public void activate(Long id) {
         log.debug("Activating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
@@ -94,11 +98,14 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
         model.setEstaAtivo(true);
         repository.save(model);
+        entityManager.flush();
+        entityManager.detach(model);
         log.info("Activated ClienteFisico with ID: {}", id);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "clientes", key = "#id")
     public void inactivate(Long id) {
         log.debug("Inactivating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
@@ -109,6 +116,8 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
 
         model.setEstaAtivo(false);
         repository.save(model);
+        entityManager.flush();
+        entityManager.detach(model);
         log.info("Inactivated ClienteFisico with ID: {}", id);
     }
 
@@ -127,11 +136,14 @@ public class ClienteFisicoServiceImpl implements ClienteFisicoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ClienteFisicoResponse findById(Long id) {
+        entityManager.clear();
         return mapper.toResponse(findModelById(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ClienteFisicoListResponse findByIdList(Long id) {
         return mapper.toListResponse(findModelById(id));
     }

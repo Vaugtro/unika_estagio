@@ -25,6 +25,16 @@
                 font-family: 'Inter', sans-serif;
                 background-color: #f8f9fa;
             }
+            .toast-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+
+            .toast {
+                opacity: 1 !important;
+            }
         </style>
         <script>
             // Initialize Lucide icons
@@ -38,6 +48,78 @@
                     lucide.createIcons();
                 });
             }
+
+            window.showToast = function(type, message) {
+                console.log('Showing toast:', type, message);
+
+                // Get or create toast container
+                let toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.className = 'toast-container';
+                    document.body.appendChild(toastContainer);
+                }
+
+                // Determine header color and icon based on type
+                let headerClass = '';
+                let icon = '';
+                switch(type) {
+                    case 'success':
+                        headerClass = 'bg-success text-white';
+                        icon = '✅';
+                        break;
+                    case 'error':
+                        headerClass = 'bg-danger text-white';
+                        icon = '❌';
+                        break;
+                    case 'warning':
+                        headerClass = 'bg-warning text-dark';
+                        icon = '⚠️';
+                        break;
+                    case 'info':
+                        headerClass = 'bg-info text-white';
+                        icon = 'ℹ️';
+                        break;
+                    default:
+                        headerClass = 'bg-secondary text-white';
+                        icon = '📢';
+                }
+
+                // Create unique ID for this toast
+                const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+                // Create toast HTML
+                const toastHtml = `
+                    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                        <div class="toast-header ${headerClass}">
+                            <strong class="me-auto">${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+
+                // Add toast to container
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+
+                // Initialize and show the toast
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement, {
+                    animation: true,
+                    autohide: true,
+                    delay: 5000
+                });
+
+                // Remove toast from DOM after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastElement.remove();
+                });
+
+                toast.show();
+            };
         </script>
     </wicket:head>
 </head>

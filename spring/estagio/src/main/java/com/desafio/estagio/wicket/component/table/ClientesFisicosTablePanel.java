@@ -35,6 +35,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @SpringBean
     private final ClienteFisicoService clienteFisicoService;
 
     public ClientesFisicosTablePanel(String id, ClienteFisicoService clienteFisicoService) {

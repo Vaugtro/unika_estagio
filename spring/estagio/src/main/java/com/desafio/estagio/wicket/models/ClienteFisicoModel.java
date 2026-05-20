@@ -5,6 +5,7 @@ import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
 import com.desafio.estagio.model.ClienteFisico;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,7 +19,7 @@ public class ClienteFisicoModel extends ClienteFisico implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public ClienteFisicoModel(ClienteFisicoListResponse cliente) {
+    public ClienteFisicoModel(ClienteFisicoResponse cliente) {
         this.setId(cliente.id());
         this.setNome(cliente.nome());
         this.setCpf(cliente.cpf());
@@ -26,3 +27,5 @@ public class ClienteFisicoModel extends ClienteFisico implements Serializable {
         this.setEstaAtivo(cliente.estaAtivo());
     }
 }
+
+

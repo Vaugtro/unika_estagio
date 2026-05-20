@@ -4,7 +4,6 @@ import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
 import com.desafio.estagio.service.ClienteFisicoService;
-import com.desafio.estagio.wicket.component.btn.EditarClienteFisicoBtn;
 import com.desafio.estagio.wicket.component.form.ClienteFisicoRowUpdateForm;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -19,6 +18,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
 
@@ -27,16 +27,21 @@ public class ClienteFisicoDataView extends DataView<ClienteFisicoListResponse> {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @SpringBean
+    ClienteFisicoService clienteFisicoService;
+
     public ClienteFisicoDataView(String id, IDataProvider<ClienteFisicoListResponse> dataProvider, long itemsPerPage) {
         super(id, dataProvider, itemsPerPage);
+        setOutputMarkupId(true);
     }
 
     @Override
     protected void populateItem(Item<ClienteFisicoListResponse> item) {
+        item.setOutputMarkupId(true);
 
         ClienteFisicoListResponse cliente = item.getModelObject();
 
-        ClienteFisicoRowUpdateForm form = new ClienteFisicoRowUpdateForm("editarForm", cliente);
+        ClienteFisicoRowUpdateForm form = new ClienteFisicoRowUpdateForm("editarForm", cliente, item);
         item.add(form);
 
         /*

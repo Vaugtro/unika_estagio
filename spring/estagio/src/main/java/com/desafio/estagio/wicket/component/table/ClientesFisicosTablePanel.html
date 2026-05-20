@@ -28,14 +28,15 @@
                             <td><input wicket:id="nome" type="text"/></td>
                             <td wicket:id="cpf">?</td>
                             <td><input wicket:id="email" type="text"/></td>
-                            <td><span wicket:id="status"></span></td>
+                            <td>
+                                <a wicket:id="statusBtn">
+                                    <span wicket:id="status"></span>
+                                </a>
+                            </td>
                             <td class="d-flex gap-1">
                                 <button type="submit" class="btn btn-sm btn-warning" wicket:id="editarBtn">
                                     <i data-lucide="save"></i> Salvar
                                 </button>
-<!--                                <a class="btn btn-sm" wicket:id="toggleAtivoBtn">-->
-<!--                                    <i data-lucide="power"></i>-->
-<!--                                </a>-->
                             </td>
                         </form>
                     </tr>
