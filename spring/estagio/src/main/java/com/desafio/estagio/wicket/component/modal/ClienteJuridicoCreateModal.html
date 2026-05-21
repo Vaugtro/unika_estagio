@@ -31,38 +31,51 @@
     </script>
     <div class="modal fade" id="createClienteJuridicoModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
+            <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
                 <form wicket:id="form">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Novo Cliente Jurídico</h5>
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fw-semibold">
+                            <i data-lucide="building-2"></i> Novo Cliente Jurídico
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <input type="text" wicket:id="cnpj" class="form-control"/>
-                            <span wicket:id="cnpjFeedback" class="invalid-feedback"></span>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted mb-1">CNPJ</label>
+                                <input type="text" wicket:id="cnpj" class="form-control form-control-sm" placeholder="00.000.000/0000-00"/>
+                                <span wicket:id="cnpjFeedback" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted mb-1">Inscrição Estadual</label>
+                                <input type="text" wicket:id="inscricaoEstadual" class="form-control form-control-sm" placeholder="Inscrição Estadual"/>
+                                <span wicket:id="ieFeedback" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-medium text-muted mb-1">Razão Social</label>
+                                <input type="text" wicket:id="razaoSocial" class="form-control form-control-sm" placeholder="Razão Social"/>
+                                <span wicket:id="razaoSocialFeedback" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted mb-1">E-mail</label>
+                                <input type="text" wicket:id="email" class="form-control form-control-sm" placeholder="email@exemplo.com"/>
+                                <span wicket:id="emailFeedback" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted mb-1">Data de Criação da Empresa</label>
+                                <input type="text" wicket:id="dataCriacaoEmpresa" class="form-control form-control-sm" placeholder="YYYY-MM-DD"/>
+                                <span wicket:id="dataCriacaoEmpresaFeedback" class="invalid-feedback"></span>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <input type="text" wicket:id="razaoSocial" class="form-control"/>
-                            <span wicket:id="razaoSocialFeedback" class="invalid-feedback"></span>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" wicket:id="inscricaoEstadual" class="form-control"/>
-                            <span wicket:id="ieFeedback" class="invalid-feedback"></span>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" wicket:id="email" class="form-control"/>
-                            <span wicket:id="emailFeedback" class="invalid-feedback"></span>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" wicket:id="dataCriacaoEmpresa" class="form-control" placeholder="YYYY-MM-DD"/>
-                            <span wicket:id="dataCriacaoEmpresaFeedback" class="invalid-feedback"></span>
-                        </div>
-                        <hr>
-                        <h6>Endereços</h6>
+                        <hr class="my-4">
+                        <h6 class="fw-semibold mb-3"><i data-lucide="map-pin" style="width: 16px; height: 16px;"></i> Endereços</h6>
                         <div wicket:id="enderecosContainer"></div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" wicket:id="submit" class="btn btn-primary">Salvar</button>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" wicket:id="submit" class="btn btn-primary rounded-pill px-4">
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Salvar
+                        </button>
                     </div>
                 </form>
             </div>

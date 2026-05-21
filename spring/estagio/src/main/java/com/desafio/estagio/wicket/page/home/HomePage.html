@@ -6,14 +6,16 @@
 <body>
 <wicket:extend>
     <div class="row mb-4">
-        <div class="col-12">
-            <div class="btn-group" role="group">
-                <a class="btn btn-primary d-flex align-items-center gap-2" wicket:id="btnFisicos">
-                    <i data-lucide="users"></i>
+        <div class="col-12 d-flex justify-content-center">
+            <div class="btn-group shadow-sm rounded-pill overflow-hidden" role="group" style="border: 1px solid #dee2e6;">
+                <a class="btn d-flex align-items-center gap-2 px-4 py-2 fw-medium" wicket:id="btnFisicos"
+                   style="background: white; color: #495057; transition: all 0.2s;">
+                    <i data-lucide="users" style="width: 18px; height: 18px;"></i>
                     <span>Clientes Físicos</span>
                 </a>
-                <a class="btn btn-primary d-flex align-items-center gap-2" wicket:id="btnJuridicos">
-                    <i data-lucide="building-2"></i>
+                <a class="btn d-flex align-items-center gap-2 px-4 py-2 fw-medium" wicket:id="btnJuridicos"
+                   style="background: white; color: #495057; transition: all 0.2s;">
+                    <i data-lucide="building-2" style="width: 18px; height: 18px;"></i>
                     <span>Clientes Jurídicos</span>
                 </a>
             </div>
@@ -27,6 +29,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Active tab highlight — Wicket AjaxLink doesn't set active class natively
+        document.addEventListener('DOMContentLoaded', function() {
+            var buttons = document.querySelectorAll('[wicket\\:id="btnFisicos"], [wicket\\:id="btnJuridicos"]');
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    buttons.forEach(function(b) {
+                        b.style.background = 'white';
+                        b.style.color = '#495057';
+                    });
+                });
+            });
+        });
+    </script>
 </wicket:extend>
 </body>
 </html>

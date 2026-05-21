@@ -26,6 +26,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ClienteFisicoCreateModal extends Panel {
 
     @Serial
@@ -38,7 +39,9 @@ public class ClienteFisicoCreateModal extends Panel {
         super(id);
 
         ClienteFisicoCreateFormModel formModel = new ClienteFisicoCreateFormModel();
-        formModel.getEnderecos().add(new EnderecoCreateFormModel());
+        EnderecoCreateFormModel initialEndereco = new EnderecoCreateFormModel();
+        initialEndereco.setPrincipal(true);
+        formModel.getEnderecos().add(initialEndereco);
 
         Form<ClienteFisicoCreateFormModel> form = new Form<>("form", new CompoundPropertyModel<>(formModel));
         form.setOutputMarkupId(true);
@@ -72,6 +75,7 @@ public class ClienteFisicoCreateModal extends Panel {
         form.add(rgFeedback);
 
         TextField<String> emailField = new TextField<>("email", String.class);
+        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
         emailField.add(new AttributeModifier("placeholder", "E-mail"));
         Label emailFeedback = ValidationFeedback.createFeedbackLabel("emailFeedback", emailField);
         ValidationFeedback.attachRealTimeValidation(emailField, emailFeedback);
@@ -106,12 +110,14 @@ public class ClienteFisicoCreateModal extends Panel {
 
                 List<EnderecoWithinClienteCreateRequest> enderecosDTO = new ArrayList<>();
                 for (EnderecoCreateFormModel endForm : model.getEnderecos()) {
+                    String cepClean = endForm.getCep() != null ? endForm.getCep().replaceAll("\\D", "") : null;
+                    String telefoneClean = endForm.getTelefone() != null ? endForm.getTelefone().replaceAll("\\D", "") : null;
                     enderecosDTO.add(new EnderecoWithinClienteCreateRequest(
                             endForm.getLogradouro(),
                             endForm.getNumero(),
-                            endForm.getCep(),
+                            cepClean,
                             endForm.getBairro(),
-                            endForm.getTelefone(),
+                            telefoneClean,
                             endForm.getEstado(),
                             endForm.getCidade(),
                             endForm.getPrincipal() != null && endForm.getPrincipal(),
@@ -141,7 +147,13 @@ public class ClienteFisicoCreateModal extends Panel {
                         enderecosDTO
                 );
 
-                clienteFisicoService.create(dto);
+                try {
+                    clienteFisicoService.create(dto);
+                } catch (RuntimeException e) {
+                    ValidationFeedback.showToast(target, "error",
+                            e.getMessage() != null ? e.getMessage() : "Erro ao criar cliente.");
+                    return;
+                }
                 model.setCpf(null);
                 model.setNome(null);
                 model.setRg(null);
@@ -152,20 +164,12 @@ public class ClienteFisicoCreateModal extends Panel {
 
                 ValidationFeedback.showToast(target, "success", "Cliente criado com sucesso!");
                 target.add(form);
+                target.appendJavaScript("lucide.createIcons();");
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                target.add(form);
-                StringBuilder errors = new StringBuilder();
-                form.getFeedbackMessages().messages(msg -> msg.getLevel() == org.apache.wicket.feedback.FeedbackMessage.ERROR)
-                        .forEach(msg -> {
-                            if (!errors.isEmpty()) errors.append("<br>");
-                            errors.append(msg.getMessage());
-                        });
-                if (!errors.isEmpty()) {
-                    ValidationFeedback.showToast(target, "error", errors.toString());
-                }
+                ValidationFeedback.handleFormError(target, form);
             }
         });
 

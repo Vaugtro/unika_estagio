@@ -22,9 +22,9 @@ ALTER TABLE cliente_fisico
 ALTER TABLE cliente_fisico
     ADD CONSTRAINT chf_cpf_digits CHECK (cpf REGEXP '^[0-9]+$');
 
--- RG: Must be 8 or 9 digits
+-- RG: Must be 7 to 9 digits
 ALTER TABLE cliente_fisico
-    ADD CONSTRAINT chf_rg_length CHECK (LENGTH(rg) = 8 OR LENGTH(rg) = 9);
+    ADD CONSTRAINT chf_rg_length CHECK (LENGTH(rg) >= 7 AND LENGTH(rg) <= 9);
 
 -- RG: Must contain only digits
 ALTER TABLE cliente_fisico

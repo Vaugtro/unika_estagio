@@ -4,7 +4,11 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.feedback.FeedbackCollector;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 import java.io.Serial;
@@ -47,6 +51,45 @@ public final class ValidationFeedback implements Serializable {
                 target.add(feedback);
             }
         });
+    }
+
+    /**
+     * Collects form validation errors, highlights invalid fields via JS,
+     * and shows a toast with the error summary. Replaces the duplicated
+     * FeedbackCollector + highlightJS + showToast pattern in modals and pages.
+     */
+    public static void handleFormError(AjaxRequestTarget target, Form<?> form) {
+        target.add(form);
+        target.appendJavaScript("lucide.createIcons();");
+        StringBuilder errors = new StringBuilder();
+        StringBuilder highlightJS = new StringBuilder();
+        new FeedbackCollector(form).collect()
+                .stream()
+                .filter(msg -> msg.getLevel() == FeedbackMessage.ERROR)
+                .forEach(msg -> {
+                    if (!errors.isEmpty()) errors.append("<br>");
+                    errors.append(msg.getMessage());
+                    var source = msg.getReporter();
+                    if (source instanceof FormComponent) {
+                        String inputName = ((FormComponent) source).getInputName();
+                        if (inputName != null) {
+                            String escapedMsg = msg.getMessage().toString()
+                                    .replace("\\", "\\\\").replace("'", "\\'");
+                            highlightJS.append(
+                                    "var inp=document.querySelector('[name=\"" + inputName + "\"]');" +
+                                    "if(inp){inp.classList.add('is-invalid');" +
+                                    "var fb=inp.parentNode.querySelector('.invalid-feedback');" +
+                                    "if(fb)fb.textContent='" + escapedMsg + "';}"
+                            );
+                        }
+                    }
+                });
+        if (highlightJS.length() > 0) {
+            target.appendJavaScript(highlightJS.toString());
+        }
+        if (!errors.isEmpty()) {
+            showToast(target, "error", errors.toString());
+        }
     }
 
     public static void showToast(AjaxRequestTarget target, String type, String message) {

@@ -12,6 +12,7 @@ public class EnderecoCreateFormModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private Long id;
     private String logradouro;
     private Long numero;
     private String cep;

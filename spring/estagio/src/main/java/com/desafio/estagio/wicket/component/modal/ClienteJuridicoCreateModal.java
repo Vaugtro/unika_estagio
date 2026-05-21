@@ -38,7 +38,9 @@ public class ClienteJuridicoCreateModal extends Panel {
         super(id);
 
         ClienteJuridicoCreateFormModel formModel = new ClienteJuridicoCreateFormModel();
-        formModel.getEnderecos().add(new EnderecoCreateFormModel());
+        EnderecoCreateFormModel initialEndereco = new EnderecoCreateFormModel();
+        initialEndereco.setPrincipal(true);
+        formModel.getEnderecos().add(initialEndereco);
 
         Form<ClienteJuridicoCreateFormModel> form = new Form<>("form", new CompoundPropertyModel<>(formModel));
         form.setOutputMarkupId(true);
@@ -64,6 +66,7 @@ public class ClienteJuridicoCreateModal extends Panel {
 
         TextField<String> ieField = new TextField<>("inscricaoEstadual", String.class);
         ieField.setRequired(true);
+        ieField.add(StringValidator.maximumLength(ValidationConstants.INSCRICAO_ESTADUAL_MAX));
         ieField.add(new AttributeModifier("placeholder", "Inscrição Estadual"));
         Label ieFeedback = ValidationFeedback.createFeedbackLabel("ieFeedback", ieField);
         ValidationFeedback.attachRealTimeValidation(ieField, ieFeedback);
@@ -71,6 +74,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(ieFeedback);
 
         TextField<String> emailField = new TextField<>("email", String.class);
+        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
         emailField.add(new AttributeModifier("placeholder", "E-mail"));
         Label emailFeedback = ValidationFeedback.createFeedbackLabel("emailFeedback", emailField);
         ValidationFeedback.attachRealTimeValidation(emailField, emailFeedback);
@@ -105,12 +109,14 @@ public class ClienteJuridicoCreateModal extends Panel {
 
                 List<EnderecoCreateRequest> enderecosDTO = new ArrayList<>();
                 for (EnderecoCreateFormModel endForm : model.getEnderecos()) {
+                    String cepClean = endForm.getCep() != null ? endForm.getCep().replaceAll("\\D", "") : null;
+                    String telefoneClean = endForm.getTelefone() != null ? endForm.getTelefone().replaceAll("\\D", "") : null;
                     enderecosDTO.add(new EnderecoCreateRequest(
                             endForm.getLogradouro(),
                             endForm.getNumero(),
-                            endForm.getCep(),
+                            cepClean,
                             endForm.getBairro(),
-                            endForm.getTelefone(),
+                            telefoneClean,
                             endForm.getEstado(),
                             endForm.getCidade(),
                             endForm.getPrincipal() != null && endForm.getPrincipal(),
@@ -139,7 +145,13 @@ public class ClienteJuridicoCreateModal extends Panel {
                         enderecosDTO
                 );
 
-                clienteJuridicoService.create(dto);
+                try {
+                    clienteJuridicoService.create(dto);
+                } catch (RuntimeException e) {
+                    ValidationFeedback.showToast(target, "error",
+                            e.getMessage() != null ? e.getMessage() : "Erro ao criar cliente.");
+                    return;
+                }
                 model.setCnpj(null);
                 model.setRazaoSocial(null);
                 model.setInscricaoEstadual(null);
@@ -150,20 +162,12 @@ public class ClienteJuridicoCreateModal extends Panel {
 
                 ValidationFeedback.showToast(target, "success", "Cliente criado com sucesso!");
                 target.add(form);
+                target.appendJavaScript("lucide.createIcons();");
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                target.add(form);
-                StringBuilder errors = new StringBuilder();
-                form.getFeedbackMessages().messages(msg -> msg.getLevel() == org.apache.wicket.feedback.FeedbackMessage.ERROR)
-                        .forEach(msg -> {
-                            if (!errors.isEmpty()) errors.append("<br>");
-                            errors.append(msg.getMessage());
-                        });
-                if (!errors.isEmpty()) {
-                    ValidationFeedback.showToast(target, "error", errors.toString());
-                }
+                ValidationFeedback.handleFormError(target, form);
             }
         });
 

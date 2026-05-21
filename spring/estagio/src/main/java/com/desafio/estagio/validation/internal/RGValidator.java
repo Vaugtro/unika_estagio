@@ -15,8 +15,8 @@ public class RGValidator implements ConstraintValidator<ValidRG, String> {
         // Remove any non-digit characters (handles formatting like "12.345.678-9")
         String rawRG = rg.replaceAll("\\D", "");
 
-        // RG can be 8 or 9 digits (sometimes 10 in some states)
-        if (rawRG.length() < 8 || rawRG.length() > 10) {
+        // RG can be 7-9 digits (varies by state, column is VARCHAR(9))
+        if (rawRG.length() < 7 || rawRG.length() > 9) {
             return false;
         }
 

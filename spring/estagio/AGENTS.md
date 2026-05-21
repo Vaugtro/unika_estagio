@@ -4,6 +4,7 @@
 - Do not explain code changes unless explicitly asked with a "?" character.
 - Output text must use imperative, brief verbs (e.g., "Fix type error", "Add routing").
 - If code is requested, output ONLY the code block. Zero conversational wrapper text.
+- Every TODOS plan must overwrite TODO.md first, before executing the plan.
 
 # Repository Setup & Tooling
 - Stack: Java 17, Spring Boot 4.0.6, Apache Wicket 7.17.0, MapStruct, Lombok, Flyway.

@@ -5,9 +5,12 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
+import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -15,6 +18,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -80,7 +84,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
         TextField<String> emailField = new TextField<>("email");
         emailField.add(EmailAddressValidator.getInstance());
-        emailField.add(StringValidator.maximumLength(150));
+        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
         emailField.setOutputMarkupId(true);
         emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
             @Serial
@@ -126,6 +130,11 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
         add(toggleBtn);
 
+        BookmarkablePageLink<Void> detalhesLink = new BookmarkablePageLink<>("detalhesBtn", ClienteJuridicoDetalhePage.class,
+                new PageParameters().set("clienteId", cliente.id()));
+        detalhesLink.add(new AttributeModifier("class", "btn btn-sm btn-outline-info"));
+        add(detalhesLink);
+
         AjaxButton editButton = getEditButton();
         add(editButton);
     }
@@ -140,7 +149,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 try {
                     ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
                     if (model == null) {
-                        showToast(target, "error", "Modelo de dados não encontrado");
+                        ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
                         return;
                     }
                     ClienteJuridicoUpdateRequest updateRequest = new ClienteJuridicoUpdateRequest(
@@ -153,14 +162,14 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                     form.setDefaultModelObject(new ClienteJuridicoUpdateFormModel(
                             clienteJuridicoService.findById(model.getId())));
 
-                    showToast(target, "success", "Cliente atualizado com sucesso!");
+                    ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
                     target.add(form);
                     target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
 
                 } catch (BusinessException e) {
-                    showToast(target, "error", e.getMessage());
+                    ValidationFeedback.showToast(target, "error", e.getMessage());
                 } catch (Exception e) {
-                    showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
+                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
                 }
             }
 
@@ -173,17 +182,6 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
         editButton.setOutputMarkupId(true);
         editButton.setDefaultFormProcessing(true);
         return editButton;
-    }
-
-    private void showToast(AjaxRequestTarget target, String type, String message) {
-        String escapedMessage = message
-                .replace("\\", "\\\\").replace("'", "\\'")
-                .replace("\"", "\\\"").replace("\n", "\\n")
-                .replace("\r", "\\r");
-        target.appendJavaScript(String.format(
-                "if (typeof window.showToast === 'function') { window.showToast('%s', '%s'); }" +
-                " else { console.error('showToast function not found'); alert('%s'); }",
-                type, escapedMessage, escapedMessage));
     }
 
     private AjaxLink<Void> getToggleBtn() {
