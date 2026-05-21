@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <title>Detalhes do Cliente</title>
+</head>
+<body>
+<wicket:extend>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" wicket:id="voltarBtn">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Voltar
+            </a>
+        </div>
+        <h4 class="mb-0 fw-semibold">
+            <i data-lucide="user" style="width: 24px; height: 24px;"></i> Detalhes do Cliente
+        </h4>
+        <div></div>
+    </div>
+
+    <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white py-3" style="border-bottom: 3px solid #0d6efd;">
+            <h5 class="mb-0 fw-semibold">
+                <i data-lucide="info" style="width: 18px; height: 18px;"></i> Informações do Cliente
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">ID</small>
+                        <span class="fw-semibold" wicket:id="clienteId"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Nome</small>
+                        <span class="fw-semibold" wicket:id="clienteNome"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">CPF</small>
+                        <span class="fw-semibold" wicket:id="clienteCpf"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">RG</small>
+                        <span class="fw-semibold" wicket:id="clienteRg"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">E-mail</small>
+                        <span class="fw-semibold" wicket:id="clienteEmail"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Data de Nascimento</small>
+                        <span class="fw-semibold" wicket:id="clienteDataNascimento"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Status</small>
+                        <span class="fw-semibold" wicket:id="clienteStatus"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div wicket:id="enderecoPanel"></div>
+</wicket:extend>
+</body>
+</html>

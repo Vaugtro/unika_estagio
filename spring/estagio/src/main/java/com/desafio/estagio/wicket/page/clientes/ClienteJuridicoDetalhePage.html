@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <title>Detalhes do Cliente Jurídico</title>
+</head>
+<body>
+<wicket:extend>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" wicket:id="voltarBtn">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Voltar
+            </a>
+        </div>
+        <h4 class="mb-0 fw-semibold">
+            <i data-lucide="building-2" style="width: 24px; height: 24px;"></i> Detalhes do Cliente Jurídico
+        </h4>
+        <div></div>
+    </div>
+
+    <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white py-3" style="border-bottom: 3px solid #198754;">
+            <h5 class="mb-0 fw-semibold">
+                <i data-lucide="info" style="width: 18px; height: 18px;"></i> Informações do Cliente
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">ID</small>
+                        <span class="fw-semibold" wicket:id="clienteId"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">CNPJ</small>
+                        <span class="fw-semibold" wicket:id="clienteCnpj"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Razão Social</small>
+                        <span class="fw-semibold" wicket:id="clienteRazaoSocial"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Inscrição Estadual</small>
+                        <span class="fw-semibold" wicket:id="clienteInscricaoEstadual"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">E-mail</small>
+                        <span class="fw-semibold" wicket:id="clienteEmail"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Data Criação da Empresa</small>
+                        <span class="fw-semibold" wicket:id="clienteDataCriacaoEmpresa"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">Status</small>
+                        <span class="fw-semibold" wicket:id="clienteStatus"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div wicket:id="enderecoPanel"></div>
+</wicket:extend>
+</body>
+</html>
