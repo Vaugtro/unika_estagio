@@ -3,21 +3,18 @@ package com.desafio.estagio.wicket.component.modal;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.service.ClienteJuridicoService;
+import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
+import com.desafio.estagio.wicket.component.shared.EnderecoCreateTablePanel;
 import com.desafio.estagio.wicket.model.ClienteJuridicoCreateFormModel;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -48,7 +45,7 @@ public class ClienteJuridicoCreateModal extends Panel {
 
         TextField<String> cnpjField = new TextField<>("cnpj", String.class);
         cnpjField.setRequired(true);
-        cnpjField.add(StringValidator.lengthBetween(14, 18));
+        cnpjField.add(StringValidator.lengthBetween(ValidationConstants.CNPJ_LENGTH_FORMATTED_MIN, ValidationConstants.CNPJ_LENGTH_FORMATTED_MAX));
         cnpjField.add(new AttributeModifier("placeholder", "00.000.000/0000-00"));
         cnpjField.add(new AttributeModifier("data-mask", "00.000.000/0000-00"));
         Label cnpjFeedback = ValidationFeedback.createFeedbackLabel("cnpjFeedback", cnpjField);
@@ -58,7 +55,7 @@ public class ClienteJuridicoCreateModal extends Panel {
 
         TextField<String> razaoSocialField = new TextField<>("razaoSocial", String.class);
         razaoSocialField.setRequired(true);
-        razaoSocialField.add(StringValidator.lengthBetween(3, 150));
+        razaoSocialField.add(StringValidator.lengthBetween(ValidationConstants.RAZAO_SOCIAL_MIN, ValidationConstants.RAZAO_SOCIAL_MAX));
         razaoSocialField.add(new AttributeModifier("placeholder", "Razão Social"));
         Label razaoSocialFeedback = ValidationFeedback.createFeedbackLabel("razaoSocialFeedback", razaoSocialField);
         ValidationFeedback.attachRealTimeValidation(razaoSocialField, razaoSocialFeedback);
@@ -96,92 +93,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(dataCriacaoEmpresaField);
         form.add(dataCriacaoEmpresaFeedback);
 
-        WebMarkupContainer enderecosContainer = new WebMarkupContainer("enderecosContainer");
-        enderecosContainer.setOutputMarkupId(true);
-        form.add(enderecosContainer);
-
-        List<EnderecoCreateFormModel> enderecos = formModel.getEnderecos();
-        ListView<EnderecoCreateFormModel> enderecosView = new ListView<>("enderecosRow", enderecos) {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void populateItem(ListItem<EnderecoCreateFormModel> item) {
-                item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
-
-                TextField<String> logradouroField = new TextField<>("logradouro", String.class);
-                logradouroField.setRequired(true);
-                logradouroField.add(new AttributeModifier("placeholder", "Logradouro"));
-                item.add(logradouroField);
-
-                TextField<Long> numeroField = new TextField<>("numero", Long.class);
-                numeroField.setRequired(true);
-                numeroField.add(new AttributeModifier("placeholder", "Nº"));
-                item.add(numeroField);
-
-                TextField<String> bairroField = new TextField<>("bairro", String.class);
-                bairroField.setRequired(true);
-                bairroField.add(new AttributeModifier("placeholder", "Bairro"));
-                item.add(bairroField);
-
-                TextField<String> cepField = new TextField<>("cep", String.class);
-                cepField.setRequired(true);
-                cepField.add(new AttributeModifier("placeholder", "CEP"));
-                cepField.add(new AttributeModifier("data-mask", "00000-000"));
-                item.add(cepField);
-
-                TextField<String> cidadeField = new TextField<>("cidade", String.class);
-                cidadeField.setRequired(true);
-                cidadeField.add(new AttributeModifier("placeholder", "Cidade"));
-                item.add(cidadeField);
-
-                TextField<String> estadoField = new TextField<>("estado", String.class);
-                estadoField.setRequired(true);
-                estadoField.add(StringValidator.exactLength(2));
-                estadoField.add(new AttributeModifier("placeholder", "UF"));
-                item.add(estadoField);
-
-                TextField<String> telefoneField = new TextField<>("telefone", String.class);
-                telefoneField.setRequired(true);
-                telefoneField.add(new AttributeModifier("placeholder", "Telefone"));
-                telefoneField.add(new AttributeModifier("data-mask", "(00) 00000-0000"));
-                item.add(telefoneField);
-
-                TextField<String> complementoField = new TextField<>("complemento", String.class);
-                complementoField.add(new AttributeModifier("placeholder", "Complemento"));
-                item.add(complementoField);
-
-                CheckBox principalField = new CheckBox("principal");
-                item.add(principalField);
-
-                AjaxLink<Void> removeBtn = new AjaxLink<>("removeBtn") {
-                    @Serial
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void onClick(AjaxRequestTarget target) {
-                        if (enderecos.size() > 1) {
-                            enderecos.remove(item.getIndex());
-                            target.add(enderecosContainer);
-                        }
-                    }
-                };
-                item.add(removeBtn);
-            }
-        };
-        enderecosContainer.add(enderecosView);
-
-        AjaxLink<Void> addEnderecoBtn = new AjaxLink<>("addEndereco") {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                enderecos.add(new EnderecoCreateFormModel());
-                target.add(enderecosContainer);
-            }
-        };
-        enderecosContainer.add(addEnderecoBtn);
+        form.add(new EnderecoCreateTablePanel("enderecosContainer", formModel.getEnderecos()));
 
         form.add(new AjaxButton("submit", form) {
             @Serial

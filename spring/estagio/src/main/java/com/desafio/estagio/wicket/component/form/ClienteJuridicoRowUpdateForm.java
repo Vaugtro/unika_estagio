@@ -4,12 +4,14 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
+import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -19,6 +21,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import java.io.Serial;
 
@@ -50,8 +54,34 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
         add(new Label("id"));
         add(new Label("cnpj"));
-        add(new TextField<>("razaoSocial"));
-        add(new TextField<>("email"));
+
+        TextField<String> razaoSocialField = new TextField<>("razaoSocial");
+        razaoSocialField.setRequired(true);
+        razaoSocialField.add(StringValidator.lengthBetween(ValidationConstants.RAZAO_SOCIAL_MIN, ValidationConstants.RAZAO_SOCIAL_MAX));
+        razaoSocialField.setOutputMarkupId(true);
+        razaoSocialField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
+            @Serial
+            private static final long serialVersionUID = 1L;
+            @Override
+            public String getObject() {
+                return !razaoSocialField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
+            }
+        }));
+        add(razaoSocialField);
+
+        TextField<String> emailField = new TextField<>("email");
+        emailField.add(EmailAddressValidator.getInstance());
+        emailField.add(StringValidator.maximumLength(150));
+        emailField.setOutputMarkupId(true);
+        emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
+            @Serial
+            private static final long serialVersionUID = 1L;
+            @Override
+            public String getObject() {
+                return !emailField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
+            }
+        }));
+        add(emailField);
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
             @Override
@@ -128,15 +158,6 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
                 target.add(form);
-                StringBuilder errors = new StringBuilder();
-                form.getFeedbackMessages().messages(msg -> msg.getLevel() == org.apache.wicket.feedback.FeedbackMessage.ERROR)
-                        .forEach(msg -> {
-                            if (!errors.isEmpty()) errors.append("<br>");
-                            errors.append(msg.getMessage());
-                        });
-                if (!errors.isEmpty()) {
-                    showToast(target, "error", errors.toString());
-                }
             }
         };
 
@@ -167,11 +188,9 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 } else {
                     clienteJuridicoService.activate(model.getId());
                 }
-                target.appendJavaScript(
-                        "var btn = document.getElementById('" + getMarkupId() + "');" +
-                        "btn.className = '" + (newStatus ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") + "';" +
-                        "btn.title = '" + (newStatus ? "Inativar" : "Ativar") + "';" +
-                        "btn.querySelector('span').textContent = '" + (newStatus ? "Ativo" : "Inativo") + "';");
+                model.setEstaAtivo(newStatus);
+                target.add(ClienteJuridicoRowUpdateForm.this);
+                target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
             }
         };
     }

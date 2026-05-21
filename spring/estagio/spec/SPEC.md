@@ -160,16 +160,115 @@ Responsibilities:
 
 No structural changes needed.
 
-## 9. Migration Guide
+## 9. Validation Architecture — Eliminating Redundancy
+
+### 9.1 Current Problem
+
+Validation rules are duplicated across three layers with different implementations:
+
+| Field | Wicket | DTO Annotation | DB Constraint | Wicket onSubmit |
+|-------|--------|---------------|---------------|-----------------|
+| RG | `lengthBetween(3,150)` | `@ValidRG` (8-10 digits) | `chf_rg_length` (8-9), `chf_rg_digits` | `replaceAll("\\D","")` |
+| CPF | `lengthBetween(11,14)` | `@CPF` | — | none (done in DTO ctor) |
+| CEP | mask `00000-000` | `@ValidCEP` | — | none (done in DTO ctor) |
+| Telefone | mask `(00)00000-0000` | `@ValidTelefone` | — | none (done in DTO ctor) |
+
+This violates DRY and Open/Closed: adding a rule requires changes in 3+ places.
+
+### 9.2 Target: Single Source of Truth
+
+Validation rules are defined **once** in constants and referenced by all layers:
+
+```
+ValidationConstants.java (shared constants)
+         |
+    ┌────┼────┐
+    |    |    |
+  DTO   DB   Wicket
+annot. mig.  validators
+```
+
+```
+com/desafio/estagio/validation/
+  ValidationConstants.java     ← NEW: shared field constraint constants
+  annotation/                  ← kept as-is
+  internal/                    ← kept as-is
+```
+
+### 9.3 ValidationConstants
+
+```java
+public final class ValidationConstants {
+    private ValidationConstants() {}
+
+    public static final int RG_LENGTH_MIN = 8;
+    public static final int RG_LENGTH_MAX = 9;
+    public static final int RG_LENGTH_MIN_FORMATTED = 8;   // after strip
+    public static final int RG_LENGTH_MAX_FORMATTED = 10;  // after strip
+
+    public static final int CPF_LENGTH = 11;
+    public static final int CPF_LENGTH_FORMATTED_MIN = 11;
+    public static final int CPF_LENGTH_FORMATTED_MAX = 14;
+
+    public static final int CNPJ_LENGTH = 14;
+    public static final int CNPJ_LENGTH_FORMATTED_MIN = 14;
+    public static final int CNPJ_LENGTH_FORMATTED_MAX = 18;
+
+    public static final int NOME_MIN = 3;
+    public static final int NOME_MAX = 150;
+
+    // Address fields — to be used by both DTO @Size and Wicket validators
+    public static final int LOGRADOURO_MAX = 255;
+    public static final int ESTADO_LENGTH = 2;
+    ...
+}
+```
+
+### 9.4 Layer-by-Layer Rules
+
+| Layer | Responsibility | Must NOT |
+|-------|---------------|----------|
+| **Wicket** | UX feedback — immediate validation on blur via `attachRealTimeValidation`. Uses `ValidationConstants` for max/min lengths. | Do NOT re-implement business rules (e.g., CPF digit check). Delegate those to the service layer. |
+| **DTO** | API contract — Jakarta `@Size`, `@NotBlank`, `@Pattern` annotations. Uses `ValidationConstants` in annotation `message` attributes where practical. | Contain logic in compact constructors (remove CPF/CEP/telefone sanitization from DTO constructors). DTOs are pure data carriers. |
+| **Service** | Business validation — `@Valid` on method parameters, `@ValidRG`/`@CPF`/`@CNPJ` annotations trigger here. Sanitization (strip non-digits) happens here. | Duplicate checks already done by DTO annotations + `@Valid`. |
+| **DB** | Referential integrity + non-null. | Format checks (`chf_rg_length`, `chf_rg_digits`). These belong in the service layer and make schema migrations fragile. |
+
+### 9.5 Specific Changes
+
+1. **Create `ValidationConstants.java`** — shared constants for all field lengths.
+2. **Remove logic from DTO compact constructors** — CPF stripping, CEP sanitization, telefone sanitization. DTOs become pure data carriers (`record` with no body).
+3. **Add sanitization to service layer `create()` methods** — strip CPF/CNPJ/RG non-digits, sanitize CEP/telefone before persisting.
+4. **Wicket validators reference `ValidationConstants`** instead of magic literals (e.g., `StringValidator.lengthBetween(ValidationConstants.RG_LENGTH_MIN, ValidationConstants.RG_LENGTH_MAX)`).
+5. **Add `@Valid` to service `create()` and `update()` method parameters** — ensures bean validation triggers even when called from Wicket (not just REST controllers).
+6. **Keep DB constraints only for non-null + FK** — the `chf_rg_length` and `chf_rg_digits` constraints are noted as mis-placed; they remain in this refactor cycle but documented for future removal.
+
+### 9.6 Validation Flow (after refactor)
+
+```
+User input
+   ↓
+[Wicket] format hints (mask), immediate feedback (length/required)
+   ↓
+[Service.create(@Valid dto)] → bean validation (@CPF, @ValidRG, @NotBlank)
+                             → sanitization (strip non-digits)
+                             → uniqueness checks
+                             → persist
+   ↓
+[DB] NOT NULL + FK constraints only
+```
+
+## 10. Migration Guide
 
 1. Apply service layer fixes first (address handling, EntityManager removal, final methods).
-2. Compile and verify tests pass.
-3. Extract shared Wicket components.
-4. Update modals to use shared components.
-5. Run full test suite.
-6. Delete `GEMINI.md` and `TODO.md`.
+2. Create `ValidationConstants.java` and apply to Wicket validators.
+3. Remove logic from DTO compact constructors; move sanitization to services.
+4. Add `@Valid` to service method parameters.
+5. Extract shared Wicket components.
+6. Update modals to use shared components.
+7. Run full test suite.
+8. Delete `GEMINI.md` and `TODO.md`.
 
-## 10. Non-Goals (Out of Scope)
+## 11. Non-Goals (Out of Scope)
 
 - Changing database schema or migrations.
 - Changing REST API endpoints or response formats.
@@ -178,3 +277,4 @@ No structural changes needed.
 - Upgrading Wicket or Spring versions.
 - Changing the Factory pattern (kept as-is, though noted as possibly redundant).
 - Refactoring JasperReportService interface (noted but deferred).
+- Removing DB format constraints (`chf_rg_length`, `chf_rg_digits`) — deferred to future cycle.

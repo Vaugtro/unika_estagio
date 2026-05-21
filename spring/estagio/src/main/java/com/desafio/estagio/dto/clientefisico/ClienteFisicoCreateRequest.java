@@ -81,10 +81,4 @@ public record ClienteFisicoCreateRequest(
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    public ClienteFisicoCreateRequest {
-        if (cpf != null) {
-            cpf = cpf.replaceAll("\\D", "");
-        }
-    }
 }
