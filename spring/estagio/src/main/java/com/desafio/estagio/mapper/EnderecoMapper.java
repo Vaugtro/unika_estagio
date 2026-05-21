@@ -7,7 +7,8 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        builder = @Builder(disableBuilder = true))
 public interface EnderecoMapper {
 
     // ========== Response Mappings ==========

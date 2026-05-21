@@ -1,4 +1,5 @@
 package com.desafio.estagio.dto.clientejuridico;
+import lombok.Builder;
 
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,6 +17,7 @@ import java.util.List;
  * Request DTO for creating a new ClienteJuridico
  * Only includes fields necessary for creation
  */
+@Builder
 @Schema(name = "ClienteJuridicoCreateRequest", description = "Dados para criar um cliente pessoa jurídica")
 public record ClienteJuridicoCreateRequest(
         @Schema(

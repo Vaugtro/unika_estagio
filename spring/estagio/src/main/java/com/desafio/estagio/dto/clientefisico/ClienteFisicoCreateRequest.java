@@ -1,4 +1,5 @@
 package com.desafio.estagio.dto.clientefisico;
+import lombok.Builder;
 
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.validation.annotation.ValidRG;
@@ -17,6 +18,7 @@ import java.util.List;
  * Request DTO for creating a new ClienteFisico
  * Only includes fields necessary for creation
  */
+@Builder
 @Schema(name = "ClienteFisicoCreateRequest", description = "Dados para criar um cliente pessoa física")
 public record ClienteFisicoCreateRequest(
         @Schema(

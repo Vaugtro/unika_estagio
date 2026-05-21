@@ -3,7 +3,13 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
     <output-test url="file://$MODULE_DIR$/../../estagio/build/classes/java/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../estagio/src/test" />
+    <content url="file://$MODULE_DIR$/../../estagio/build/generated/sources/annotationProcessor/java/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../estagio/build/generated/sources/annotationProcessor/java/test" isTestSource="true" generated="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../estagio/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../estagio/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../estagio/src/test/resources" type="java-test-resource" />
+    </content>
     <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="estagio.main" />

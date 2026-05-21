@@ -14,8 +14,13 @@ public class TelefoneValidator implements ConstraintValidator<ValidTelefone, Str
 
         String digitsOnly = value.replaceAll("\\D", "");
 
-        String phoneRegex = "^[1-9]{2}(?:[2-8]|9)[0-9]{7,8}$";
-
-        return digitsOnly.matches(phoneRegex);
+        // 10-digit landline: area code [1-9]{2}, number starts with [2-8], 7 remaining digits
+        // 11-digit mobile: area code [1-9]{2}, number starts with 9, 8 remaining digits
+        if (digitsOnly.length() == 10) {
+            return digitsOnly.matches("^[1-9]{2}[2-8][0-9]{7}$");
+        } else if (digitsOnly.length() == 11) {
+            return digitsOnly.matches("^[1-9]{2}9[0-9]{8}$");
+        }
+        return false;
     }
 }

@@ -12,6 +12,11 @@ public class RGValidator implements ConstraintValidator<ValidRG, String> {
             return false;
         }
 
+        // Reject input containing characters other than digits and formatting chars
+        if (!rg.matches("[\\d.\\-\\s]+")) {
+            return false;
+        }
+
         // Remove any non-digit characters (handles formatting like "12.345.678-9")
         String rawRG = rg.replaceAll("\\D", "");
 

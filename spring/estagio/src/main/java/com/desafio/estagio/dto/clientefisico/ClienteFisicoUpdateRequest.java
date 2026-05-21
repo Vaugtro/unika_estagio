@@ -1,4 +1,5 @@
 package com.desafio.estagio.dto.clientefisico;
+import lombok.Builder;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * Request DTO for updating an existing ClienteFisico
  * Includes all updatable fields
  */
+@Builder
 @Schema(name = "ClienteFisicoUpdateRequest", description = "Dados para atualizar um cliente pessoa física")
 public record ClienteFisicoUpdateRequest(
         @Schema(

@@ -1,4 +1,5 @@
 package com.desafio.estagio.dto.endereco;
+import lombok.Builder;
 
 import com.desafio.estagio.validation.annotation.ValidCEP;
 import com.desafio.estagio.validation.annotation.ValidTelefone;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 /**
  * Request DTO for creating an Endereco
  */
+@Builder
 @Schema(name = "EnderecoWithinClienteCreateRequest", description = "Dados para criar um endereço")
 public record EnderecoWithinClienteCreateRequest(
         @Schema(description = "Logradouro", example = "Rua das Flores", requiredMode = Schema.RequiredMode.REQUIRED)

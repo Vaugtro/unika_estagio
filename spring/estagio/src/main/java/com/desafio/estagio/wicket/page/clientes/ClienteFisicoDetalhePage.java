@@ -12,7 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
 
-public class ClienteDetalhePage extends BasePage {
+public class ClienteFisicoDetalhePage extends BasePage {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,7 +20,7 @@ public class ClienteDetalhePage extends BasePage {
     @SpringBean
     private ClienteFisicoService clienteFisicoService;
 
-    public ClienteDetalhePage(PageParameters params) {
+    public ClienteFisicoDetalhePage(PageParameters params) {
         super();
         this.clienteId = params.get("clienteId").toLong();
 

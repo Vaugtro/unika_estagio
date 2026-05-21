@@ -7,7 +7,7 @@ import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
-import com.desafio.estagio.wicket.page.clientes.ClienteDetalhePage;
+import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -129,7 +129,7 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
         add(toggleBtn);
 
-        BookmarkablePageLink<Void> detalhesLink = new BookmarkablePageLink<>("detalhesBtn", ClienteDetalhePage.class,
+        BookmarkablePageLink<Void> detalhesLink = new BookmarkablePageLink<>("detalhesBtn", ClienteFisicoDetalhePage.class,
                 new PageParameters().set("clienteId", cliente.id()));
         detalhesLink.add(new AttributeModifier("class", "btn btn-sm btn-outline-info"));
         add(detalhesLink);

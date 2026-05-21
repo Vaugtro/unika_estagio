@@ -186,6 +186,12 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = findEntityById(id);
         Cliente cliente = entity.getCliente();
 
+        // Demote entity before removeEndereco promotes another as principal.
+        // Hibernate flushes UPDATEs before DELETEs, so the promotion would
+        // violate uk_cliente_endereco_principal_unico if the entity being
+        // deleted is still marked as principal.
+        entity.setPrincipal(false);
+
         // Delegate to model — enforces at-least-one and principal promotion rules
         try {
             cliente.removeEndereco(entity);

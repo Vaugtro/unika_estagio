@@ -1,4 +1,5 @@
 package com.desafio.estagio.dto.clientejuridico;
+import lombok.Builder;
 
 import com.desafio.estagio.dto.endereco.EnderecoUpdateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,6 +16,7 @@ import java.util.List;
  * Request DTO for updating an existing ClienteJuridico
  * Includes all updatable fields
  */
+@Builder
 @Schema(name = "ClienteJuridicoUpdateRequest", description = "Dados para atualizar um cliente pessoa jurídica")
 public record ClienteJuridicoUpdateRequest(
         @Schema(

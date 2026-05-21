@@ -1,6 +1,6 @@
 package com.desafio.estagio.wicket.application;
 
-import com.desafio.estagio.wicket.page.clientes.ClienteDetalhePage;
+import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import com.desafio.estagio.wicket.page.home.HomePage;
 import lombok.Getter;
 import org.apache.wicket.Page;
@@ -53,7 +53,7 @@ public class WicketApplication extends WebApplication {
 
         // Mount pages
         mountPage("/", HomePage.class);
-        mountPage("/clientes/detalhe/${clienteId}", ClienteDetalhePage.class);
+        mountPage("/clientes/detalhe/${clienteId}", ClienteFisicoDetalhePage.class);
 
         // Resource settings
         getResourceSettings().setUseDefaultOnMissingResource(true);
