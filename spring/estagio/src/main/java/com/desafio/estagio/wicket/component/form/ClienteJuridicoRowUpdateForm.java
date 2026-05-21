@@ -26,6 +26,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import java.io.Serial;
 
+import org.apache.wicket.markup.ComponentTag;
 public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateFormModel> {
 
     @Serial
@@ -36,6 +37,14 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
     @Getter
     private final Item<ClienteJuridicoListResponse> parentItem;
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        String oldName = tag.getName();
+        tag.setName("form");
+        super.onComponentTag(tag);
+        tag.setName(oldName);
+    }
 
     public ClienteJuridicoRowUpdateForm(String id, ClienteJuridicoListResponse cliente, Item<ClienteJuridicoListResponse> parentItem) {
         super(id);

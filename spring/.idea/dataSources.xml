@@ -15,7 +15,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/dummy_db [DEBUG]" group="​estagio [bootRun]" uuid="7e2851c6-9537-4b16-a1bc-631c16b497df">
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/dummy_db [DEBUG]" group="​estagio [bootRun]" uuid="6fcc8733-8850-4738-866b-c6812c40dd83">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

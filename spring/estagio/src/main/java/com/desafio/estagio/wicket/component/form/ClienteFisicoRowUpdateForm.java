@@ -11,7 +11,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -22,6 +22,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import java.io.Serial;
@@ -36,6 +37,14 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
     @Getter
     private final Item<ClienteFisicoListResponse> parentItem;
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        String oldName = tag.getName();
+        tag.setName("form");
+        super.onComponentTag(tag);
+        tag.setName(oldName);
+    }
 
     public ClienteFisicoRowUpdateForm(String id, ClienteFisicoListResponse cliente, Item<ClienteFisicoListResponse> parentItem) {
         super(id);
@@ -55,32 +64,41 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
         add(new Label("id"));
         add(new Label("cpf"));
 
-        TextField<String> nomeField = new TextField<>("nome");
+        TextField<String> nomeField = new TextField<String>("nome") {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                if (!isValid()) {
+                    String existing = tag.getAttribute("class");
+                    tag.put("class", (existing != null ? existing : "") + " is-invalid");
+                }
+            }
+        };
         nomeField.setRequired(true);
         nomeField.add(StringValidator.lengthBetween(ValidationConstants.NOME_MIN, ValidationConstants.NOME_MAX));
+        nomeField.add(new PatternValidator("[^\\d]+"));
         nomeField.setOutputMarkupId(true);
-        nomeField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-            @Override
-            public String getObject() {
-                return !nomeField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
-            }
-        }));
         add(nomeField);
 
-        TextField<String> emailField = new TextField<>("email");
-        emailField.add(EmailAddressValidator.getInstance());
-        emailField.add(StringValidator.maximumLength(150));
-        emailField.setOutputMarkupId(true);
-        emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
+        TextField<String> emailField = new TextField<String>("email") {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
-            public String getObject() {
-                return !emailField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                if (!isValid()) {
+                    String existing = tag.getAttribute("class");
+                    tag.put("class", (existing != null ? existing : "") + " is-invalid");
+                }
             }
-        }));
+        };
+        emailField.add(EmailAddressValidator.getInstance());
+        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
+        emailField.setOutputMarkupId(true);
         add(emailField);
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
