@@ -26,6 +26,7 @@
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 min-height: 100vh;
             }
+
             .toast-container {
                 position: fixed;
                 bottom: 20px;
@@ -79,7 +80,7 @@
                 });
             }
 
-            window.showToast = function(type, message) {
+            window.showToast = function (type, message) {
                 console.log('Showing toast:', type, message);
 
                 // Get or create toast container
@@ -94,7 +95,7 @@
                 // Determine header color and icon based on type
                 let headerClass = '';
                 let icon = '';
-                switch(type) {
+                switch (type) {
                     case 'success':
                         headerClass = 'bg-success text-white';
                         icon = '✅';
@@ -144,7 +145,7 @@
                 });
 
                 // Remove toast from DOM after it's hidden
-                toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.addEventListener('hidden.bs.toast', function () {
                     toastElement.remove();
                 });
 
@@ -158,7 +159,7 @@
     <div wicket:id="debug"></div>
     <div class="container">
         <a class="navbar-brand fw-semibold" href="#">
-            <i data-lucide="briefcase" class="me-2"></i> Desafio Estágio
+            <i class="me-2" data-lucide="briefcase"></i> Desafio Estágio
         </a>
     </div>
 </header>

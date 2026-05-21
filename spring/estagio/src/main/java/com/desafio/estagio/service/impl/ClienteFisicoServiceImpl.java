@@ -3,7 +3,6 @@ package com.desafio.estagio.service.impl;
 import com.desafio.estagio.dto.clientefisico.*;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.exceptions.ConflictException;
-import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteFisicoMapper;
 import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.repository.ClienteFisicoRepository;

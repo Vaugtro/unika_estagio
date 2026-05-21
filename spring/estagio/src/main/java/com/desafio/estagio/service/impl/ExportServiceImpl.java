@@ -3,20 +3,16 @@ package com.desafio.estagio.service.impl;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoReportResponse;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoReportResponse;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
-import com.desafio.estagio.service.ClienteFisicoService;
-import com.desafio.estagio.service.ClienteJuridicoService;
-import com.desafio.estagio.service.EnderecoService;
-import com.desafio.estagio.service.ExportService;
-import com.desafio.estagio.service.JasperReportService;
+import com.desafio.estagio.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -111,7 +107,7 @@ public class ExportServiceImpl implements ExportService {
                 .getContent();
 
         String[] headers = {"ID", "Nome", "CPF", "RG", "Email", "Data Nasc.", "Ativo", "Criado em"};
-        String[] fields  = {"id", "nome", "cpf", "rg", "email", "dataNascimento", "estaAtivo", "createdAt"};
+        String[] fields = {"id", "nome", "cpf", "rg", "email", "dataNascimento", "estaAtivo", "createdAt"};
         return generateXlsx(data, headers, fields, "Clientes Fisicos");
     }
 
@@ -122,7 +118,7 @@ public class ExportServiceImpl implements ExportService {
                 .getContent();
 
         String[] headers = {"ID", "Razao Social", "CNPJ", "Insc. Estadual", "Email", "Ativo", "Dt. Criacao Emp.", "Criado em"};
-        String[] fields  = {"id", "razaoSocial", "cnpj", "inscricaoEstadual", "email", "estaAtivo", "dataCriacaoEmpresa", "createdAt"};
+        String[] fields = {"id", "razaoSocial", "cnpj", "inscricaoEstadual", "email", "estaAtivo", "dataCriacaoEmpresa", "createdAt"};
         return generateXlsx(data, headers, fields, "Clientes Juridicos");
     }
 
@@ -131,7 +127,7 @@ public class ExportServiceImpl implements ExportService {
         List<EnderecoResponse> data = enderecoService.findAllByClienteId(clienteId);
 
         String[] headers = {"Logradouro", "Numero", "CEP", "Bairro", "Cidade", "UF", "Telefone", "Principal"};
-        String[] fields  = {"logradouro", "numero", "cep", "bairro", "cidade", "estado", "telefone", "principal"};
+        String[] fields = {"logradouro", "numero", "cep", "bairro", "cidade", "estado", "telefone", "principal"};
         return generateXlsx(data, headers, fields, "Enderecos");
     }
 
@@ -215,7 +211,8 @@ public class ExportServiceImpl implements ExportService {
             try {
                 Method m = bean.getClass().getMethod(fieldName);
                 return m.invoke(bean);
-            } catch (NoSuchMethodException ignored) {}
+            } catch (NoSuchMethodException ignored) {
+            }
 
             log.warn("No accessor for field '{}' on {}", fieldName, bean.getClass().getSimpleName());
             return null;

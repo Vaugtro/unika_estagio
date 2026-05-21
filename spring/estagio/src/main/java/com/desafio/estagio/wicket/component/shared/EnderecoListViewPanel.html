@@ -7,16 +7,17 @@
     </style>
 
     <div class="card shadow-sm border-0 mt-4" style="border-radius: 12px; overflow: hidden;">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3" style="border-bottom: 3px solid #6f42c1;">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+             style="border-bottom: 3px solid #6f42c1;">
             <h5 class="mb-0 fw-semibold"><i data-lucide="map-pin" style="width: 20px; height: 20px;"></i> Endereços</h5>
             <div class="d-flex gap-2">
-                <a wicket:id="exportEnderecosPdfBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportEnderecosPdfBtn">
                     <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
                 </a>
-                <a wicket:id="exportEnderecosXlsxBtn" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportEnderecosXlsxBtn">
                     <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
                 </a>
-                <a wicket:id="adicionarEnderecoBtn" class="btn btn-primary btn-sm rounded-pill px-3">
+                <a class="btn btn-primary btn-sm rounded-pill px-3" wicket:id="adicionarEnderecoBtn">
                     <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Adicionar
                 </a>
             </div>
@@ -38,7 +39,7 @@
                     </tr>
                     </thead>
                     <tbody class="table-group-divider" wicket:id="enderecosContainer">
-                    <tr wicket:id="enderecoRow" class="align-middle">
+                    <tr class="align-middle" wicket:id="enderecoRow">
                         <td wicket:id="logradouro"></td>
                         <td wicket:id="numero"></td>
                         <td wicket:id="bairro"></td>
@@ -49,10 +50,12 @@
                         <td wicket:id="principalLabel"></td>
                         <td>
                             <div class="d-flex gap-1">
-                                <a class="btn btn-sm btn-outline-primary rounded-circle p-1" wicket:id="editarBtn" style="width: 32px; height: 32px;">
+                                <a class="btn btn-sm btn-outline-primary rounded-circle p-1" style="width: 32px; height: 32px;"
+                                   wicket:id="editarBtn">
                                     <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
                                 </a>
-                                <a class="btn btn-sm btn-outline-danger rounded-circle p-1" wicket:id="excluirBtn" style="width: 32px; height: 32px;">
+                                <a class="btn btn-sm btn-outline-danger rounded-circle p-1" style="width: 32px; height: 32px;"
+                                   wicket:id="excluirBtn">
                                     <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
                                 </a>
                             </div>
@@ -65,20 +68,20 @@
     </div>
 
     <!-- Modal for Add/Edit Endereco -->
-    <div class="modal fade" id="enderecoModal" tabindex="-1" aria-hidden="true">
+    <div aria-hidden="true" class="modal fade" id="enderecoModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <form wicket:id="modalForm">
                     <div class="modal-header">
                         <h5 class="modal-title" wicket:id="enderecoModalLabel">Novo Endereço</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                     </div>
                     <div class="modal-body">
                         <div wicket:id="enderecoTablePanel"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" wicket:id="salvarEnderecoBtn">Salvar</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>
+                        <button class="btn btn-primary" type="submit" wicket:id="salvarEnderecoBtn">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -87,8 +90,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('[data-mask]').each(function() {
+        $(document).ready(function () {
+            $('[data-mask]').each(function () {
                 $(this).mask($(this).data('mask'));
             });
         });
@@ -97,8 +100,8 @@
             var modal = new bootstrap.Modal(document.getElementById('enderecoModal'));
             modal.show();
 
-            setTimeout(function() {
-                $('#enderecoModal [data-mask]').each(function() {
+            setTimeout(function () {
+                $('#enderecoModal [data-mask]').each(function () {
                     $(this).mask($(this).data('mask'));
                 });
                 lucide.createIcons();

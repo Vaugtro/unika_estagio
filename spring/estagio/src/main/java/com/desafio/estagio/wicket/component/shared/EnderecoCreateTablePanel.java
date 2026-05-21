@@ -26,29 +26,9 @@ public class EnderecoCreateTablePanel extends Panel {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Behavior that adds {@code is-invalid} CSS class during render
-     * when the component has feedback messages (validation errors).
-     */
-    private static final class ValidationStyleBehavior extends Behavior {
-        @Serial
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onComponentTag(Component component, ComponentTag tag) {
-            if (!component.getFeedbackMessages().isEmpty()) {
-                String cls = tag.getAttribute("class");
-                tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
-            }
-        }
-    }
-
     private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
-
     private final ListView<EnderecoCreateFormModel> enderecosView;
     private final List<EnderecoCreateFormModel> enderecos;
-
     public EnderecoCreateTablePanel(String id, List<EnderecoCreateFormModel> enderecos) {
         super(id);
         this.enderecos = enderecos;
@@ -182,5 +162,22 @@ public class EnderecoCreateTablePanel extends Panel {
             }
         };
         add(addEnderecoBtn);
+    }
+
+    /**
+     * Behavior that adds {@code is-invalid} CSS class during render
+     * when the component has feedback messages (validation errors).
+     */
+    private static final class ValidationStyleBehavior extends Behavior {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onComponentTag(Component component, ComponentTag tag) {
+            if (!component.getFeedbackMessages().isEmpty()) {
+                String cls = tag.getAttribute("class");
+                tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
+            }
+        }
     }
 }

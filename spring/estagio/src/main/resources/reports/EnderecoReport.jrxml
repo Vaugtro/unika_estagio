@@ -175,7 +175,8 @@
                             <detailCell height="30" style="Table_TD">
                                 <element kind="textField" uuid="00112233-4455-6677-8899-667788990011" x="0" y="0"
                                          width="60" height="30" fontSize="10.0" textAdjust="StretchHeight">
-                                    <expression><![CDATA[Boolean.TRUE.equals($F{principal}) ? "Sim" : "Não"]]></expression>
+                                    <expression>
+                                        <![CDATA[Boolean.TRUE.equals($F{principal}) ? "Sim" : "Não"]]></expression>
                                     <box leftPadding="2"/>
                                 </element>
                             </detailCell>

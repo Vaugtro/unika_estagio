@@ -10,7 +10,6 @@ import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
 import com.desafio.estagio.wicket.page.clientes.ClienteDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -24,6 +23,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -35,20 +35,10 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @SpringBean
-    private ClienteFisicoService clienteFisicoService;
-
     @Getter
     private final Item<ClienteFisicoListResponse> parentItem;
-
-    @Override
-    protected void onComponentTag(ComponentTag tag) {
-        String oldName = tag.getName();
-        tag.setName("form");
-        super.onComponentTag(tag);
-        tag.setName(oldName);
-    }
+    @SpringBean
+    private ClienteFisicoService clienteFisicoService;
 
     public ClienteFisicoRowUpdateForm(String id, ClienteFisicoListResponse cliente, Item<ClienteFisicoListResponse> parentItem) {
         super(id);
@@ -146,6 +136,14 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
         AjaxButton editButton = getEditButton();
         add(editButton);
+    }
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        String oldName = tag.getName();
+        tag.setName("form");
+        super.onComponentTag(tag);
+        tag.setName(oldName);
     }
 
     private AjaxButton getEditButton() {

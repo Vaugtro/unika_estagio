@@ -22,6 +22,7 @@ public final class ValidationFeedback implements Serializable {
         Label label = new Label(id, new AbstractReadOnlyModel<String>() {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             public String getObject() {
                 var msg = component.getFeedbackMessages().first();
@@ -37,6 +38,7 @@ public final class ValidationFeedback implements Serializable {
         field.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             public String getObject() {
                 return !field.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
@@ -45,6 +47,7 @@ public final class ValidationFeedback implements Serializable {
         field.add(new AjaxFormComponentUpdatingBehavior("blur") {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 target.add(field);
@@ -77,9 +80,9 @@ public final class ValidationFeedback implements Serializable {
                                     .replace("\\", "\\\\").replace("'", "\\'");
                             highlightJS.append(
                                     "var inp=document.querySelector('[name=\"" + inputName + "\"]');" +
-                                    "if(inp){inp.classList.add('is-invalid');" +
-                                    "var fb=inp.parentNode.querySelector('.invalid-feedback');" +
-                                    "if(fb)fb.textContent='" + escapedMsg + "';}"
+                                            "if(inp){inp.classList.add('is-invalid');" +
+                                            "var fb=inp.parentNode.querySelector('.invalid-feedback');" +
+                                            "if(fb)fb.textContent='" + escapedMsg + "';}"
                             );
                         }
                     }
@@ -99,7 +102,7 @@ public final class ValidationFeedback implements Serializable {
                 .replace("\r", "\\r");
         target.appendJavaScript(String.format(
                 "if (typeof window.showToast === 'function') { window.showToast('%s', '%s'); }" +
-                " else { console.error('showToast function not found'); alert('%s'); }",
+                        " else { console.error('showToast function not found'); alert('%s'); }",
                 type, escapedMessage, escapedMessage));
     }
 }

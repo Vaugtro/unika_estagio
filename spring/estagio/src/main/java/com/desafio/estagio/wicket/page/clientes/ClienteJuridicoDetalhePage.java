@@ -16,11 +16,9 @@ public class ClienteJuridicoDetalhePage extends BasePage {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
+    private final Long clienteId;
     @SpringBean
     private ClienteJuridicoService clienteJuridicoService;
-
-    private final Long clienteId;
 
     public ClienteJuridicoDetalhePage(PageParameters params) {
         super();

@@ -142,7 +142,8 @@
                             <detailCell height="30" style="Table_TD">
                                 <element kind="textField" uuid="b6c7d8e9-f0a1-2345-bcde-456789012345" x="0" y="0"
                                          width="60" height="30" fontSize="10.0" textAdjust="StretchHeight">
-                                    <expression><![CDATA[Boolean.TRUE.equals($F{estaAtivo}) ? "Sim" : "Não"]]></expression>
+                                    <expression>
+                                        <![CDATA[Boolean.TRUE.equals($F{estaAtivo}) ? "Sim" : "Não"]]></expression>
                                     <box leftPadding="2"/>
                                 </element>
                             </detailCell>
@@ -158,7 +159,8 @@
                             <detailCell height="30" style="Table_TD">
                                 <element kind="textField" uuid="e9f0a1b2-c3d4-5678-efab-789012345678" x="0" y="0"
                                          width="100" height="30" fontSize="10.0" textAdjust="StretchHeight">
-                                    <expression><![CDATA[$F{dataCriacaoEmpresa} != null ? $F{dataCriacaoEmpresa}.toString() : ""]]></expression>
+                                    <expression>
+                                        <![CDATA[$F{dataCriacaoEmpresa} != null ? $F{dataCriacaoEmpresa}.toString() : ""]]></expression>
                                     <box leftPadding="2"/>
                                 </element>
                             </detailCell>

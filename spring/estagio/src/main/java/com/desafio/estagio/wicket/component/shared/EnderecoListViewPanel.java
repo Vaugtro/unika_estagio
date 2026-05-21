@@ -8,7 +8,6 @@ import com.desafio.estagio.service.ExportService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -25,6 +24,7 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.IResourceStream;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -34,18 +34,15 @@ public class EnderecoListViewPanel extends Panel {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @SpringBean
-    private EnderecoService enderecoService;
-
-    @SpringBean
-    private ExportService exportService;
-
     private final Long clienteId;
     private final List<EnderecoCreateFormModel> modalEnderecos = new ArrayList<>();
     private final Form<?> modalForm;
     private final Label enderecoModalLabel;
     private final WebMarkupContainer enderecosContainer;
+    @SpringBean
+    private EnderecoService enderecoService;
+    @SpringBean
+    private ExportService exportService;
 
     public EnderecoListViewPanel(String id, Long clienteId) {
         super(id);

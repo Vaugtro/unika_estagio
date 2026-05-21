@@ -10,11 +10,11 @@ import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,31 +24,21 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import java.io.Serial;
 
-import org.apache.wicket.markup.ComponentTag;
 public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateFormModel> {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @SpringBean
-    private ClienteJuridicoService clienteJuridicoService;
-
     @Getter
     private final Item<ClienteJuridicoListResponse> parentItem;
-
-    @Override
-    protected void onComponentTag(ComponentTag tag) {
-        String oldName = tag.getName();
-        tag.setName("form");
-        super.onComponentTag(tag);
-        tag.setName(oldName);
-    }
+    @SpringBean
+    private ClienteJuridicoService clienteJuridicoService;
 
     public ClienteJuridicoRowUpdateForm(String id, ClienteJuridicoListResponse cliente, Item<ClienteJuridicoListResponse> parentItem) {
         super(id);
@@ -75,6 +65,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
         razaoSocialField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             public String getObject() {
                 return !razaoSocialField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
@@ -89,6 +80,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
         emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             public String getObject() {
                 return !emailField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
@@ -137,6 +129,14 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
         AjaxButton editButton = getEditButton();
         add(editButton);
+    }
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        String oldName = tag.getName();
+        tag.setName("form");
+        super.onComponentTag(tag);
+        tag.setName(oldName);
     }
 
     private AjaxButton getEditButton() {

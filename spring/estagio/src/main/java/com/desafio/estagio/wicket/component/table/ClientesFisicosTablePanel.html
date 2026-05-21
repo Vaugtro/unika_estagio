@@ -2,18 +2,20 @@
 <html lang="pt-br" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
     <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3" style="border-bottom: 3px solid #0d6efd;">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+             style="border-bottom: 3px solid #0d6efd;">
             <h5 class="mb-0 fw-semibold">
                 <i data-lucide="users" style="width: 20px; height: 20px;"></i> Clientes Físicos
             </h5>
             <div class="d-flex gap-2">
-                <a wicket:id="exportPdfBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportPdfBtn">
                     <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
                 </a>
-                <a wicket:id="exportXlsxBtn" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportXlsxBtn">
                     <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
                 </a>
-                <button type="button" class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createClienteFisicoModal">
+                <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-target="#createClienteFisicoModal" data-bs-toggle="modal"
+                        type="button">
                     <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Novo
                 </button>
             </div>
@@ -33,34 +35,38 @@
                     </tr>
                     </thead>
                     <tbody class="table-group-divider" wicket:id="rows">
-                        <tr wicket:id="editarForm" class="align-middle">
-                            <td class="fw-medium text-muted" wicket:id="id">?</td>
-                            <td><input wicket:id="nome" type="text" class="form-control form-control-sm border-0 bg-light"/></td>
-                            <td wicket:id="cpf">?</td>
-                            <td><input wicket:id="email" type="text" class="form-control form-control-sm border-0 bg-light"/></td>
-                            <td>
-                                <a wicket:id="statusBtn" class="text-decoration-none">
-                                    <span wicket:id="status"></span>
+                    <tr class="align-middle" wicket:id="editarForm">
+                        <td class="fw-medium text-muted" wicket:id="id">?</td>
+                        <td><input class="form-control form-control-sm border-0 bg-light" type="text" wicket:id="nome"/>
+                        </td>
+                        <td wicket:id="cpf">?</td>
+                        <td><input class="form-control form-control-sm border-0 bg-light" type="text"
+                                   wicket:id="email"/></td>
+                        <td>
+                            <a class="text-decoration-none" wicket:id="statusBtn">
+                                <span wicket:id="status"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a class="btn btn-sm btn-outline-info rounded-circle p-1" style="width: 32px; height: 32px;"
+                                   wicket:id="detalhesBtn">
+                                    <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
                                 </a>
-                            </td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a class="btn btn-sm btn-outline-info rounded-circle p-1" wicket:id="detalhesBtn" style="width: 32px; height: 32px;">
-                                        <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
-                                    </a>
-                                    <button type="submit" class="btn btn-sm btn-warning rounded-pill px-3" wicket:id="editarBtn">
-                                        <i data-lucide="save" style="width: 14px; height: 14px;"></i> Salvar
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                <button class="btn btn-sm btn-warning rounded-pill px-3" type="submit"
+                                        wicket:id="editarBtn">
+                                    <i data-lucide="save" style="width: 14px; height: 14px;"></i> Salvar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
         <div class="card-footer bg-white py-3">
-            <div wicket:id="navigator" class="d-flex justify-content-center"></div>
+            <div class="d-flex justify-content-center" wicket:id="navigator"></div>
         </div>
     </div>
     <div wicket:id="createModal"></div>
