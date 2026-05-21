@@ -13,8 +13,10 @@ public interface ClienteFisicoMapper {
 
     // Response mappings
     @Mapping(target = "tipo", constant = "FISICA")
+    @Mapping(target = "cpf", expression = "java(com.desafio.estagio.model.formatter.CPFFormatter.format(entity.getCpf()))")
     ClienteFisicoResponse toResponse(ClienteFisico entity);
 
+    @Mapping(target = "cpf", expression = "java(com.desafio.estagio.model.formatter.CPFFormatter.format(entity.getCpf()))")
     ClienteFisicoListResponse toListResponse(ClienteFisico entity);
 
     ClienteFisicoReportResponse toReportResponse(ClienteFisico entity);

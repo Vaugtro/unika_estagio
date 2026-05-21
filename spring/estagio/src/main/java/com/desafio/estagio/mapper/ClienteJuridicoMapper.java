@@ -13,8 +13,10 @@ public interface ClienteJuridicoMapper {
 
     // Response mappings
     @Mapping(target = "tipo", constant = "JURIDICA")
+    @Mapping(target = "cnpj", expression = "java(com.desafio.estagio.model.formatter.CNPJFormatter.format(entity.getCnpj()))")
     ClienteJuridicoResponse toResponse(ClienteJuridico entity);
 
+    @Mapping(target = "cnpj", expression = "java(com.desafio.estagio.model.formatter.CNPJFormatter.format(entity.getCnpj()))")
     ClienteJuridicoListResponse toListResponse(ClienteJuridico entity);
 
     @Mapping(target = "tipo", constant = "JURIDICA")

@@ -10,9 +10,8 @@ import com.desafio.estagio.repository.ClienteFisicoRepository;
 import com.desafio.estagio.service.AbstractClienteService;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.EnderecoService;
-import jakarta.persistence.EntityManager;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,22 +25,21 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
 
     private final ClienteFisicoMapper mapper;
     private final EnderecoService enderecoService;
-    private final EntityManager entityManager;
 
     public ClienteFisicoServiceImpl(ClienteFisicoRepository repository, ClienteFisicoMapper mapper,
-                                    EnderecoService enderecoService, EntityManager entityManager) {
+                                    EnderecoService enderecoService) {
         super(repository);
         this.mapper = mapper;
         this.enderecoService = enderecoService;
-        this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
-    public ClienteFisicoResponse create(ClienteFisicoCreateRequest request) {
+    public ClienteFisicoResponse create(@Valid ClienteFisicoCreateRequest request) {
         log.debug("Creating ClienteFisico with CPF: {}", request.cpf());
 
-        validateCpfUniqueness(request.cpf());
+        String cleanedCpf = request.cpf() != null ? request.cpf().replaceAll("\\D", "") : null;
+        validateCpfUniqueness(cleanedCpf);
 
         if (request.enderecos() == null || request.enderecos().isEmpty()) {
             throw new BusinessException("Cliente deve ter pelo menos um endereço cadastrado.");
@@ -54,7 +52,16 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
             throw new BusinessException("Cliente deve ter pelo menos um endereço marcado como principal.");
         }
 
-        ClienteFisico model = mapper.toEntity(request);
+        ClienteFisicoCreateRequest sanitizedRequest = new ClienteFisicoCreateRequest(
+                cleanedCpf,
+                request.nome(),
+                request.rg(),
+                request.email(),
+                request.dataNascimento(),
+                request.enderecos()
+        );
+
+        ClienteFisico model = mapper.toEntity(sanitizedRequest);
         ClienteFisico savedModel = repository.save(model);
 
         request.enderecos().forEach(enderecoRequest ->
@@ -66,7 +73,7 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
 
     @Override
     @Transactional
-    public ClienteFisicoResponse update(Long id, ClienteFisicoUpdateRequest request) {
+    public ClienteFisicoResponse update(Long id, @Valid ClienteFisicoUpdateRequest request) {
         log.debug("Updating ClienteFisico with ID: {}", id);
         ClienteFisico model = findModelById(id);
         ensureIsActive(model);
@@ -77,41 +84,8 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
     }
 
     @Override
-    @Transactional
-    @CacheEvict(value = "clientes", key = "#id")
-    public void activate(Long id) {
-        log.debug("Activating ClienteFisico with ID: {}", id);
-        ClienteFisico model = findModelById(id);
-        if (Boolean.TRUE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Este cliente já está ativo.");
-        }
-        model.setEstaAtivo(true);
-        repository.save(model);
-        entityManager.flush();
-        entityManager.detach(model);
-        log.info("Activated ClienteFisico with ID: {}", id);
-    }
-
-    @Override
-    @Transactional
-    @CacheEvict(value = "clientes", key = "#id")
-    public void inactivate(Long id) {
-        log.debug("Inactivating ClienteFisico with ID: {}", id);
-        ClienteFisico model = findModelById(id);
-        if (Boolean.FALSE.equals(model.getEstaAtivo())) {
-            throw new BusinessException("Este cliente já está inativo.");
-        }
-        model.setEstaAtivo(false);
-        repository.save(model);
-        entityManager.flush();
-        entityManager.detach(model);
-        log.info("Inactivated ClienteFisico with ID: {}", id);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public ClienteFisicoResponse findById(Long id) {
-        entityManager.clear();
         return mapper.toResponse(findModelById(id));
     }
 

@@ -2,54 +2,38 @@ package com.desafio.estagio.wicket.provider;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.service.ClienteFisicoService;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.io.Serial;
-import java.util.Iterator;
 
-public class ClienteFisicoDataProvider implements IDataProvider<ClienteFisicoListResponse> {
+public class ClienteFisicoDataProvider extends AbstractClienteDataProvider<ClienteFisicoListResponse> {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final ClienteFisicoService clienteFisicoService;
+    private final ClienteFisicoService service;
 
-    public ClienteFisicoDataProvider(ClienteFisicoService clienteFisicoService) {
-        this.clienteFisicoService = clienteFisicoService;
-    }
-
-
-    @Override
-    public Iterator<? extends ClienteFisicoListResponse> iterator(long first, long count) {
-        Pageable pageable = PageRequest.of(
-                (int) (first / count), (int) count, Sort.by("id").ascending());
-        return clienteFisicoService.findAll(pageable).getContent().iterator();
+    public ClienteFisicoDataProvider(ClienteFisicoService service) {
+        this.service = service;
     }
 
     @Override
-    public long size() {
-        return clienteFisicoService.count();
+    protected Page<ClienteFisicoListResponse> findAll(Pageable pageable) {
+        return service.findAll(pageable);
     }
 
     @Override
-    public IModel<ClienteFisicoListResponse> model(ClienteFisicoListResponse object) {
-        final Long id = object.id();
-        return new LoadableDetachableModel<ClienteFisicoListResponse>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ClienteFisicoListResponse load() {
-                return clienteFisicoService.findByIdList(id);
-            }
-        };
+    protected long count() {
+        return service.count();
     }
 
     @Override
-    public void detach() {
+    protected ClienteFisicoListResponse findByIdList(Long id) {
+        return service.findByIdList(id);
+    }
+
+    @Override
+    protected Long extractId(ClienteFisicoListResponse object) {
+        return object.id();
     }
 }

@@ -59,45 +59,7 @@
                         </div>
                         <hr>
                         <h6>Endereços</h6>
-                        <div wicket:id="enderecosContainer">
-                            <table class="table table-bordered table-sm mb-2 endereco-table">
-                                <thead class="table-secondary">
-                                    <tr>
-                                        <th>Logradouro</th>
-                                        <th>Nº</th>
-                                        <th>Bairro</th>
-                                        <th>CEP</th>
-                                        <th>Cidade</th>
-                                        <th>UF</th>
-                                        <th>Telefone</th>
-                                        <th>Complemento</th>
-                                        <th>Principal</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr wicket:id="enderecosRow">
-                                        <td><input type="text" wicket:id="logradouro" class="form-control form-control-sm"/></td>
-                                        <td><input type="text" wicket:id="numero" class="form-control form-control-sm" style="width:80px"/></td>
-                                        <td><input type="text" wicket:id="bairro" class="form-control form-control-sm"/></td>
-                                        <td><input type="text" wicket:id="cep" class="form-control form-control-sm" style="width:120px"/></td>
-                                        <td><input type="text" wicket:id="cidade" class="form-control form-control-sm"/></td>
-                                        <td><input type="text" wicket:id="estado" class="form-control form-control-sm" style="width:60px"/></td>
-                                        <td><input type="text" wicket:id="telefone" class="form-control form-control-sm" style="width:140px"/></td>
-                                        <td><input type="text" wicket:id="complemento" class="form-control form-control-sm"/></td>
-                                        <td class="text-center"><input type="checkbox" wicket:id="principal"/></td>
-                                        <td class="text-center">
-                                            <a class="btn btn-sm btn-outline-danger" wicket:id="removeBtn">
-                                                <i data-lucide="trash-2"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <a class="btn btn-sm btn-outline-secondary" wicket:id="addEndereco">
-                                <i data-lucide="plus"></i> Adicionar Endereço
-                            </a>
-                        </div>
+                        <div wicket:id="enderecosContainer"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" wicket:id="submit" class="btn btn-primary">Salvar</button>

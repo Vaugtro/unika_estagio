@@ -1,7 +1,5 @@
 package com.desafio.estagio.dto.endereco;
 
-import com.desafio.estagio.dto.endereco.sanitizer.CEPSanitizer;
-import com.desafio.estagio.dto.endereco.sanitizer.TelefoneSanitizer;
 import com.desafio.estagio.validation.annotation.ValidCEP;
 import com.desafio.estagio.validation.annotation.ValidTelefone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,9 +55,4 @@ public record EnderecoWithinClienteCreateRequest(
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    public EnderecoWithinClienteCreateRequest {
-        cep = CEPSanitizer.sanitize(cep);
-        telefone = TelefoneSanitizer.sanitize(telefone);
-    }
 }
