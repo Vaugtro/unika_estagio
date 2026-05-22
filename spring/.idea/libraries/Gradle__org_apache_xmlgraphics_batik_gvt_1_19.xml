@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.xmlgraphics:batik-gvt:1.19" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.xmlgraphics" artifactId="batik-gvt" version="1.19" baseVersion="1.19" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/batik-gvt/1.19/19b27455ef1e23c79fce748be07a84c70dc5db8a/batik-gvt-1.19.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/batik-gvt/1.19/adc61bb5a44e4c9c64ff288696945784b6d045d4/batik-gvt-1.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -119,6 +119,28 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
+    public Page<EnderecoListResponse> search(String q, Pageable pageable) {
+        return enderecoRepository.search(q, pageable).map(enderecoMapper::toListResponse);
+    }
+
+    @Override
+    public long countSearch(String q) {
+        return enderecoRepository.countSearch(q);
+    }
+
+    @Override
+    public Page<EnderecoListResponse> searchByClienteId(Long clienteId, String q, Pageable pageable) {
+        findClienteById(clienteId);
+        return enderecoRepository.searchByClienteId(clienteId, q, pageable)
+                .map(enderecoMapper::toListResponse);
+    }
+
+    @Override
+    public long countSearchByClienteId(Long clienteId, String q) {
+        return enderecoRepository.countSearchByClienteId(clienteId, q);
+    }
+
+    @Override
     public long countByClienteId(Long clienteId) {
         return enderecoRepository.countByClienteId(clienteId);
     }

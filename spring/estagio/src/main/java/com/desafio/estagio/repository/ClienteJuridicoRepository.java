@@ -68,6 +68,26 @@ public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico
     Page<ClienteJuridico> findByRazaoSocialContainingIgnoreCase(String razaoSocial, Pageable pageable);
 
     /**
+     * Fuzzy search across razaoSocial, CNPJ, inscricaoEstadual, and email
+     */
+    @Query("SELECT c FROM ClienteJuridico c WHERE "
+         + "LOWER(c.razaoSocial)         LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.cnpj)                LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.inscricaoEstadual)   LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.email)               LIKE LOWER(CONCAT('%', :q, '%'))")
+    Page<ClienteJuridico> search(@Param("q") String q, Pageable pageable);
+
+    /**
+     * Count results for fuzzy search
+     */
+    @Query("SELECT COUNT(c) FROM ClienteJuridico c WHERE "
+         + "LOWER(c.razaoSocial)         LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.cnpj)                LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.inscricaoEstadual)   LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.email)               LIKE LOWER(CONCAT('%', :q, '%'))")
+    long countSearch(@Param("q") String q);
+
+    /**
      * Search by email
      */
     Optional<ClienteJuridico> findByEmail(String email);

@@ -8,16 +8,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * Base class for full integration tests.
- * Connects to the MariaDB instance configured via application-test.properties.
- * Cleans up test data after all tests in the class run.
+ * Spins up a throwaway MariaDB container via Testcontainers with Hibernate DDL update,
+ * and cleans up test data after all tests in the class run.
+ * The container is destroyed when the JVM exits — no impact on the dev database.
  */
+@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
+
+    private static final MariaDBContainer<?> mariadb;
+
+    static {
+        mariadb = new MariaDBContainer<>("mariadb:11.4")
+                .withDatabaseName("testdb")
+                .withUsername("test")
+                .withPassword("test");
+        mariadb.start();
+    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -32,8 +46,9 @@ public abstract class AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
-        registry.add("spring.flyway.enabled", () -> "true");
-        registry.add("spring.flyway.locations", () -> "classpath:db/migration/main");
+        registry.add("spring.datasource.url", mariadb::getJdbcUrl);
+        registry.add("spring.datasource.username", mariadb::getUsername);
+        registry.add("spring.datasource.password", mariadb::getPassword);
+        registry.add("spring.datasource.driver-class-name", mariadb::getDriverClassName);
     }
 }

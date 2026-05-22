@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.xmlgraphics:batik-bridge:1.19" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.xmlgraphics" artifactId="batik-bridge" version="1.19" baseVersion="1.19" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/batik-bridge/1.19/9b32c6c36a6c104e6b8611b09df07ed875e58eb8/batik-bridge-1.19.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/batik-bridge/1.19/a919d00d4cf86a6a84587c0e1bc6dabc62fe894b/batik-bridge-1.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

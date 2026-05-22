@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: commons-fileupload:commons-fileupload:1.4" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="commons-fileupload" artifactId="commons-fileupload" version="1.4" baseVersion="1.4" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/9.4.1/transforms/f2bf9391a47bfdda79d91150f970dc9c/transformed/commons-fileupload-1.4-jakartaee.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.4/d50ee98902746c6a351662fa8b728189d1a30e90/commons-fileupload-1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

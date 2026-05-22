@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Novo Cliente Jurídico</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content>
+    <div class="form-grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>CNPJ</mat-label>
+        <input
+          matInput
+          formControlName="cnpj"
+          mask="00.000.000/0000-00"
+          [dropSpecialCharacters]="false"
+        />
+        <mat-error *ngIf="form.get('cnpj')?.invalid && form.get('cnpj')?.touched">
+          {{ getFieldError('cnpj') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Data Criação</mat-label>
+        <input matInput formControlName="dataCriacaoEmpresa" type="date" />
+        <mat-error *ngIf="form.get('dataCriacaoEmpresa')?.invalid && form.get('dataCriacaoEmpresa')?.touched">
+          Campo obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Razão Social</mat-label>
+        <input matInput formControlName="razaoSocial" />
+        <mat-error *ngIf="form.get('razaoSocial')?.invalid && form.get('razaoSocial')?.touched">
+          {{ getFieldError('razaoSocial') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Inscrição Estadual</mat-label>
+        <input matInput formControlName="inscricaoEstadual" />
+        <mat-error>
+          {{ getFieldError('inscricaoEstadual') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input matInput formControlName="email" type="email" />
+        <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          {{ getFieldError('email') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <h3 class="section-title">Endereços</h3>
+    <app-endereco-form #enderecoForm></app-endereco-form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" [mat-dialog-close]="false">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+      {{ submitting ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

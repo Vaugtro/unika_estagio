@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="estagio.main" />
+    <orderEntry type="module" module-name="com.desafio.estagio.main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa-test:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-jdbc-test:4.0.6" level="project" />
@@ -44,9 +44,9 @@
     <orderEntry type="library" name="Gradle: jakarta.xml.bind:jakarta.xml.bind-api:4.0.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.46" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-testcontainers:4.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.testcontainers:junit-jupiter:1.19.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.testcontainers:mariadb:1.19.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.testcontainers:testcontainers:1.19.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.testcontainers:junit-jupiter:1.21.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.testcontainers:mariadb:1.21.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.testcontainers:testcontainers:1.21.4" level="project" />
     <orderEntry type="library" name="Gradle: org.mariadb.jdbc:mariadb-java-client:3.5.8" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-data-jpa-test:4.0.6" level="project" />
@@ -120,9 +120,9 @@
     <orderEntry type="library" name="Gradle: org.glassfish.jaxb:jaxb-core:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: jakarta.activation:jakarta.activation-api:2.1.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-autoconfigure:4.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.testcontainers:jdbc:1.19.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-api:3.3.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-transport-zerodep:3.3.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.testcontainers:jdbc:1.21.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-api:3.4.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-transport-zerodep:3.4.2" level="project" />
     <orderEntry type="library" name="Gradle: org.rnorth.duct-tape:duct-tape:1.0.8" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:3.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-jpa-test:4.0.6" level="project" />
@@ -169,8 +169,8 @@
     <orderEntry type="library" name="Gradle: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jaxb:txw2:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: com.sun.istack:istack-commons-runtime:4.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.testcontainers:database-commons:1.19.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-transport:3.3.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.testcontainers:database-commons:1.21.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java-transport:3.4.2" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:5.13.0" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:17.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-jpa:4.0.6" level="project" />

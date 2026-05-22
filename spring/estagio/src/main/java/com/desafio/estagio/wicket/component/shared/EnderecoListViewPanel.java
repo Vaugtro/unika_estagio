@@ -14,6 +14,8 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -224,6 +226,12 @@ public class EnderecoListViewPanel extends Panel {
         add(buildEnderecoExportLink("exportEnderecosPdfBtn", "enderecos.pdf", "application/pdf", true));
         add(buildEnderecoExportLink("exportEnderecosXlsxBtn", "enderecos.xlsx",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", false));
+
+        // --- Import form ---
+        add(buildEnderecoImportForm());
+
+        // --- Template download ---
+        add(buildEnderecoTemplateLink("downloadEnderecoTemplateBtn"));
     }
 
     private Link<Void> buildEnderecoExportLink(String id, String filename, String mimeType, boolean pdf) {
@@ -238,6 +246,66 @@ public class EnderecoListViewPanel extends Panel {
                 getRequestCycle().scheduleRequestHandlerAfterCurrent(
                         new ResourceStreamRequestHandler(stream)
                                 .setFileName(filename)
+                                .setContentDisposition(ContentDisposition.ATTACHMENT)
+                );
+            }
+        };
+    }
+
+    private Form<Void> buildEnderecoImportForm() {
+        Form<Void> importForm = new Form<>("importEnderecoForm");
+        importForm.setMultiPart(true);
+        importForm.setOutputMarkupId(true);
+
+        FileUploadField fileUpload = new FileUploadField("enderecoFileUpload");
+        importForm.add(fileUpload);
+
+        importForm.add(new AjaxButton("importEnderecoBtn") {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                FileUpload upload = fileUpload.getFileUpload();
+                if (upload == null) {
+                    ValidationFeedback.showToast(target, "error", "Selecione um arquivo XLSX.");
+                    return;
+                }
+                try (java.io.InputStream is = upload.getInputStream()) {
+                    int count = exportService.importEnderecos(clienteId, is);
+                    ValidationFeedback.showToast(target, "success",
+                            count + " endereço(s) importado(s) com sucesso!");
+                    target.add(enderecosContainer);
+                    target.add(importForm);
+                    target.appendJavaScript("lucide.createIcons();");
+                } catch (Exception e) {
+                    ValidationFeedback.showToast(target, "error",
+                            "Erro na importação: " + e.getMessage());
+                }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                ValidationFeedback.handleFormError(target, form);
+            }
+        });
+
+        return importForm;
+    }
+
+    private Link<Void> buildEnderecoTemplateLink(String id) {
+        return new Link<>(id) {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick() {
+                byte[] bytes = exportService.templateEnderecosImport();
+                IResourceStream stream = new ByteArrayResourceStream(bytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                getRequestCycle().scheduleRequestHandlerAfterCurrent(
+                        new ResourceStreamRequestHandler(stream)
+                                .setFileName("template-enderecos.xlsx")
                                 .setContentDisposition(ContentDisposition.ATTACHMENT)
                 );
             }

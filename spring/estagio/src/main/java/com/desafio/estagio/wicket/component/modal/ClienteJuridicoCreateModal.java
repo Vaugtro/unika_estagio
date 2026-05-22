@@ -152,17 +152,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                             e.getMessage() != null ? e.getMessage() : "Erro ao criar cliente.");
                     return;
                 }
-                model.setCnpj(null);
-                model.setRazaoSocial(null);
-                model.setInscricaoEstadual(null);
-                model.setEmail(null);
-                model.setDataCriacaoEmpresa(null);
-                model.getEnderecos().clear();
-                model.getEnderecos().add(new EnderecoCreateFormModel());
-
-                ValidationFeedback.showToast(target, "success", "Cliente criado com sucesso!");
-                target.add(form);
-                target.appendJavaScript("lucide.createIcons();");
+                setResponsePage(getPage());
             }
 
             @Override

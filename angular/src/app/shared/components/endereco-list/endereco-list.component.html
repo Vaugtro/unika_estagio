@@ -1,0 +1,16 @@
+<div *ngIf="enderecos.length === 0" class="empty-state">
+  Nenhum endereço cadastrado.
+</div>
+
+<mat-list *ngIf="enderecos.length > 0">
+  <mat-list-item *ngFor="let end of enderecos">
+    <lucide-icon matListItemIcon [name]="end.principal ? 'house' : 'map-pin'"></lucide-icon>
+    <div matListItemTitle>
+      {{ end.logradouro }}, {{ end.numero }}{{ end.complemento ? ' - ' + end.complemento : '' }}
+    </div>
+    <div matListItemLine>
+      {{ end.bairro }} - {{ end.cidade }}/{{ end.estado }} — CEP {{ end.cep }}
+      <span *ngIf="end.principal" class="principal-badge">Principal</span>
+    </div>
+  </mat-list-item>
+</mat-list>

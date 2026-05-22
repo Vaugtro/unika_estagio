@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.wicket:wicket-request:7.17.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.wicket" artifactId="wicket-request" version="7.17.0" baseVersion="7.17.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/9.4.1/transforms/5a570c690d3a17aaa62f5205cb5b69f2/transformed/wicket-request-7.17.0-jakartaee.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-request/7.17.0/eb510fb3abfc4e02e371647c47c6817d1af91022/wicket-request-7.17.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

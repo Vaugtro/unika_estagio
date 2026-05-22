@@ -1,0 +1,10 @@
+.inline-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-form-field {
+    margin: 0;
+    width: 160px;
+  }
+}

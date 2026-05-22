@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Exportar Clientes {{ data.clienteType === 'fisico' ? 'Físicos' : 'Jurídicos' }}</h2>
+
+<mat-dialog-content>
+  <p>Selecione o formato para exportação:</p>
+
+  <div class="export-options">
+    <button mat-raised-button (click)="exportPdf()" [disabled]="exportingPdf">
+      <lucide-icon name="file-text"></lucide-icon>
+      {{ exportingPdf ? 'Exportando...' : 'Exportar PDF' }}
+    </button>
+
+    <button mat-raised-button (click)="exportXlsx()" [disabled]="exportingXlsx">
+      <lucide-icon name="table"></lucide-icon>
+      {{ exportingXlsx ? 'Exportando...' : 'Exportar XLSX' }}
+    </button>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">Fechar</button>
+</mat-dialog-actions>

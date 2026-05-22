@@ -43,6 +43,26 @@ public interface EnderecoService {
     EnderecoResponse findById(Long id);
 
     /**
+     * Fuzzy search across all enderecos (logradouro, bairro, cidade, cep)
+     */
+    Page<EnderecoListResponse> search(String q, Pageable pageable);
+
+    /**
+     * Count results for global endereco fuzzy search
+     */
+    long countSearch(String q);
+
+    /**
+     * Fuzzy search across enderecos scoped to a specific cliente
+     */
+    Page<EnderecoListResponse> searchByClienteId(Long clienteId, String q, Pageable pageable);
+
+    /**
+     * Count results for scoped endereco fuzzy search
+     */
+    long countSearchByClienteId(Long clienteId, String q);
+
+    /**
      * Finds all addresses for a client (with pagination)
      *
      * @param clienteId the client ID

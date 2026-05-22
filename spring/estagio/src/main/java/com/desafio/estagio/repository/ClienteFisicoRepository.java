@@ -83,6 +83,26 @@ public interface ClienteFisicoRepository extends JpaRepository<ClienteFisico, Lo
     // ========== Date Range Operations ==========
 
     /**
+     * Fuzzy search across nome, CPF, RG, and email
+     */
+    @Query("SELECT c FROM ClienteFisico c WHERE "
+         + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
+    Page<ClienteFisico> search(@Param("q") String q, Pageable pageable);
+
+    /**
+     * Count results for fuzzy search
+     */
+    @Query("SELECT COUNT(c) FROM ClienteFisico c WHERE "
+         + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
+         + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
+    long countSearch(@Param("q") String q);
+
+    /**
      * Find clients by birth date range
      */
     Page<ClienteFisico> findByDataNascimentoBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);

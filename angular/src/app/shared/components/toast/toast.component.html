@@ -1,0 +1,13 @@
+<div class="toast-container">
+  <div
+    *ngFor="let toast of toasts$ | async"
+    class="toast toast-{{ toast.type }}"
+    (click)="dismiss(toast.id)"
+  >
+    <lucide-icon [name]="toastIcon(toast.type)"></lucide-icon>
+    <span>{{ toast.message }}</span>
+    <button mat-icon-button class="toast-close" (click)="dismiss(toast.id); $event.stopPropagation()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+  </div>
+</div>

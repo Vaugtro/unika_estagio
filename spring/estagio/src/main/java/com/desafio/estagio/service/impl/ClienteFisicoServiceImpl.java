@@ -12,6 +12,7 @@ import com.desafio.estagio.service.EnderecoService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisico, ClienteFisicoRepository>
         implements ClienteFisicoService {
 
+    private final ClienteFisicoRepository fisicoRepository;
     private final ClienteFisicoMapper mapper;
     private final EnderecoService enderecoService;
 
     public ClienteFisicoServiceImpl(ClienteFisicoRepository repository, ClienteFisicoMapper mapper,
                                     EnderecoService enderecoService) {
         super(repository);
+        this.fisicoRepository = repository;
         this.mapper = mapper;
         this.enderecoService = enderecoService;
     }
@@ -115,6 +118,16 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
     @Override
     public boolean existsByCpf(String cpf) {
         return repository.existsByCpf(cpf);
+    }
+
+    @Override
+    public Page<ClienteFisicoListResponse> search(String q, Pageable pageable) {
+        return fisicoRepository.search(q, pageable).map(mapper::toListResponse);
+    }
+
+    @Override
+    public long countSearch(String q) {
+        return fisicoRepository.countSearch(q);
     }
 
     @Override

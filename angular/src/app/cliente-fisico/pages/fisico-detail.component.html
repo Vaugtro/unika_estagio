@@ -1,0 +1,21 @@
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="32"></mat-spinner>
+</div>
+
+<div *ngIf="cliente && !loading">
+  <a mat-button [routerLink]="['/home']" class="back-link">
+    <lucide-icon name="arrow-left"></lucide-icon>
+    Voltar
+  </a>
+
+  <app-fisico-info-card [cliente]="cliente"></app-fisico-info-card>
+
+  <mat-card class="enderecos-card">
+    <mat-card-header>
+      <mat-card-title>Endereços</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-endereco-list [enderecos]="cliente.enderecos"></app-endereco-list>
+    </mat-card-content>
+  </mat-card>
+</div>

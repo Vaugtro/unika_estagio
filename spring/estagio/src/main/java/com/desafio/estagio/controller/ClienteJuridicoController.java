@@ -34,6 +34,17 @@ public class ClienteJuridicoController {
         return ResponseEntity.ok(juridicoService.findAll(pageable));
     }
 
+    @Operation(summary = "Busca difusa por razão social, CNPJ, inscrição estadual ou e-mail",
+            description = "Retorna clientes que correspondem ao termo de busca (busca parcial e case-insensitive)")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @GetMapping("/search")
+    public ResponseEntity<Page<ClienteJuridicoListResponse>> search(
+            @Parameter(description = "Termo de busca") @RequestParam("q") String q,
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(juridicoService.search(q, pageable));
+    }
+
     @Operation(summary = "Listar clientes jurídicos ativos", description = "Retorna uma página com os clientes pessoa jurídica ativos")
     @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
     @GetMapping("/ativos")

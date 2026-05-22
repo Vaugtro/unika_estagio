@@ -12,10 +12,10 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/estagio/build/libs/exploded/estagio-1.0-SNAPSHOT-plain.war/META-INF/MANIFEST.MF" />
       </element>
-      <element id="javaee-facet-resources" facet="estagio.main/web/Web Gradle : estagio-1.0-SNAPSHOT-plain.war" />
+      <element id="javaee-facet-resources" facet="com.desafio.estagio.main/web/Web Gradle : estagio-1.0-SNAPSHOT-plain.war" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="estagio.main" />
+          <element id="module-output" name="com.desafio.estagio.main" />
           <element id="dir-copy" path="$PROJECT_DIR$/estagio/build/resources/main" />
         </element>
         <element id="directory" name="lib">

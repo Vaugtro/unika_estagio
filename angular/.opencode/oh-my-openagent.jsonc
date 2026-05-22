@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "agents": {
+    // Sisyphus (Main Orchestrator): Mantém Antigravity Claude no topo, mas usa o Big Pickle local antes do Groq para evitar estourar o TPM em prompts longos.
+    "sisyphus": {
+      "model": "opencode/big-pickle",
+      "fallback_models": [
+        "opencode/big-pickle",
+        "groq/qwen/qwen3-32b"
+      ],
+      "ultrawork": {
+        "model": "opencode/big-pickle",
+        "variant": "max"
+      }
+    },
+    // Librarian & Explore: Voltando 100% para o DeepSeek Flash Free do Zen.
+    // Ele devora contextos imensos e árvores de arquivos sem travar por limite de tokens por minuto.
+    "librarian": {
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    "explore": {
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    // Oracle (Architecture Consultant): Antigravity Gemini -> Nemotron 3 Super -> Groq Qwen3 como última opção.
+    "oracle": {
+      "model": "google/antigravity-gemini-3.1-pro",
+      "variant": "high",
+      "fallback_models": [
+        "opencode/nemotron-3-super-free",
+        "groq/qwen/qwen3-32b"
+      ]
+    },
+    // Prometheus (Strategic Planner)
+    "prometheus": {
+      "model": "google/antigravity-claude-opus-4-6-thinking",
+      "variant": "max",
+      "fallback_models": [
+        "opencode/big-pickle"
+      ],
+      "prompt_append": "Be highly efficient. Split massive tasks into small operations to conserve context limits. Avoid compound rtk find flags."
+    }
+  },
+  "categories": {
+    // quick: Edições cirúrgicas rápidas ainda podem usar a velocidade bruta do Groq, já que gastam poucos tokens.
+    "quick": {
+      "model": "groq/qwen/qwen3-32b",
+      "fallback_models": [
+        "opencode/deepseek-v4-flash-free"
+      ]
+    },
+    "unspecified-low": {
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    // unspecified-high: Tarefas pesadas focam no Antigravity e caem para o Nemotron local para proteger sua cota.
+    "unspecified-high": {
+      "model": "google/antigravity-claude-opus-4-6-thinking",
+      "variant": "max",
+      "fallback_models": [
+        "opencode/nemotron-3-super-free"
+      ]
+    },
+    "writing": {
+      "model": "opencode/nemotron-3-super-free"
+    },
+    "visual-engineering": {
+      "model": "google/antigravity-gemini-3.1-pro",
+      "variant": "high",
+      "fallback_models": [
+        "opencode/nemotron-3-super-free"
+      ]
+    },
+    "artistry": {
+      "model": "google/antigravity-gemini-3.1-pro",
+      "variant": "high"
+    },
+    "git": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "All git operations",
+      "prompt_append": "Focus on atomic commits and clean messages."
+    }
+  },
+  "background_task": {
+    "providerConcurrency": {
+      "opencode": 8,
+      "google": 4,
+      "groq": 1 // Reduzido para 1. Se duas janelas do tmux chamarem o Groq ao mesmo tempo, o limite estoura na hora.
+    },
+    "modelConcurrency": {
+      "google/antigravity-claude-opus-4-6-thinking": 2,
+      "google/antigravity-gemini-3.1-pro": 2,
+      "groq/qwen/qwen3-32b": 1,
+      "opencode/deepseek-v4-flash-free": 6
+    }
+  },
+  "experimental": {
+    "aggressive_truncation": true, // Deixe ativado para cortar contextos antigos agressivamente no tmux
+    "task_system": true,
+    "model_fallback": true
+  },
+  "tmux": {
+    "enabled": true,
+    "layout": "main-horizontal",
+    "main_pane_size": 60,
+    "main_pane_min_width": 120,
+    "agent_pane_min_width": 40,
+    "isolation": "inline"
+  },
+  "tui": {
+    "remember_recent_models": false,
+    "clear_session_history_on_exit": true
+  }
+}

@@ -26,12 +26,14 @@ import java.util.List;
 public class ClienteJuridicoServiceImpl extends AbstractClienteService<ClienteJuridico, ClienteJuridicoRepository>
         implements ClienteJuridicoService {
 
+    private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteJuridicoMapper mapper;
     private final EnderecoService enderecoService;
 
     public ClienteJuridicoServiceImpl(ClienteJuridicoRepository repository, ClienteJuridicoMapper mapper,
                                       EnderecoService enderecoService) {
         super(repository);
+        this.juridicoRepository = repository;
         this.mapper = mapper;
         this.enderecoService = enderecoService;
     }
@@ -134,6 +136,16 @@ public class ClienteJuridicoServiceImpl extends AbstractClienteService<ClienteJu
     @Override
     public boolean existsByCnpj(String cnpj) {
         return repository.existsByCnpj(CNPJFormatter.unformat(cnpj));
+    }
+
+    @Override
+    public Page<ClienteJuridicoListResponse> search(String q, Pageable pageable) {
+        return juridicoRepository.search(q, pageable).map(mapper::toListResponse);
+    }
+
+    @Override
+    public long countSearch(String q) {
+        return juridicoRepository.countSearch(q);
     }
 
     @Override

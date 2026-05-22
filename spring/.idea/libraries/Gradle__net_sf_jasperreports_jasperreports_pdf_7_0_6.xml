@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.jasperreports:jasperreports-pdf:7.0.6" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.sf.jasperreports" artifactId="jasperreports-pdf" version="7.0.6" baseVersion="7.0.6" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jasperreports/jasperreports-pdf/7.0.6/e7c6bc9360603805e9c9e222384bdb4aa855a819/jasperreports-pdf-7.0.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jasperreports/jasperreports-pdf/7.0.6/1f3884160ee2fe482ab5ab569418e0e687f5347b/jasperreports-pdf-7.0.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

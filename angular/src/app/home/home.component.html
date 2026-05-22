@@ -1,0 +1,23 @@
+<div class="home-page">
+  <div class="tabs">
+    <button
+      mat-stroked-button
+      [ngClass]="{ 'tab-active': activeTab === 'fisico' }"
+      (click)="activeTab = 'fisico'"
+    >
+      Físicos
+    </button>
+    <button
+      mat-stroked-button
+      [ngClass]="{ 'tab-active': activeTab === 'juridico' }"
+      (click)="activeTab = 'juridico'"
+    >
+      Jurídicos
+    </button>
+  </div>
+
+  <div class="tab-content">
+    <app-fisico-table *ngIf="activeTab === 'fisico'"></app-fisico-table>
+    <app-juridico-table *ngIf="activeTab === 'juridico'"></app-juridico-table>
+  </div>
+</div>

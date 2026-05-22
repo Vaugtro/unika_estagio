@@ -22,8 +22,8 @@ public class WicketConfig {
         registration.addInitParameter("applicationFactoryClassName",
                 "org.apache.wicket.spring.SpringWebApplicationFactory");
 
-        // Exclude API and Swagger from Wicket processing
-        registration.addInitParameter("ignorePaths", "/api,/swagger-ui,/v3/api-docs,/swagger-ui.html");
+        // Exclude REST API and Swagger from Wicket processing
+        registration.addInitParameter("ignorePaths", "/v1,/swagger-ui,/v3/api-docs,/swagger-ui.html");
 
         registration.addUrlPatterns("/*");
         registration.setOrder(Ordered.LOWEST_PRECEDENCE - 100);

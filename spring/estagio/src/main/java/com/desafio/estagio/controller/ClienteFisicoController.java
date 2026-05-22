@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/v1/clientes/fisicos")
@@ -32,6 +33,17 @@ public class ClienteFisicoController {
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(fisicoService.findAll(pageable));
+    }
+
+    @Operation(summary = "Busca difusa por nome, CPF, RG ou e-mail",
+            description = "Retorna clientes que correspondem ao termo de busca (busca parcial e case-insensitive)")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @GetMapping("/search")
+    public ResponseEntity<Page<ClienteFisicoListResponse>> search(
+            @Parameter(description = "Termo de busca") @RequestParam("q") String q,
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(fisicoService.search(q, pageable));
     }
 
     @Operation(summary = "Listar clientes físicos ativos", description = "Retorna uma página com os clientes pessoa física ativos")

@@ -7,13 +7,15 @@
             <h5 class="mb-0 fw-semibold">
                 <i data-lucide="building-2" style="width: 20px; height: 20px;"></i> Clientes Jurídicos
             </h5>
-            <div class="d-flex gap-2">
-                <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportPdfBtn">
-                    <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
-                </a>
-                <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportXlsxBtn">
-                    <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
-                </a>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-target="#exportJuridicoModal" data-bs-toggle="modal"
+                        type="button">
+                    <i data-lucide="download" style="width: 14px; height: 14px;"></i> Exportar
+                </button>
+                <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-target="#importJuridicoModal" data-bs-toggle="modal"
+                        type="button">
+                    <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Importar
+                </button>
                 <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-target="#createClienteJuridicoModal" data-bs-toggle="modal"
                         type="button">
                     <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Novo
@@ -22,6 +24,14 @@
         </div>
 
         <div class="card-body p-0">
+            <form wicket:id="searchForm" class="d-flex gap-2 p-3 border-bottom bg-light align-items-center">
+                <i data-lucide="search" style="width: 18px; height: 18px; color: #6c757d;"></i>
+                <input type="text" wicket:id="searchField" class="form-control form-control-sm"
+                       placeholder="Buscar por nome, CNPJ, IE ou email..."/>
+                <a wicket:id="clearSearchBtn" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                    <i data-lucide="x" style="width: 14px; height: 14px;"></i> Limpar
+                </a>
+            </form>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" wicket:id="tableContainer">
                     <thead class="table-dark">
@@ -69,6 +79,8 @@
             <div class="d-flex justify-content-center" wicket:id="navigator"></div>
         </div>
     </div>
+    <div wicket:id="exportModal"></div>
+    <div wicket:id="importModal"></div>
     <div wicket:id="createModal"></div>
 </wicket:panel>
 </html>

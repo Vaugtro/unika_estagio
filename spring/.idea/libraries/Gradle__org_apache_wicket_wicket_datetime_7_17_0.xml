@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.wicket:wicket-datetime:7.17.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.wicket" artifactId="wicket-datetime" version="7.17.0" baseVersion="7.17.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-datetime/7.17.0/94b0148094333a19008adb017ab2c77c3a57b241/wicket-datetime-7.17.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-datetime/7.17.0/7c7a82929714438d97ecb32d0d176d9488ca5b8d/wicket-datetime-7.17.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

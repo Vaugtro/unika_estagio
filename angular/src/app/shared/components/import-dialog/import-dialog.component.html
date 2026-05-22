@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Importar Clientes {{ data.clienteType === 'fisico' ? 'Físicos' : 'Jurídicos' }}</h2>
+
+<mat-dialog-content>
+  <p>Selecione um arquivo para importação:</p>
+
+  <div class="file-upload">
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx,.csv" />
+    <span *ngIf="selectedFile" class="file-name">{{ selectedFile.name }}</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="import()" [disabled]="!selectedFile">
+    Importar
+  </button>
+</mat-dialog-actions>

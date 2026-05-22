@@ -10,13 +10,23 @@
         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3"
              style="border-bottom: 3px solid #6f42c1;">
             <h5 class="mb-0 fw-semibold"><i data-lucide="map-pin" style="width: 20px; height: 20px;"></i> Endereços</h5>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 align-items-center flex-wrap">
                 <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportEnderecosPdfBtn">
                     <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
                 </a>
                 <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportEnderecosXlsxBtn">
                     <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
                 </a>
+                <a class="btn btn-outline-info btn-sm rounded-pill px-3" wicket:id="downloadEnderecoTemplateBtn">
+                    <i data-lucide="download" style="width: 14px; height: 14px;"></i> Template
+                </a>
+                <form wicket:id="importEnderecoForm" class="d-flex align-items-center gap-1">
+                    <input type="file" wicket:id="enderecoFileUpload" class="form-control form-control-sm"
+                           style="width: 160px;" accept=".xlsx"/>
+                    <button type="submit" wicket:id="importEnderecoBtn" class="btn btn-outline-warning btn-sm rounded-pill px-3">
+                        <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Importar
+                    </button>
+                </form>
                 <a class="btn btn-primary btn-sm rounded-pill px-3" wicket:id="adicionarEnderecoBtn">
                     <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Adicionar
                 </a>

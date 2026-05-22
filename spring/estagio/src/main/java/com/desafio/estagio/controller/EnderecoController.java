@@ -158,6 +158,29 @@ public class EnderecoController {
     // VALIDATION OPERATIONS
     // =====================================================
 
+    @Operation(summary = "Busca difusa por logradouro, bairro, cidade ou CEP",
+            description = "Retorna endereços que correspondem ao termo de busca (busca parcial e case-insensitive)")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @GetMapping("/search")
+    public ResponseEntity<Page<EnderecoListResponse>> search(
+            @Parameter(description = "Termo de busca") @RequestParam("q") String q,
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(enderecoService.search(q, pageable));
+    }
+
+    @Operation(summary = "Busca difusa por endereços de um cliente específico",
+            description = "Retorna endereços do cliente que correspondem ao termo de busca")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @GetMapping("/clientes/{clienteId}/search")
+    public ResponseEntity<Page<EnderecoListResponse>> searchByClienteId(
+            @PathVariable Long clienteId,
+            @Parameter(description = "Termo de busca") @RequestParam("q") String q,
+            @Parameter(description = "Parâmetros de paginação (page, size, sort)")
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(enderecoService.searchByClienteId(clienteId, q, pageable));
+    }
+
     @Operation(summary = "Verificar se cliente possui endereços", description = "Verifica se um cliente tem pelo menos um endereço cadastrado")
     @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso")
     @GetMapping("/clientes/{clienteId}/has-addresses")

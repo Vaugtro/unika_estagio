@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ cliente.nome }}</mat-card-title>
+    <mat-chip-list>
+      <mat-chip [ngClass]="cliente.estaAtivo ? 'badge-active' : 'badge-inactive'">
+        {{ cliente.estaAtivo ? 'Ativo' : 'Inativo' }}
+      </mat-chip>
+    </mat-chip-list>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="info-grid">
+      <div><strong>CPF:</strong> {{ cliente.cpf }}</div>
+      <div><strong>RG:</strong> {{ cliente.rg }}</div>
+      <div><strong>E-mail:</strong> {{ cliente.email || '-' }}</div>
+      <div><strong>Data Nasc.:</strong> {{ cliente.dataNascimento | date }}</div>
+      <div><strong>Criado em:</strong> {{ cliente.createdAt | date:'short' }}</div>
+      <div><strong>Atualizado em:</strong> {{ cliente.updatedAt | date:'short' }}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.testcontainers:mariadb:1.21.4" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.testcontainers" artifactId="mariadb" version="1.21.4" baseVersion="1.21.4" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.testcontainers/mariadb/1.21.4/23f0d8780380bd3ef9b80b37b0d91d0913a53ad2/mariadb-1.21.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.testcontainers/mariadb/1.21.4/a9c3b51f3037249b9194699b8bb3af8048c1faa2/mariadb-1.21.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

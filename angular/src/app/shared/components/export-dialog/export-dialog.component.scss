@@ -1,0 +1,15 @@
+.export-options {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  justify-content: center;
+
+  button {
+    min-width: 180px;
+    padding: 12px 24px;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}

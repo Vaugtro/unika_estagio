@@ -1,0 +1,68 @@
+<div [formGroup]="form">
+  <div formArrayName="enderecos">
+    <div *ngFor="let group of enderecos.controls; let i = index; let last = last" class="endereco-block">
+      <div [formGroupName]="i" class="endereco-group">
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Logradouro</mat-label>
+            <input matInput formControlName="logradouro" />
+            <mat-error>{{ getFieldError(i, 'logradouro') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="num-field">
+            <mat-label>Número</mat-label>
+            <input matInput type="number" formControlName="numero" />
+            <mat-error>{{ getFieldError(i, 'numero') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" />
+            <mat-error>{{ getFieldError(i, 'bairro') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="cep" mask="00000-000" [dropSpecialCharacters]="false" />
+            <mat-error>{{ getFieldError(i, 'cep') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="cidade" />
+            <mat-error>{{ getFieldError(i, 'cidade') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <input matInput formControlName="estado" maxlength="2" />
+            <mat-error>{{ getFieldError(i, 'estado') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="telefone" mask="(00) 00000-0000" [dropSpecialCharacters]="false" />
+            <mat-error>{{ getFieldError(i, 'telefone') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complemento" />
+          </mat-form-field>
+
+          <mat-checkbox formControlName="principal">Principal</mat-checkbox>
+        </div>
+      </div>
+
+      <button mat-button type="button" color="warn" (click)="removeEndereco(i)" *ngIf="enderecos.length > 1">
+        <lucide-icon name="minus"></lucide-icon> Remover endereço
+      </button>
+
+      <mat-divider *ngIf="!last" class="divider"></mat-divider>
+    </div>
+  </div>
+
+  <button mat-stroked-button type="button" (click)="addEndereco()">
+    <lucide-icon name="plus"></lucide-icon> Adicionar endereço
+  </button>
+</div>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.wicket:wicket-bean-validation:7.17.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.wicket" artifactId="wicket-bean-validation" version="7.17.0" baseVersion="7.17.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/9.4.1/transforms/e66eaba5356f3962fc6dd95c68169380/transformed/wicket-bean-validation-7.17.0-jakartaee.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-bean-validation/7.17.0/7ac067f6c2e22a6eff4f58b23b5adf21d5948557/wicket-bean-validation-7.17.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

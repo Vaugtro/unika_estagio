@@ -1,0 +1,79 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+* {
+  box-sizing: border-box;
+}
+
+lucide-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mat-column-actions {
+  text-align: right;
+}
+
+.mat-column-id {
+  max-width: 80px;
+  min-width: 60px;
+}
+
+.mat-column-status {
+  max-width: 120px;
+}
+
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.app-navbar {
+  background: linear-gradient(135deg, #3f51b5 0%, #7986cb 100%);
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.badge-active {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+}
+
+.badge-inactive {
+  background-color: #ffebee !important;
+  color: #c62828 !important;
+}
+
+.loading-overlay {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.centered-items-btn {
+  @apply flex justify-center items-center;
+}

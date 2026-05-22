@@ -25,6 +25,16 @@ public interface ClienteJuridicoQueryService {
 
     Page<ClienteJuridicoReportResponse> findAllForReport(Pageable pageable);
 
+    /**
+     * Fuzzy search across razaoSocial, CNPJ, inscricaoEstadual, email
+     */
+    Page<ClienteJuridicoListResponse> search(String q, Pageable pageable);
+
+    /**
+     * Count results for fuzzy search
+     */
+    long countSearch(String q);
+
     boolean existsByCnpj(String cnpj);
 
     ClienteJuridicoResponse findByCnpj(String cnpj);
