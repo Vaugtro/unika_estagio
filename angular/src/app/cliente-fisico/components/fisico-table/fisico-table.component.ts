@@ -162,7 +162,7 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: 'fisico' },
+      data: { clienteType: 'fisico', searchQuery: this.searchControl.value?.trim() || undefined },
     });
   }
 

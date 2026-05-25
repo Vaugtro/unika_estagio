@@ -165,7 +165,7 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: 'juridico' },
+      data: { clienteType: 'juridico', searchQuery: this.searchControl.value?.trim() || undefined },
     });
   }
 

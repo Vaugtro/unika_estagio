@@ -26,6 +26,11 @@ public interface ClienteJuridicoQueryService {
     Page<ClienteJuridicoReportResponse> findAllForReport(Pageable pageable);
 
     /**
+     * Fuzzy search for report — same filter as search() but returns ReportResponse.
+     */
+    Page<ClienteJuridicoReportResponse> searchForReport(String q, Pageable pageable);
+
+    /**
      * Fuzzy search across razaoSocial, CNPJ, inscricaoEstadual, email
      */
     Page<ClienteJuridicoListResponse> search(String q, Pageable pageable);

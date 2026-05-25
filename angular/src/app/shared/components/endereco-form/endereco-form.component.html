@@ -6,43 +6,43 @@
           <mat-form-field appearance="outline">
             <mat-label>Logradouro</mat-label>
             <input matInput formControlName="logradouro" />
-            <mat-error>{{ getFieldError(i, 'logradouro') }}</mat-error>
+            <mat-error *ngIf="group.get('logradouro')?.invalid && group.get('logradouro')?.touched">{{ getFieldError(i, 'logradouro') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="num-field">
             <mat-label>Número</mat-label>
             <input matInput type="number" formControlName="numero" />
-            <mat-error>{{ getFieldError(i, 'numero') }}</mat-error>
+            <mat-error *ngIf="group.get('numero')?.invalid && group.get('numero')?.touched">{{ getFieldError(i, 'numero') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Bairro</mat-label>
             <input matInput formControlName="bairro" />
-            <mat-error>{{ getFieldError(i, 'bairro') }}</mat-error>
+            <mat-error *ngIf="group.get('bairro')?.invalid && group.get('bairro')?.touched">{{ getFieldError(i, 'bairro') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>CEP</mat-label>
             <input matInput formControlName="cep" mask="00000-000" [dropSpecialCharacters]="false" />
-            <mat-error>{{ getFieldError(i, 'cep') }}</mat-error>
+            <mat-error *ngIf="group.get('cep')?.invalid && group.get('cep')?.touched">{{ getFieldError(i, 'cep') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Cidade</mat-label>
             <input matInput formControlName="cidade" />
-            <mat-error>{{ getFieldError(i, 'cidade') }}</mat-error>
+            <mat-error *ngIf="group.get('cidade')?.invalid && group.get('cidade')?.touched">{{ getFieldError(i, 'cidade') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Estado</mat-label>
             <input matInput formControlName="estado" maxlength="2" />
-            <mat-error>{{ getFieldError(i, 'estado') }}</mat-error>
+            <mat-error *ngIf="group.get('estado')?.invalid && group.get('estado')?.touched">{{ getFieldError(i, 'estado') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Telefone</mat-label>
             <input matInput formControlName="telefone" mask="(00) 00000-0000" [dropSpecialCharacters]="false" />
-            <mat-error>{{ getFieldError(i, 'telefone') }}</mat-error>
+            <mat-error *ngIf="group.get('telefone')?.invalid && group.get('telefone')?.touched">{{ getFieldError(i, 'telefone') }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">

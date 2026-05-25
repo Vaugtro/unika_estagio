@@ -58,7 +58,17 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
         DataView<ClienteJuridicoListResponse> dataView = new ClienteJuridicoDataView("rows", dataProvider, 10);
         tableContainer.add(dataView);
 
-        navigator = new AjaxPagingNavigator("navigator", dataView);
+        navigator = new AjaxPagingNavigator("navigator", dataView) {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onAjaxEvent(AjaxRequestTarget target) {
+                super.onAjaxEvent(target);
+                target.add(this);
+                target.appendJavaScript("lucide.createIcons();");
+            }
+        };
         navigator.setOutputMarkupId(true);
         add(navigator);
 
@@ -70,7 +80,10 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getPdfData() {
-                return fileService.pdfJuridicos();
+                String q = dataProvider.getSearchQuery();
+                return (q != null && !q.isBlank())
+                        ? fileService.pdfJuridicosPorFiltro(q)
+                        : fileService.pdfJuridicos();
             }
 
             @Override
@@ -80,7 +93,10 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getXlsxData() {
-                return fileService.xlsxJuridicos();
+                String q = dataProvider.getSearchQuery();
+                return (q != null && !q.isBlank())
+                        ? fileService.xlsxJuridicosPorFiltro(q)
+                        : fileService.xlsxJuridicos();
             }
 
             @Override
@@ -137,7 +153,6 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
                 dataProvider.setSearchQuery(q);
                 target.add(tableContainer);
                 target.add(navigator);
-                target.add(searchForm);
                 target.appendJavaScript("lucide.createIcons();");
             }
         };

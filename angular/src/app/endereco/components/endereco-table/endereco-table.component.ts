@@ -145,7 +145,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: this.clienteType },
+      data: { clienteType: this.clienteType, searchQuery: undefined },
     });
   }
 

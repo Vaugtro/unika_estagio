@@ -134,6 +134,11 @@ public class ClienteJuridicoServiceImpl extends AbstractClienteService<ClienteJu
     }
 
     @Override
+    public Page<ClienteJuridicoReportResponse> searchForReport(String q, Pageable pageable) {
+        return juridicoRepository.search(q, pageable).map(mapper::toReportResponse);
+    }
+
+    @Override
     public boolean existsByCnpj(String cnpj) {
         return repository.existsByCnpj(CNPJFormatter.unformat(cnpj));
     }

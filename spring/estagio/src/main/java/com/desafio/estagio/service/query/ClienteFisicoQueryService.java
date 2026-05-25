@@ -22,6 +22,11 @@ public interface ClienteFisicoQueryService {
     Page<ClienteFisicoReportResponse> findAllForReport(Pageable pageable);
 
     /**
+     * Fuzzy search for report — same filter as search() but returns ReportResponse.
+     */
+    Page<ClienteFisicoReportResponse> searchForReport(String q, Pageable pageable);
+
+    /**
      * Fuzzy search across nome, CPF, RG, email
      */
     Page<ClienteFisicoListResponse> search(String q, Pageable pageable);

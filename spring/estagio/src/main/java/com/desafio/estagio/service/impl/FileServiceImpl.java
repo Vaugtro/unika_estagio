@@ -3,6 +3,11 @@ package com.desafio.estagio.service.impl;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoReportResponse;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoReportResponse;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
+import com.desafio.estagio.exceptions.ResourceNotFoundException;
+import com.desafio.estagio.model.Cliente;
+import com.desafio.estagio.model.ClienteFisico;
+import com.desafio.estagio.model.ClienteJuridico;
+import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
@@ -10,6 +15,7 @@ import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.service.JasperReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,6 +38,7 @@ public class FileServiceImpl implements FileService {
     private final EnderecoService enderecoService;
     private final JasperReportService jasperReportService;
     private final XlsxFileService xlsxFileService;
+    private final ClienteRepository<Cliente> clienteRepository;
 
     // =====================================================================
     // PDF — delegates to JasperReportService (uses compiled .jrxml templates)
@@ -42,24 +49,56 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public byte[] pdfFisicos() {
-        List<ClienteFisicoReportResponse> data = clienteFisicoService
-                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
-                .getContent();
+        List<ClienteFisicoReportResponse> data = resolveFisicoData(null);
+        return pdfFromRecords("ClienteFisicoReport", data);
+    }
+
+    @Override
+    public byte[] pdfFisicosPorFiltro(String searchQuery) {
+        List<ClienteFisicoReportResponse> data = resolveFisicoData(searchQuery);
         return pdfFromRecords("ClienteFisicoReport", data);
     }
 
     @Override
     public byte[] pdfJuridicos() {
-        List<ClienteJuridicoReportResponse> data = clienteJuridicoService
-                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
-                .getContent();
+        List<ClienteJuridicoReportResponse> data = resolveJuridicoData(null);
+        return pdfFromRecords("ClienteJuridicoReport", data);
+    }
+
+    @Override
+    public byte[] pdfJuridicosPorFiltro(String searchQuery) {
+        List<ClienteJuridicoReportResponse> data = resolveJuridicoData(searchQuery);
         return pdfFromRecords("ClienteJuridicoReport", data);
     }
 
     @Override
     public byte[] pdfEnderecos(Long clienteId) {
         List<EnderecoResponse> enderecos = enderecoService.findAllByClienteId(clienteId);
-        return pdfFromRecords("EnderecoReport", enderecos);
+
+        var enderecoMaps = enderecos.stream()
+                .map(this::recordToMap)
+                .toList();
+
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cliente não encontrado: " + clienteId));
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("TABLE_DATA_SOURCE", new JRMapCollectionDataSource(enderecoMaps));
+
+        if (cliente instanceof ClienteFisico cf) {
+            params.put("CLIENTE_NOME", cf.getNome());
+            params.put("CLIENTE_DOCUMENTO", cf.getCpf());
+            params.put("CLIENTE_DOC_LABEL", "CPF");
+        } else if (cliente instanceof ClienteJuridico cj) {
+            params.put("CLIENTE_NOME", cj.getRazaoSocial());
+            params.put("CLIENTE_DOCUMENTO", cj.getCnpj());
+            params.put("CLIENTE_DOC_LABEL", "CNPJ");
+        }
+        params.put("CLIENTE_EMAIL", cliente.getEmail());
+
+        return jasperReportService.generatePdfWithDataSource(
+                "EnderecoReport", new JREmptyDataSource(), params);
     }
 
     /**
@@ -76,7 +115,7 @@ public class FileServiceImpl implements FileService {
         params.put("TABLE_DATA_SOURCE", new JRMapCollectionDataSource(maps));
 
         return jasperReportService.generatePdfWithDataSource(
-                reportName, new JRMapCollectionDataSource(maps), params);
+                reportName, new JREmptyDataSource(), params);
     }
 
     /**
@@ -104,13 +143,45 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public byte[] xlsxFisicosPorFiltro(String searchQuery) {
+        return xlsxFileService.xlsxFisicosPorFiltro(searchQuery);
+    }
+
+    @Override
     public byte[] xlsxJuridicos() {
         return xlsxFileService.xlsxJuridicos();
     }
 
     @Override
+    public byte[] xlsxJuridicosPorFiltro(String searchQuery) {
+        return xlsxFileService.xlsxJuridicosPorFiltro(searchQuery);
+    }
+
+    @Override
     public byte[] xlsxEnderecos(Long clienteId) {
         return xlsxFileService.xlsxEnderecos(clienteId);
+    }
+
+    private List<ClienteFisicoReportResponse> resolveFisicoData(String searchQuery) {
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            return clienteFisicoService
+                    .searchForReport(searchQuery, PageRequest.of(0, Integer.MAX_VALUE))
+                    .getContent();
+        }
+        return clienteFisicoService
+                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
+                .getContent();
+    }
+
+    private List<ClienteJuridicoReportResponse> resolveJuridicoData(String searchQuery) {
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            return clienteJuridicoService
+                    .searchForReport(searchQuery, PageRequest.of(0, Integer.MAX_VALUE))
+                    .getContent();
+        }
+        return clienteJuridicoService
+                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
+                .getContent();
     }
 
     // =====================================================================

@@ -11,6 +11,9 @@
 
 <mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="false">Cancelar</button>
+  <button mat-stroked-button (click)="downloadTemplate()" [disabled]="downloadingTemplate">
+    {{ downloadingTemplate ? 'Baixando...' : 'Baixar Template' }}
+  </button>
   <button mat-raised-button color="primary" (click)="import()" [disabled]="!selectedFile">
     Importar
   </button>

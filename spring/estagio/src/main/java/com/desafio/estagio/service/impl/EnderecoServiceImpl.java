@@ -9,6 +9,7 @@ import com.desafio.estagio.model.Endereco;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
 import com.desafio.estagio.service.EnderecoService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -187,13 +188,20 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = findEntityById(id);
         Cliente cliente = entity.getCliente();
 
-        // Delegate to model — handles uniqueness (demotes current principal)
-        cliente.setEnderecoPrincipal(entity);
+        // Demote all addresses first, then flush, then promote.
+        // Hibernate flushes UPDATEs in persistence-context order (entities
+        // loaded first are flushed first). Since findEntityById(id) loads the
+        // target before cliente.getEnderecos() loads the current principal,
+        // the promotion UPDATE would be flushed before the demotion UPDATE,
+        // violating uk_cliente_endereco_principal_unico.
+        // Flushing explicitly between demotion and promotion avoids this.
+        cliente.getEnderecos().forEach(e -> e.setPrincipal(false));
+        enderecoRepository.flush();
 
-        Endereco updated = enderecoRepository.save(entity);
+        entity.setPrincipal(true);
         log.info("Set endereco {} as principal for cliente {}", id, cliente.getId());
 
-        return enderecoMapper.toResponse(updated);
+        return enderecoMapper.toResponse(entity);
     }
 
     // =====================================================
@@ -208,13 +216,10 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = findEntityById(id);
         Cliente cliente = entity.getCliente();
 
-        // Demote entity before removeEndereco promotes another as principal.
-        // Hibernate flushes UPDATEs before DELETEs, so the promotion would
-        // violate uk_cliente_endereco_principal_unico if the entity being
-        // deleted is still marked as principal.
-        entity.setPrincipal(false);
-
-        // Delegate to model — enforces at-least-one and principal promotion rules
+        // Delegate to model — enforces at-least-one and principal promotion rules.
+        // removeEndereco internally demotes the entity before removal (to avoid
+        // uk_cliente_endereco_principal_unico during Hibernate flush) and
+        // promotes enderecos.get(0) when the deleted address was principal.
         try {
             cliente.removeEndereco(entity);
         } catch (IllegalStateException e) {

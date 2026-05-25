@@ -42,14 +42,28 @@ export class FisicoCreateDialogComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    const mainInvalid = this.form.invalid;
 
     const enderecoArray = this.enderecoForm.getFormArray();
-    if (enderecoArray.invalid || enderecoArray.length === 0) {
-      this.toastService.show('error', 'Adicione pelo menos um endereço');
+    const enderecoInvalid = enderecoArray.invalid || enderecoArray.length === 0;
+
+    if (mainInvalid) {
+      this.form.markAllAsTouched();
+    }
+
+    if (enderecoInvalid) {
+      for (const control of enderecoArray.controls) {
+        (control as FormGroup).markAllAsTouched();
+      }
+      this.toastService.show(
+        'error',
+        enderecoArray.length === 0
+          ? 'Adicione pelo menos um endereço'
+          : 'Verifique os campos obrigatórios de endereço',
+      );
+    }
+
+    if (mainInvalid || enderecoInvalid) {
       return;
     }
 

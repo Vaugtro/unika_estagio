@@ -16,9 +16,19 @@ public interface FileService {
     byte[] pdfFisicos();
 
     /**
+     * PDF of ClienteFisico records filtered by search query.
+     */
+    byte[] pdfFisicosPorFiltro(String searchQuery);
+
+    /**
      * PDF of all ClienteJuridico records.
      */
     byte[] pdfJuridicos();
+
+    /**
+     * PDF of ClienteJuridico records filtered by search query.
+     */
+    byte[] pdfJuridicosPorFiltro(String searchQuery);
 
     /**
      * PDF of all Enderecos belonging to the given cliente.
@@ -35,9 +45,19 @@ public interface FileService {
     byte[] xlsxFisicos();
 
     /**
+     * XLSX of ClienteFisico records filtered by search query.
+     */
+    byte[] xlsxFisicosPorFiltro(String searchQuery);
+
+    /**
      * XLSX of all ClienteJuridico records.
      */
     byte[] xlsxJuridicos();
+
+    /**
+     * XLSX of ClienteJuridico records filtered by search query.
+     */
+    byte[] xlsxJuridicosPorFiltro(String searchQuery);
 
     /**
      * XLSX of all Enderecos belonging to the given cliente.

@@ -1,12 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subscription, catchError, EMPTY } from 'rxjs';
+import { Subscription, of, EMPTY } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { ToastService } from '../../../shared/services/toast.service';
 import { cepValidator } from '../../../shared/validators/cep.validator';
 import { telefoneValidator } from '../../../shared/validators/telefone.validator';
 import { VALIDATION } from '../../../shared/validators/validation-constants';
-import {EnderecosService} from "../../../api";
+import { EnderecosService } from '../../../api';
+import { ViaCepService } from '../../../shared/services/via-cep.service';
 
 export interface EnderecoCreateDialogData {
   clienteId?: number;
@@ -18,7 +20,7 @@ export interface EnderecoCreateDialogData {
   templateUrl: './endereco-create-dialog.component.html',
   styleUrls: ['./endereco-create-dialog.component.scss'],
 })
-export class EnderecoCreateDialogComponent implements OnInit {
+export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   submitting = false;
   hasClienteContext = false;
@@ -28,6 +30,7 @@ export class EnderecoCreateDialogComponent implements OnInit {
     private fb: FormBuilder,
     private enderecosService: EnderecosService,
     private toastService: ToastService,
+    private viaCepService: ViaCepService,
     public dialogRef: MatDialogRef<EnderecoCreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EnderecoCreateDialogData,
   ) {
@@ -53,6 +56,31 @@ export class EnderecoCreateDialogComponent implements OnInit {
     }
 
     this.form = this.fb.group(group);
+
+    this.subscriptions.push(
+      this.form.get('cep')!.valueChanges.pipe(
+        debounceTime(500),
+        filter((v: string | null): v is string => !!v && v.replace(/\D/g, '').length === 8),
+        distinctUntilChanged(),
+        switchMap((value: string) =>
+          this.viaCepService.lookup(value).pipe(catchError(() => of({ erro: true } as any)))
+        ),
+      ).subscribe((result) => {
+        if (result && !result.erro) {
+          const patch: Record<string, string> = {};
+          if (result.logradouro) patch['logradouro'] = result.logradouro;
+          if (result.bairro) patch['bairro'] = result.bairro;
+          if (result.localidade) patch['cidade'] = result.localidade;
+          if (result.uf) patch['estado'] = result.uf;
+          if (result.complemento) patch['complemento'] = result.complemento;
+          this.form.patchValue(patch);
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   submit(): void {

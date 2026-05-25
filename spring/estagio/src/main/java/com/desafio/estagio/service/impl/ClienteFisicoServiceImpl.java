@@ -116,6 +116,11 @@ public class ClienteFisicoServiceImpl extends AbstractClienteService<ClienteFisi
     }
 
     @Override
+    public Page<ClienteFisicoReportResponse> searchForReport(String q, Pageable pageable) {
+        return fisicoRepository.search(q, pageable).map(mapper::toReportResponse);
+    }
+
+    @Override
     public boolean existsByCpf(String cpf) {
         return repository.existsByCpf(cpf);
     }

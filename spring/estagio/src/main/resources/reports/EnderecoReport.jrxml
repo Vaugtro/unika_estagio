@@ -18,6 +18,9 @@
             <pen lineWidth="0.5" lineColor="#000000"/>
         </box>
     </style>
+    <style name="ClienteHeader" forecolor="#006699" fontSize="14.0" bold="true"/>
+    <style name="ClienteLabel" fontSize="10.0" bold="true"/>
+    <style name="ClienteValue" fontSize="10.0"/>
     <dataset name="tableDataset" uuid="22334455-6677-8899-aabb-ccddeeff0011">
         <field name="logradouro" class="java.lang.String"/>
         <field name="numero" class="java.lang.Long"/>
@@ -29,7 +32,11 @@
         <field name="principal" class="java.lang.Boolean"/>
     </dataset>
     <parameter name="TABLE_DATA_SOURCE" class="net.sf.jasperreports.engine.JRDataSource"/>
-    <title height="72">
+    <parameter name="CLIENTE_NOME" class="java.lang.String"/>
+    <parameter name="CLIENTE_DOCUMENTO" class="java.lang.String"/>
+    <parameter name="CLIENTE_DOC_LABEL" class="java.lang.String"/>
+    <parameter name="CLIENTE_EMAIL" class="java.lang.String"/>
+    <title height="170">
         <element kind="frame" uuid="33445566-7788-99aa-bbcc-ddeeff001122" mode="Opaque" x="-20" y="-20" width="842"
                  height="92" backcolor="#006699">
             <element kind="staticText" uuid="44556677-8899-aabb-ccdd-eeff00112233" x="20" y="20" width="400" height="43"
@@ -40,6 +47,30 @@
                      height="20" forecolor="#FFFFFF" fontSize="12.0" bold="false" hTextAlign="Right">
                 <text><![CDATA[Listagem de endereços do cliente]]></text>
             </element>
+        </element>
+        <element kind="staticText" uuid="aa11bb22-cc33-dd44-ee55-ff6677889900" x="20" y="80" width="300" height="20"
+                 style="ClienteHeader">
+            <text><![CDATA[Dados do Cliente]]></text>
+        </element>
+        <element kind="staticText" uuid="bb22cc33-dd44-ee55-ff66-7788990011aa" x="20" y="105" width="80" height="16"
+                 style="ClienteLabel">
+            <text><![CDATA[Nome:]]></text>
+        </element>
+        <element kind="textField" uuid="cc33dd44-ee55-ff66-7788-990011aabb22" x="100" y="105" width="400" height="16"
+                 style="ClienteValue">
+            <expression><![CDATA[$P{CLIENTE_NOME}]]></expression>
+        </element>
+        <element kind="textField" uuid="dd44ee55-ff66-7788-9900-11aabb22cc33" x="20" y="125" width="480" height="16"
+                 style="ClienteValue">
+            <expression><![CDATA[$P{CLIENTE_DOC_LABEL} + ": " + $P{CLIENTE_DOCUMENTO}]]></expression>
+        </element>
+        <element kind="staticText" uuid="ee55ff66-7788-9900-11aa-bb22cc33dd44" x="20" y="145" width="80" height="16"
+                 style="ClienteLabel">
+            <text><![CDATA[E-mail:]]></text>
+        </element>
+        <element kind="textField" uuid="ff667788-9900-11aa-bb22-cc33dd44ee55" x="100" y="145" width="400" height="16"
+                 style="ClienteValue">
+            <expression><![CDATA[$P{CLIENTE_EMAIL}]]></expression>
         </element>
     </title>
     <pageHeader height="13"/>

@@ -11,13 +11,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/export")
 @RequiredArgsConstructor
-@Tag(name = "Exportacao", description = "Endpoints para exportação de relatórios (PDF, XLSX) e templates de importação")
+@Tag(name = "Arquivo", description = "Endpoints para exportação de relatórios (PDF, XLSX) e templates de importação")
 public class FileController {
 
     private final FileService fileService;
@@ -34,8 +36,8 @@ public class FileController {
                     mediaType = MediaType.APPLICATION_PDF_VALUE,
                     schema = @Schema(type = "string", format = "byte")
             ))
-    public ResponseEntity<byte[]> exportClientesFisicosToPdf() {
-        byte[] pdfReport = fileService.pdfFisicos();
+    public ResponseEntity<byte[]> exportClientesFisicosToPdf(@RequestParam(name = "q", required = false) String query) {
+        byte[] pdfReport = fileService.pdfFisicosPorFiltro(query);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesFisicosReport.pdf")
@@ -51,11 +53,28 @@ public class FileController {
                     mediaType = MediaType.APPLICATION_PDF_VALUE,
                     schema = @Schema(type = "string", format = "byte")
             ))
-    public ResponseEntity<byte[]> exportClientesJuridicosToPdf() {
-        byte[] pdfReport = fileService.pdfJuridicos();
+    public ResponseEntity<byte[]> exportClientesJuridicosToPdf(@RequestParam(name = "q", required = false) String query) {
+        byte[] pdfReport = fileService.pdfJuridicosPorFiltro(query);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesJuridicosReport.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfReport);
+    }
+
+    @GetMapping(value = "/clientes/{clienteId}/enderecos/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @Operation(summary = "Exportar endereços de um cliente para PDF")
+    @ApiResponse(responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_PDF_VALUE,
+                    schema = @Schema(type = "string", format = "byte")
+            ))
+    public ResponseEntity<byte[]> exportEnderecosToPdf(@PathVariable Long clienteId) {
+        byte[] pdfReport = fileService.pdfEnderecos(clienteId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=EnderecosReport.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfReport);
     }
@@ -72,8 +91,8 @@ public class FileController {
                     mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     schema = @Schema(type = "string", format = "byte")
             ))
-    public ResponseEntity<byte[]> exportClientesFisicosToXlsx() {
-        byte[] xlsx = fileService.xlsxFisicos();
+    public ResponseEntity<byte[]> exportClientesFisicosToXlsx(@RequestParam(name = "q", required = false) String query) {
+        byte[] xlsx = fileService.xlsxFisicosPorFiltro(query);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesFisicos.xlsx")
@@ -89,11 +108,28 @@ public class FileController {
                     mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     schema = @Schema(type = "string", format = "byte")
             ))
-    public ResponseEntity<byte[]> exportClientesJuridicosToXlsx() {
-        byte[] xlsx = fileService.xlsxJuridicos();
+    public ResponseEntity<byte[]> exportClientesJuridicosToXlsx(@RequestParam(name = "q", required = false) String query) {
+        byte[] xlsx = fileService.xlsxJuridicosPorFiltro(query);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ClientesJuridicos.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(xlsx);
+    }
+
+    @GetMapping(value = "/clientes/{clienteId}/enderecos/xlsx", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Operation(summary = "Exportar endereços de um cliente para XLSX")
+    @ApiResponse(responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    schema = @Schema(type = "string", format = "byte")
+            ))
+    public ResponseEntity<byte[]> exportEnderecosToXlsx(@PathVariable Long clienteId) {
+        byte[] xlsx = fileService.xlsxEnderecos(clienteId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Enderecos.xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(xlsx);
     }
@@ -132,6 +168,23 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template-clientes-juridicos.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(template);
+    }
+
+    @GetMapping(value = "/enderecos/template", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Operation(summary = "Baixar template XLSX para importação de endereços")
+    @ApiResponse(responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    schema = @Schema(type = "string", format = "byte")
+            ))
+    public ResponseEntity<byte[]> templateEnderecos() {
+        byte[] template = fileService.templateEnderecosImport();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template-enderecos.xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(template);
     }

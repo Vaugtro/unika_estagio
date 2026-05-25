@@ -102,6 +102,12 @@ public abstract class Cliente {
         }
 
         boolean wasPrincipal = endereco.isPrincipal();
+
+        // Demote before removal to avoid UK constraint violation during Hibernate flush
+        // (UPDATEs are flushed before DELETEs — deleting a principal without demoting
+        //  would collide with the promotion of another address).
+        endereco.setPrincipal(false);
+
         boolean removed = enderecos.remove(endereco);
 
         if (removed) {

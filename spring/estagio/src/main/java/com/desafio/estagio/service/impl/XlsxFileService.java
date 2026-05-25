@@ -41,21 +41,57 @@ public class XlsxFileService {
     // =====================================================================
 
     public byte[] xlsxFisicos() {
-        List<ClienteFisicoReportResponse> data = clienteFisicoService
-                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
-                .getContent();
+        List<ClienteFisicoReportResponse> data = resolveFisicoData(null);
+        return toXlsxFisicos(data);
+    }
+
+    public byte[] xlsxFisicosPorFiltro(String searchQuery) {
+        List<ClienteFisicoReportResponse> data = resolveFisicoData(searchQuery);
+        return toXlsxFisicos(data);
+    }
+
+    public byte[] xlsxJuridicos() {
+        List<ClienteJuridicoReportResponse> data = resolveJuridicoData(null);
+        return toXlsxJuridicos(data);
+    }
+
+    public byte[] xlsxJuridicosPorFiltro(String searchQuery) {
+        List<ClienteJuridicoReportResponse> data = resolveJuridicoData(searchQuery);
+        return toXlsxJuridicos(data);
+    }
+
+    private byte[] toXlsxFisicos(List<ClienteFisicoReportResponse> data) {
         String[] headers = {"ID", "Nome", "CPF", "RG", "Email", "Data Nasc.", "Ativo", "Criado em"};
         String[] fields = {"id", "nome", "cpf", "rg", "email", "dataNascimento", "estaAtivo", "createdAt"};
         return generateXlsx(data, headers, fields, "Clientes Fisicos");
     }
 
-    public byte[] xlsxJuridicos() {
-        List<ClienteJuridicoReportResponse> data = clienteJuridicoService
-                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
-                .getContent();
+    private byte[] toXlsxJuridicos(List<ClienteJuridicoReportResponse> data) {
         String[] headers = {"ID", "Razao Social", "CNPJ", "Insc. Estadual", "Email", "Ativo", "Dt. Criacao Emp.", "Criado em"};
         String[] fields = {"id", "razaoSocial", "cnpj", "inscricaoEstadual", "email", "estaAtivo", "dataCriacaoEmpresa", "createdAt"};
         return generateXlsx(data, headers, fields, "Clientes Juridicos");
+    }
+
+    private List<ClienteFisicoReportResponse> resolveFisicoData(String searchQuery) {
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            return clienteFisicoService
+                    .searchForReport(searchQuery, PageRequest.of(0, Integer.MAX_VALUE))
+                    .getContent();
+        }
+        return clienteFisicoService
+                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
+                .getContent();
+    }
+
+    private List<ClienteJuridicoReportResponse> resolveJuridicoData(String searchQuery) {
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            return clienteJuridicoService
+                    .searchForReport(searchQuery, PageRequest.of(0, Integer.MAX_VALUE))
+                    .getContent();
+        }
+        return clienteJuridicoService
+                .findAllForReport(PageRequest.of(0, Integer.MAX_VALUE))
+                .getContent();
     }
 
     public byte[] xlsxEnderecos(Long clienteId) {

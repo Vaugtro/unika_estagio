@@ -58,7 +58,17 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
         DataView<ClienteFisicoListResponse> dataView = new ClienteFisicoDataView("rows", dataProvider, 10);
         tableContainer.add(dataView);
 
-        navigator = new AjaxPagingNavigator("navigator", dataView);
+        navigator = new AjaxPagingNavigator("navigator", dataView) {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onAjaxEvent(AjaxRequestTarget target) {
+                super.onAjaxEvent(target);
+                target.add(this);
+                target.appendJavaScript("lucide.createIcons();");
+            }
+        };
         navigator.setOutputMarkupId(true);
         add(navigator);
 
@@ -70,7 +80,10 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getPdfData() {
-                return fileService.pdfFisicos();
+                String q = dataProvider.getSearchQuery();
+                return (q != null && !q.isBlank())
+                        ? fileService.pdfFisicosPorFiltro(q)
+                        : fileService.pdfFisicos();
             }
 
             @Override
@@ -80,7 +93,10 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getXlsxData() {
-                return fileService.xlsxFisicos();
+                String q = dataProvider.getSearchQuery();
+                return (q != null && !q.isBlank())
+                        ? fileService.xlsxFisicosPorFiltro(q)
+                        : fileService.xlsxFisicos();
             }
 
             @Override
@@ -138,7 +154,6 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
                 dataProvider.setSearchQuery(q);
                 target.add(tableContainer);
                 target.add(navigator);
-                target.add(searchForm);
                 target.appendJavaScript("lucide.createIcons();");
             }
         };

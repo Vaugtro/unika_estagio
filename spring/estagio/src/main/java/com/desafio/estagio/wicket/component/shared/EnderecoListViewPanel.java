@@ -8,6 +8,7 @@ import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -93,9 +94,42 @@ public class EnderecoListViewPanel extends Panel {
                 item.add(new Label("cidade", end.cidade() != null ? end.cidade() : ""));
                 item.add(new Label("estado", end.estado() != null ? end.estado() : ""));
                 item.add(new Label("telefone", end.telefone() != null ? end.telefone() : ""));
-                item.add(new Label("principalLabel", Boolean.TRUE.equals(end.principal()) ? "Sim" : "Não"));
 
                 Long endId = end.id();
+                boolean isPrincipal = Boolean.TRUE.equals(end.principal());
+
+                Label btnPrincipalLabel = new Label("principalLabel", isPrincipal ? "Sim" : "Não");
+                btnPrincipalLabel.setOutputMarkupId(true);
+
+                AjaxLink<Void> principalBtn = new AjaxLink<>("setAsPrincipalBtn") {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        try {
+                            enderecoService.setAsPrincipal(endId);
+                            target.add(enderecosContainer);
+                            ValidationFeedback.showToast(target, "success",
+                                    "Endereço definido como principal!");
+                            target.appendJavaScript("lucide.createIcons();");
+                        } catch (Exception e) {
+                            ValidationFeedback.showToast(target, "error", e.getMessage());
+                        }
+                    }
+                };
+
+                principalBtn.add(btnPrincipalLabel);
+                principalBtn.add(new AttributeModifier("class",
+                        isPrincipal ? "btn btn-sm btn-success" : "btn btn-sm btn-outline-success"));
+                principalBtn.add(new AttributeModifier("title",
+                        isPrincipal ? "Principal" : "Definir como principal"));
+
+                if (isPrincipal) {
+                    principalBtn.add(new AttributeModifier("disabled", "disabled"));
+                }
+
+                item.add(principalBtn);
 
                 item.add(new AjaxLink<Void>("editarBtn") {
                     @Serial

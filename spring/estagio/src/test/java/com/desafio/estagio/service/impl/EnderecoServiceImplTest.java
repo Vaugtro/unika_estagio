@@ -560,11 +560,10 @@ class EnderecoServiceImplTest {
     // =====================================================
 
     @Test
-    @DisplayName("setAsPrincipal: success delegates to cliente.setEnderecoPrincipal")
+    @DisplayName("setAsPrincipal: success demotes all, flushes, then promotes target")
     void testSetAsPrincipalSuccess() {
         // Arrange
         when(enderecoRepository.findById(1L)).thenReturn(Optional.of(mockEndereco));
-        when(enderecoRepository.save(any(Endereco.class))).thenReturn(mockEndereco);
         when(enderecoMapper.toResponse(mockEndereco)).thenReturn(mockResponse);
 
         // Act
@@ -573,7 +572,9 @@ class EnderecoServiceImplTest {
         // Assert
         assertNotNull(result);
         verify(enderecoRepository).findById(1L);
-        verify(enderecoRepository).save(any(Endereco.class));
+        verify(enderecoRepository).flush();
+        verify(enderecoRepository, never()).save(any());
+        assertTrue(mockEndereco.getPrincipal());
     }
 
     @Test

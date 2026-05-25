@@ -73,6 +73,12 @@
                 lucide.createIcons();
             });
 
+            // Handle browser back/forward cache (bfcache) — DOMContentLoaded
+            // does NOT fire when page is restored from bfcache on back navigation.
+            window.addEventListener('pageshow', function () {
+                lucide.createIcons();
+            });
+
             // Reinitialize after Wicket AJAX updates
             if (typeof Wicket !== 'undefined') {
                 Wicket.Event.subscribe('/ajax/call/response', function () {

@@ -7,6 +7,7 @@ import { Subscription, catchError, EMPTY } from 'rxjs';
 
 export interface ExportDialogData {
   clienteType: 'fisico' | 'juridico' | 'endereco';
+  searchQuery?: string;
 }
 
 @Component({
@@ -26,6 +27,11 @@ export class ExportDialogComponent {
     private toastService: ToastService,
   ) {}
 
+  private buildUrl(base: string): string {
+    const q = this.data.searchQuery?.trim();
+    return q ? `${base}?q=${encodeURIComponent(q)}` : base;
+  }
+
   exportPdf(): void {
     if (this.data.clienteType === 'endereco') {
       this.toastService.show('info', 'Exportação de PDF não disponível para endereços');
@@ -33,9 +39,11 @@ export class ExportDialogComponent {
     }
 
     this.exportingPdf = true;
-    const url = this.data.clienteType === 'fisico'
-      ? '/v1/export/clientes/fisicos/pdf'
-      : '/v1/export/clientes/juridicos/pdf';
+    const url = this.buildUrl(
+      this.data.clienteType === 'fisico'
+        ? '/v1/export/clientes/fisicos/pdf'
+        : '/v1/export/clientes/juridicos/pdf'
+    );
 
     this.subscriptions.push(
       this.httpClient.get(url, { responseType: 'blob' }).pipe(
@@ -60,9 +68,11 @@ export class ExportDialogComponent {
     }
 
     this.exportingXlsx = true;
-    const url = this.data.clienteType === 'fisico'
-      ? '/v1/export/clientes/fisicos/xlsx'
-      : '/v1/export/clientes/juridicos/xlsx';
+    const url = this.buildUrl(
+      this.data.clienteType === 'fisico'
+        ? '/v1/export/clientes/fisicos/xlsx'
+        : '/v1/export/clientes/juridicos/xlsx'
+    );
 
     this.subscriptions.push(
       this.httpClient.get(url, { responseType: 'blob' }).pipe(

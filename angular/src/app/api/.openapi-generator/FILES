@@ -3,10 +3,10 @@ README.md
 api.base.service.ts
 api.module.ts
 api/api.ts
+api/arquivo.service.ts
 api/clientesFisicos.service.ts
 api/clientesJuridicos.service.ts
 api/enderecos.service.ts
-api/exportacao.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
