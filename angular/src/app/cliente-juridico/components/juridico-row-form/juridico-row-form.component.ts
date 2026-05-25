@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
-import { VALIDATION } from '../../../shared/validators/validation-constants';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {debounceTime, distinctUntilChanged, Subscription} from 'rxjs';
+import {VALIDATION} from '../../../shared/validators/validation-constants';
 
 @Component({
   selector: 'app-juridico-row-form',
@@ -17,7 +17,8 @@ export class JuridicoRowFormComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   private sub = new Subscription();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) {
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({

@@ -8,11 +8,7 @@ import com.desafio.estagio.model.Cliente;
 import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.repository.ClienteRepository;
-import com.desafio.estagio.service.ClienteFisicoService;
-import com.desafio.estagio.service.ClienteJuridicoService;
-import com.desafio.estagio.service.EnderecoService;
-import com.desafio.estagio.service.FileService;
-import com.desafio.estagio.service.JasperReportService;
+import com.desafio.estagio.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -22,9 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j

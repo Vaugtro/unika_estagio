@@ -7,14 +7,14 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CPFFormatterTest {
 
-    private String input;
-    private String expected;
-    private String testName;
+    private final String input;
+    private final String expected;
+    private final String testName;
 
     public CPFFormatterTest(String testName, String input, String expected) {
         this.testName = testName;
@@ -24,17 +24,17 @@ public class CPFFormatterTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "format valid 11-digit CPF", "12345678901", "123.456.789-01" },
-                { "format with dots and dashes", "123.456.789-01", "123.456.789-01" },
-                { "format with dashes only", "123-456-789-01", "123.456.789-01" },
-                { "format with spaces", "123 456 789 01", "123.456.789-01" },
-                { "format invalid length short", "1234567890", "1234567890" },
-                { "format invalid length long", "123456789012", "123456789012" },
-                { "unformat formatted CPF", "123.456.789-01", "12345678901" },
-                { "unformat with dashes", "123-456-789-01", "12345678901" },
-                { "unformat with spaces", "123 456 789 01", "12345678901" },
-                { "unformat already unformatted", "12345678901", "12345678901" }
+        return Arrays.asList(new Object[][]{
+                {"format valid 11-digit CPF", "12345678901", "123.456.789-01"},
+                {"format with dots and dashes", "123.456.789-01", "123.456.789-01"},
+                {"format with dashes only", "123-456-789-01", "123.456.789-01"},
+                {"format with spaces", "123 456 789 01", "123.456.789-01"},
+                {"format invalid length short", "1234567890", "1234567890"},
+                {"format invalid length long", "123456789012", "123456789012"},
+                {"unformat formatted CPF", "123.456.789-01", "12345678901"},
+                {"unformat with dashes", "123-456-789-01", "12345678901"},
+                {"unformat with spaces", "123 456 789 01", "12345678901"},
+                {"unformat already unformatted", "12345678901", "12345678901"}
         });
     }
 

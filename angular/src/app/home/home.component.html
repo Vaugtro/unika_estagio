@@ -1,16 +1,16 @@
 <div class="home-page">
   <div class="tabs">
     <button
-      mat-stroked-button
-      [ngClass]="{ 'tab-active': activeTab === 'fisico' }"
       (click)="activeTab = 'fisico'"
+      [ngClass]="{ 'tab-active': activeTab === 'fisico' }"
+      mat-stroked-button
     >
       Físicos
     </button>
     <button
-      mat-stroked-button
-      [ngClass]="{ 'tab-active': activeTab === 'juridico' }"
       (click)="activeTab = 'juridico'"
+      [ngClass]="{ 'tab-active': activeTab === 'juridico' }"
+      mat-stroked-button
     >
       Jurídicos
     </button>

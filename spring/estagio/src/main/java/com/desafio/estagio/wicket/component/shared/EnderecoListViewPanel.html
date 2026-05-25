@@ -20,10 +20,11 @@
                 <a class="btn btn-outline-info btn-sm rounded-pill px-3" wicket:id="downloadEnderecoTemplateBtn">
                     <i data-lucide="download" style="width: 14px; height: 14px;"></i> Template
                 </a>
-                <form wicket:id="importEnderecoForm" class="d-flex align-items-center gap-1">
-                    <input type="file" wicket:id="enderecoFileUpload" class="form-control form-control-sm"
-                           style="width: 160px;" accept=".xlsx"/>
-                    <button type="submit" wicket:id="importEnderecoBtn" class="btn btn-outline-warning btn-sm rounded-pill px-3">
+                <form class="d-flex align-items-center gap-1" wicket:id="importEnderecoForm">
+                    <input accept=".xlsx" class="form-control form-control-sm" style="width: 160px;"
+                           type="file" wicket:id="enderecoFileUpload"/>
+                    <button class="btn btn-outline-warning btn-sm rounded-pill px-3" type="submit"
+                            wicket:id="importEnderecoBtn">
                         <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Importar
                     </button>
                 </form>
@@ -58,17 +59,19 @@
                         <td wicket:id="estado"></td>
                         <td wicket:id="telefone"></td>
                         <td>
-                            <a wicket:id="setAsPrincipalBtn" class="btn btn-sm" style="min-width: 70px;">
+                            <a class="btn btn-sm" style="min-width: 70px;" wicket:id="setAsPrincipalBtn">
                                 <span wicket:id="principalLabel"></span>
                             </a>
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                <a class="btn btn-sm btn-outline-primary rounded-circle p-1" style="width: 32px; height: 32px;"
+                                <a class="btn btn-sm btn-outline-primary rounded-circle p-1"
+                                   style="width: 32px; height: 32px;"
                                    wicket:id="editarBtn">
                                     <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
                                 </a>
-                                <a class="btn btn-sm btn-outline-danger rounded-circle p-1" style="width: 32px; height: 32px;"
+                                <a class="btn btn-sm btn-outline-danger rounded-circle p-1"
+                                   style="width: 32px; height: 32px;"
                                    wicket:id="excluirBtn">
                                     <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
                                 </a>

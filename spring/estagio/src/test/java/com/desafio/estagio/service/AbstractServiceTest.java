@@ -2,7 +2,6 @@ package com.desafio.estagio.service;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.quality.Strictness;
 
 /**
  * Base class for service-layer unit tests.

@@ -4,17 +4,17 @@
   <p>Selecione um arquivo para importação:</p>
 
   <div class="file-upload">
-    <input type="file" (change)="onFileSelected($event)" accept=".xlsx,.csv" />
+    <input (change)="onFileSelected($event)" accept=".xlsx,.csv" type="file"/>
     <span *ngIf="selectedFile" class="file-name">{{ selectedFile.name }}</span>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="false">Cancelar</button>
-  <button mat-stroked-button (click)="downloadTemplate()" [disabled]="downloadingTemplate">
+  <button [mat-dialog-close]="false" mat-button>Cancelar</button>
+  <button (click)="downloadTemplate()" [disabled]="downloadingTemplate" mat-stroked-button>
     {{ downloadingTemplate ? 'Baixando...' : 'Baixar Template' }}
   </button>
-  <button mat-raised-button color="primary" (click)="import()" [disabled]="!selectedFile">
+  <button (click)="import()" [disabled]="!selectedFile" color="primary" mat-raised-button>
     Importar
   </button>
 </mat-dialog-actions>

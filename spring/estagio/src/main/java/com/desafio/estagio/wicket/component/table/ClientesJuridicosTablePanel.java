@@ -8,11 +8,11 @@ import com.desafio.estagio.wicket.component.modal.ClienteJuridicoCreateModal;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
 import com.desafio.estagio.wicket.component.modal.ImportModal;
 import com.desafio.estagio.wicket.provider.ClienteJuridicoDataProvider;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.devutils.DevUtilsPanel;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -169,9 +169,9 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
                 String url = ajaxBehavior.getCallbackUrl().toString();
                 response.render(OnDomReadyHeaderItem.forScript(
                         "document.getElementById('" + mid + "').addEventListener('input',function(){"
-                        + "clearTimeout(this._st);var e=this;this._st=setTimeout(function(){"
-                        + "Wicket.Ajax.ajax({'u':'" + url + "','ep':{'input':e.value}})"
-                        + "},300);});"
+                                + "clearTimeout(this._st);var e=this;this._st=setTimeout(function(){"
+                                + "Wicket.Ajax.ajax({'u':'" + url + "','ep':{'input':e.value}})"
+                                + "},300);});"
                 ));
             }
         });

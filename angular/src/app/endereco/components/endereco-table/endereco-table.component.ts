@@ -1,17 +1,17 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription, catchError, EMPTY } from 'rxjs';
-import { ToastService } from '../../../shared/services/toast.service';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { EnderecoListResponse } from '../../../api/model/enderecoListResponse';
-import { Pageable } from '../../../api/model/pageable';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {PageEvent} from '@angular/material/paginator';
+import {MatDialog} from '@angular/material/dialog';
+import {catchError, EMPTY, Subscription} from 'rxjs';
+import {ToastService} from '../../../shared/services/toast.service';
+import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {EnderecoListResponse} from '../../../api/model/enderecoListResponse';
+import {Pageable} from '../../../api/model/pageable';
 import {
   EnderecoCreateDialogComponent,
   EnderecoCreateDialogData,
 } from '../endereco-create-dialog/endereco-create-dialog.component';
-import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
-import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
+import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
 import {EnderecosService} from "../../../api";
 
 @Component({
@@ -38,7 +38,8 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
     private enderecosService: EnderecosService,
     private toastService: ToastService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -52,7 +53,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.loading = true;
     const pageable = this.makePageable();
-    console.log('[EnderecoTable] loadData', { clienteId: this.clienteId, pageable });
+    console.log('[EnderecoTable] loadData', {clienteId: this.clienteId, pageable});
 
     this.dataSubscription?.unsubscribe();
     this.dataSubscription = this.enderecosService.enderecosFindAllByClienteId(this.clienteId, this.makePageable()).pipe(
@@ -65,14 +66,10 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
     ).subscribe((page) => {
       console.log('[EnderecoTable] API response', page);
       this.dataSource = page.content!;
-      console.log('[EnderecoTable] dataSource set', { content: page.content, length: page.content?.length });
+      console.log('[EnderecoTable] dataSource set', {content: page.content, length: page.content?.length});
       this.totalElements = page.totalElements ?? 0;
       this.loading = false;
     });
-  }
-
-  private makePageable(): Pageable {
-    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
@@ -132,7 +129,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
       EnderecoCreateDialogComponent,
       {
         width: '600px',
-        data: { clienteId: this.clienteId, clienteType: this.clienteType },
+        data: {clienteId: this.clienteId, clienteType: this.clienteType},
       }
     );
 
@@ -145,13 +142,17 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: this.clienteType, searchQuery: undefined },
+      data: {clienteType: this.clienteType, searchQuery: undefined},
     });
   }
 
   openImport(): void {
     this.dialog.open(ImportDialogComponent, {
-      data: { clienteType: this.clienteType },
+      data: {clienteType: this.clienteType},
     });
+  }
+
+  private makePageable(): Pageable {
+    return {page: this.page, size: this.pageSize, sort: []};
   }
 }

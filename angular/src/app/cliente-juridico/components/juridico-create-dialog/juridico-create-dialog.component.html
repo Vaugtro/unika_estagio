@@ -1,15 +1,15 @@
 <h2 mat-dialog-title>Novo Cliente Jurídico</h2>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form (ngSubmit)="submit()" [formGroup]="form">
   <mat-dialog-content>
     <div class="form-grid-2">
       <mat-form-field appearance="outline">
         <mat-label>CNPJ</mat-label>
         <input
-          matInput
+          [dropSpecialCharacters]="false"
           formControlName="cnpj"
           mask="00.000.000/0000-00"
-          [dropSpecialCharacters]="false"
+          matInput
         />
         <mat-error *ngIf="form.get('cnpj')?.invalid && form.get('cnpj')?.touched">
           {{ getFieldError('cnpj') }}
@@ -18,7 +18,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Data Criação</mat-label>
-        <input matInput formControlName="dataCriacaoEmpresa" type="date" />
+        <input formControlName="dataCriacaoEmpresa" matInput type="date"/>
         <mat-error *ngIf="form.get('dataCriacaoEmpresa')?.invalid && form.get('dataCriacaoEmpresa')?.touched">
           Campo obrigatório
         </mat-error>
@@ -26,7 +26,7 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Razão Social</mat-label>
-        <input matInput formControlName="razaoSocial" />
+        <input formControlName="razaoSocial" matInput/>
         <mat-error *ngIf="form.get('razaoSocial')?.invalid && form.get('razaoSocial')?.touched">
           {{ getFieldError('razaoSocial') }}
         </mat-error>
@@ -34,7 +34,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Inscrição Estadual</mat-label>
-        <input matInput formControlName="inscricaoEstadual" />
+        <input formControlName="inscricaoEstadual" matInput/>
         <mat-error>
           {{ getFieldError('inscricaoEstadual') }}
         </mat-error>
@@ -42,7 +42,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>E-mail</mat-label>
-        <input matInput formControlName="email" type="email" />
+        <input formControlName="email" matInput type="email"/>
         <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
           {{ getFieldError('email') }}
         </mat-error>
@@ -54,8 +54,8 @@
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-button type="button" [mat-dialog-close]="false">Cancelar</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+    <button [mat-dialog-close]="false" mat-button type="button">Cancelar</button>
+    <button [disabled]="submitting" color="primary" mat-raised-button type="submit">
       {{ submitting ? 'Salvando...' : 'Salvar' }}
     </button>
   </mat-dialog-actions>

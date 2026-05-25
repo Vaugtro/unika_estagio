@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
-import { cepValidator } from '../../validators/cep.validator';
-import { telefoneValidator } from '../../validators/telefone.validator';
-import { VALIDATION } from '../../validators/validation-constants';
-import { ViaCepService } from '../../services/via-cep.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {of, Subscription} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
+import {cepValidator} from '../../validators/cep.validator';
+import {telefoneValidator} from '../../validators/telefone.validator';
+import {VALIDATION} from '../../validators/validation-constants';
+import {ViaCepService} from '../../services/via-cep.service';
 import {principalArrayValidator} from "../../validators/principal.validator";
 
 @Component({
@@ -20,7 +20,12 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private viaCepService: ViaCepService,
-  ) {}
+  ) {
+  }
+
+  get enderecos(): FormArray {
+    return this.form.get('enderecos') as FormArray;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -33,15 +38,11 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  get enderecos(): FormArray {
-    return this.form.get('enderecos') as FormArray;
-  }
-
   getFormArray(): FormArray {
     return this.enderecos;
   }
 
-  createEnderecoGroup(principal:boolean): FormGroup {
+  createEnderecoGroup(principal: boolean): FormGroup {
     const group = this.fb.group({
       logradouro: ['', [Validators.required, Validators.minLength(VALIDATION.LOGRADOURO_MIN), Validators.maxLength(VALIDATION.LOGRADOURO_MAX)]],
       numero: [null, [Validators.required, Validators.min(1)]],
@@ -60,7 +61,7 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
         filter((v: string | null): v is string => !!v && v.replace(/\D/g, '').length === 8),
         distinctUntilChanged(),
         switchMap((value: string) =>
-          this.viaCepService.lookup(value).pipe(catchError(() => of({ erro: true } as any)))
+          this.viaCepService.lookup(value).pipe(catchError(() => of({erro: true} as any)))
         ),
       ).subscribe((result) => {
         if (result && !result.erro) {
@@ -86,7 +87,7 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
     return group;
   }
 
-  addEndereco(principal:boolean = false): void {
+  addEndereco(principal: boolean = false): void {
     this.enderecos.push(this.createEnderecoGroup(principal));
   }
 
@@ -114,7 +115,7 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
     enderecosArray.controls.forEach(control => {
       if (control !== currentGroup) {
         // emitEvent: false evita loops infinitos de eventos
-        control.get('principal')?.setValue(false, { emitEvent: false });
+        control.get('principal')?.setValue(false, {emitEvent: false});
       }
     });
   }

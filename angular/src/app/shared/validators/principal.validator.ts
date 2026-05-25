@@ -1,4 +1,4 @@
-import {AbstractControl, ValidatorFn, ValidationErrors, FormArray} from '@angular/forms';
+import {AbstractControl, FormArray, ValidationErrors, ValidatorFn} from '@angular/forms';
 
 export function principalArrayValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -9,10 +9,10 @@ export function principalArrayValidator(): ValidatorFn {
 
     // Erro se houver mais de um ou nenhum (ajuste conforme sua regra)
     if (principais.length > 1) {
-      return { multiplePrincipals: true };
+      return {multiplePrincipals: true};
     }
     if (principais.length === 0) {
-      return { noPrincipal: true };
+      return {noPrincipal: true};
     }
 
     return null;

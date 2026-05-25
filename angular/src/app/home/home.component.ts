@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { FisicoTableComponent } from '../cliente-fisico/components/fisico-table/fisico-table.component';
-import { JuridicoTableComponent } from '../cliente-juridico/components/juridico-table/juridico-table.component';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-home',

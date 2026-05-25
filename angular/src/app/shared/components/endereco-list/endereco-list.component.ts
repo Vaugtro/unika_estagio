@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { EnderecoResponse } from '../../../api/model/enderecoResponse';
+import {Component, Input} from '@angular/core';
+import {EnderecoResponse} from '../../../api/model/enderecoResponse';
 
 @Component({
   selector: 'app-endereco-list',

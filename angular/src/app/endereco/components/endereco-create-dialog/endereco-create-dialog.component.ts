@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subscription, of, EMPTY } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
-import { ToastService } from '../../../shared/services/toast.service';
-import { cepValidator } from '../../../shared/validators/cep.validator';
-import { telefoneValidator } from '../../../shared/validators/telefone.validator';
-import { VALIDATION } from '../../../shared/validators/validation-constants';
-import { EnderecosService } from '../../../api';
-import { ViaCepService } from '../../../shared/services/via-cep.service';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {EMPTY, of, Subscription} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
+import {ToastService} from '../../../shared/services/toast.service';
+import {cepValidator} from '../../../shared/validators/cep.validator';
+import {telefoneValidator} from '../../../shared/validators/telefone.validator';
+import {VALIDATION} from '../../../shared/validators/validation-constants';
+import {EnderecosService} from '../../../api';
+import {ViaCepService} from '../../../shared/services/via-cep.service';
 
 export interface EnderecoCreateDialogData {
   clienteId?: number;
@@ -63,7 +63,7 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
         filter((v: string | null): v is string => !!v && v.replace(/\D/g, '').length === 8),
         distinctUntilChanged(),
         switchMap((value: string) =>
-          this.viaCepService.lookup(value).pipe(catchError(() => of({ erro: true } as any)))
+          this.viaCepService.lookup(value).pipe(catchError(() => of({erro: true} as any)))
         ),
       ).subscribe((result) => {
         if (result && !result.erro) {
@@ -108,7 +108,7 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
     if (this.hasClienteContext) {
       obs$ = this.enderecosService.enderecosCreateForCliente(this.data.clienteId!, addressDto);
     } else {
-      obs$ = this.enderecosService.enderecosCreate({ ...addressDto, clienteId: v.clienteId });
+      obs$ = this.enderecosService.enderecosCreate({...addressDto, clienteId: v.clienteId});
     }
 
     this.subscriptions.push(

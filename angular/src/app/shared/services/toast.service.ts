@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 
 export interface Toast {
   id: string;
@@ -7,14 +7,14 @@ export interface Toast {
   message: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ToastService {
   private toastsSubject = new BehaviorSubject<Toast[]>([]);
   toasts$ = this.toastsSubject.asObservable();
 
   show(type: 'success' | 'error' | 'warning' | 'info', message: string): void {
     const id = Math.random().toString(36).slice(2);
-    const toast: Toast = { id, type, message };
+    const toast: Toast = {id, type, message};
     this.toastsSubject.next([...this.toastsSubject.value, toast]);
     setTimeout(() => this.dismiss(id), 5000);
   }

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { ClienteJuridicoResponse } from '../../../api/model/clienteJuridicoResponse';
+import {Component, Input} from '@angular/core';
+import {ClienteJuridicoResponse} from '../../../api/model/clienteJuridicoResponse';
 
 @Component({
   selector: 'app-juridico-info-card',

@@ -1,15 +1,11 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { Subscription, catchError, EMPTY } from 'rxjs';
-import { EnderecoFormComponent } from '../../../shared/components/endereco-form/endereco-form.component';
-import { ToastService } from '../../../shared/services/toast.service';
-import { cpfValidator } from '../../../shared/validators/cpf.validator';
-import { VALIDATION } from '../../../shared/validators/validation-constants';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators,} from '@angular/forms';
+import {MatDialogRef} from '@angular/material/dialog';
+import {catchError, EMPTY, Subscription} from 'rxjs';
+import {EnderecoFormComponent} from '../../../shared/components/endereco-form/endereco-form.component';
+import {ToastService} from '../../../shared/services/toast.service';
+import {cpfValidator} from '../../../shared/validators/cpf.validator';
+import {VALIDATION} from '../../../shared/validators/validation-constants';
 import {ClientesFisicosService} from "../../../api";
 
 @Component({
@@ -29,7 +25,8 @@ export class FisicoCreateDialogComponent implements OnInit {
     private clientesFisicosService: ClientesFisicosService,
     private toastService: ToastService,
     private dialogRef: MatDialogRef<FisicoCreateDialogComponent>,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({

@@ -8,14 +8,15 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(Parameterized.class)
 public class CNPJFormatterTest {
 
-    private String input;
-    private String expected;
-    private String testName;
+    private final String input;
+    private final String expected;
+    private final String testName;
 
     public CNPJFormatterTest(String testName, String input, String expected) {
         this.testName = testName;
@@ -25,17 +26,17 @@ public class CNPJFormatterTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "format valid 14-digit CNPJ", "12345678000190", "12.345.678/0001-90" },
-                { "format with dots and slashes", "12.345.678/0001-90", "12.345.678/0001-90" },
-                { "format with dashes", "12-345-678-0001-90", "12-345-678-0001-90" },
-                { "format with spaces", "12 345 678 0001 90", "12 345 678 0001 90" },
-                { "format invalid length short", "1234567800019", "1234567800019" },
-                { "format invalid length long", "123456780001900", "123456780001900" },
-                { "unformat formatted CNPJ", "12.345.678/0001-90", "12345678000190" },
-                { "unformat with dashes", "12-345-678-0001-90", "12345678000190" },
-                { "unformat with spaces", "12 345 678 0001 90", "12345678000190" },
-                { "unformat already unformatted", "12345678000190", "12345678000190" }
+        return Arrays.asList(new Object[][]{
+                {"format valid 14-digit CNPJ", "12345678000190", "12.345.678/0001-90"},
+                {"format with dots and slashes", "12.345.678/0001-90", "12.345.678/0001-90"},
+                {"format with dashes", "12-345-678-0001-90", "12-345-678-0001-90"},
+                {"format with spaces", "12 345 678 0001 90", "12 345 678 0001 90"},
+                {"format invalid length short", "1234567800019", "1234567800019"},
+                {"format invalid length long", "123456780001900", "123456780001900"},
+                {"unformat formatted CNPJ", "12.345.678/0001-90", "12345678000190"},
+                {"unformat with dashes", "12-345-678-0001-90", "12345678000190"},
+                {"unformat with spaces", "12 345 678 0001 90", "12345678000190"},
+                {"unformat already unformatted", "12345678000190", "12345678000190"}
         });
     }
 
@@ -153,7 +154,7 @@ public class CNPJFormatterTest {
             constructor.setAccessible(true);
             constructor.newInstance();
         }).isInstanceOf(Exception.class)
-         .hasCauseInstanceOf(UnsupportedOperationException.class);
+                .hasCauseInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

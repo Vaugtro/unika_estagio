@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ToastService, Toast } from '../../services/toast.service';
+import {Component} from '@angular/core';
+import {ToastService} from '../../services/toast.service';
 
 @Component({
   selector: 'app-toast',
@@ -9,15 +9,21 @@ import { ToastService, Toast } from '../../services/toast.service';
 export class ToastComponent {
   toasts$ = this.toastService.toasts$;
 
-  constructor(private toastService: ToastService) {}
+  constructor(private toastService: ToastService) {
+  }
 
   toastIcon(type: string): string {
     switch (type) {
-      case 'success': return 'circle-check';
-      case 'error': return 'circle-x';
-      case 'warning': return 'triangle-alert';
-      case 'info': return 'info';
-      default: return 'bell';
+      case 'success':
+        return 'circle-check';
+      case 'error':
+        return 'circle-x';
+      case 'warning':
+        return 'triangle-alert';
+      case 'info':
+        return 'info';
+      default:
+        return 'bell';
     }
   }
 

@@ -1,11 +1,11 @@
 <div [formGroup]="form" class="inline-edit-form">
   <mat-form-field appearance="outline">
-    <input matInput formControlName="razaoSocial" placeholder="Razão Social" />
+    <input formControlName="razaoSocial" matInput placeholder="Razão Social"/>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <input matInput formControlName="email" placeholder="E-mail" type="email" />
+    <input formControlName="email" matInput placeholder="E-mail" type="email"/>
   </mat-form-field>
-  <button mat-icon-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+  <button (click)="onSave()" [disabled]="form.invalid" color="primary" mat-icon-button>
     <lucide-icon name="check"></lucide-icon>
   </button>
 </div>

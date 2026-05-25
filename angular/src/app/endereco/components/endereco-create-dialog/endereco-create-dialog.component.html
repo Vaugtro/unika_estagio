@@ -18,7 +18,7 @@
 
         <mat-form-field appearance="outline" class="cliente-id-field">
           <mat-label>ID do Cliente</mat-label>
-          <input matInput type="number" min="1" formControlName="clienteId" />
+          <input formControlName="clienteId" matInput min="1" type="number"/>
           <mat-error *ngIf="getFieldError('clienteId')">
             {{ getFieldError('clienteId') }}
           </mat-error>
@@ -31,7 +31,7 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="full-width-field">
           <mat-label>Logradouro</mat-label>
-          <input matInput formControlName="logradouro" />
+          <input formControlName="logradouro" matInput/>
           <mat-error *ngIf="getFieldError('logradouro')">
             {{ getFieldError('logradouro') }}
           </mat-error>
@@ -39,7 +39,7 @@
 
         <mat-form-field appearance="outline" class="numero-field">
           <mat-label>Número</mat-label>
-          <input matInput type="number" min="1" formControlName="numero" />
+          <input formControlName="numero" matInput min="1" type="number"/>
           <mat-error *ngIf="getFieldError('numero')">
             {{ getFieldError('numero') }}
           </mat-error>
@@ -49,7 +49,7 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="full-width-field">
           <mat-label>Bairro</mat-label>
-          <input matInput formControlName="bairro" />
+          <input formControlName="bairro" matInput/>
           <mat-error *ngIf="getFieldError('bairro')">
             {{ getFieldError('bairro') }}
           </mat-error>
@@ -57,7 +57,7 @@
 
         <mat-form-field appearance="outline" class="cep-field">
           <mat-label>CEP</mat-label>
-          <input matInput formControlName="cep" mask="00000-000" />
+          <input formControlName="cep" mask="00000-000" matInput/>
           <mat-error *ngIf="getFieldError('cep')">
             {{ getFieldError('cep') }}
           </mat-error>
@@ -67,7 +67,7 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="full-width-field">
           <mat-label>Cidade</mat-label>
-          <input matInput formControlName="cidade" />
+          <input formControlName="cidade" matInput/>
           <mat-error *ngIf="getFieldError('cidade')">
             {{ getFieldError('cidade') }}
           </mat-error>
@@ -75,7 +75,7 @@
 
         <mat-form-field appearance="outline" class="estado-field">
           <mat-label>Estado</mat-label>
-          <input matInput formControlName="estado" maxlength="2" />
+          <input formControlName="estado" matInput maxlength="2"/>
           <mat-error *ngIf="getFieldError('estado')">
             {{ getFieldError('estado') }}
           </mat-error>
@@ -85,7 +85,7 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="telefone-field">
           <mat-label>Telefone</mat-label>
-          <input matInput formControlName="telefone" mask="(00) 00000-0000" />
+          <input formControlName="telefone" mask="(00) 00000-0000" matInput/>
           <mat-error *ngIf="getFieldError('telefone')">
             {{ getFieldError('telefone') }}
           </mat-error>
@@ -93,7 +93,7 @@
 
         <mat-form-field appearance="outline" class="complemento-field">
           <mat-label>Complemento</mat-label>
-          <input matInput formControlName="complemento" />
+          <input formControlName="complemento" matInput/>
           <mat-error *ngIf="getFieldError('complemento')">
             {{ getFieldError('complemento') }}
           </mat-error>
@@ -106,12 +106,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+  <button (click)="dialogRef.close()" mat-button type="button">Cancelar</button>
   <button
-    mat-raised-button
-    color="primary"
     (click)="submit()"
     [disabled]="submitting"
+    color="primary"
+    mat-raised-button
   >
     <lucide-icon name="save"></lucide-icon>
     {{ submitting ? 'Salvando...' : 'Salvar' }}

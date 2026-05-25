@@ -28,6 +28,11 @@ class AbstractClienteServiceTest {
 
     private TestClienteService service;
 
+    @BeforeEach
+    void setUp() {
+        service = new TestClienteService(repository);
+    }
+
     private static class TestClienteService extends AbstractClienteService<Cliente, JpaRepository<Cliente, Long>> {
         public TestClienteService(JpaRepository<Cliente, Long> repository) {
             super(repository);
@@ -39,9 +44,35 @@ class AbstractClienteServiceTest {
         }
     }
 
-    @BeforeEach
-    void setUp() {
-        service = new TestClienteService(repository);
+    /**
+     * Test builder for Cliente to simplify test setup.
+     */
+    private static class ClienteTestBuilder {
+        private Long id;
+        private Boolean estaAtivo = true;
+
+        ClienteTestBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        ClienteTestBuilder estaAtivo(Boolean estaAtivo) {
+            this.estaAtivo = estaAtivo;
+            return this;
+        }
+
+        Cliente build() {
+            Cliente cliente = new ClienteFisicoTestImpl();
+            cliente.setId(id);
+            cliente.setEstaAtivo(estaAtivo);
+            return cliente;
+        }
+    }
+
+    /**
+     * Concrete implementation of Cliente for testing (since Cliente is abstract).
+     */
+    private static class ClienteFisicoTestImpl extends ClienteFisico {
     }
 
     @Nested
@@ -382,36 +413,5 @@ class AbstractClienteServiceTest {
             // Assert
             assertThat(result).isEqualTo(expectedCount);
         }
-    }
-
-    /**
-     * Test builder for Cliente to simplify test setup.
-     */
-    private static class ClienteTestBuilder {
-        private Long id;
-        private Boolean estaAtivo = true;
-
-        ClienteTestBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        ClienteTestBuilder estaAtivo(Boolean estaAtivo) {
-            this.estaAtivo = estaAtivo;
-            return this;
-        }
-
-        Cliente build() {
-            Cliente cliente = new ClienteFisicoTestImpl();
-            cliente.setId(id);
-            cliente.setEstaAtivo(estaAtivo);
-            return cliente;
-        }
-    }
-
-    /**
-     * Concrete implementation of Cliente for testing (since Cliente is abstract).
-     */
-    private static class ClienteFisicoTestImpl extends ClienteFisico {
     }
 }

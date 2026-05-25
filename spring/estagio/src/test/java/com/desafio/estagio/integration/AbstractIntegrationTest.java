@@ -36,19 +36,19 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @AfterAll
-    void cleanTestData() {
-        jdbcTemplate.execute("DELETE FROM endereco");
-        jdbcTemplate.execute("DELETE FROM cliente_fisico");
-        jdbcTemplate.execute("DELETE FROM cliente_juridico");
-        jdbcTemplate.execute("DELETE FROM cliente");
-    }
-
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mariadb::getJdbcUrl);
         registry.add("spring.datasource.username", mariadb::getUsername);
         registry.add("spring.datasource.password", mariadb::getPassword);
         registry.add("spring.datasource.driver-class-name", mariadb::getDriverClassName);
+    }
+
+    @AfterAll
+    void cleanTestData() {
+        jdbcTemplate.execute("DELETE FROM endereco");
+        jdbcTemplate.execute("DELETE FROM cliente_fisico");
+        jdbcTemplate.execute("DELETE FROM cliente_juridico");
+        jdbcTemplate.execute("DELETE FROM cliente");
     }
 }

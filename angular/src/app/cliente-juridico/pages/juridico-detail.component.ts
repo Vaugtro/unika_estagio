@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, catchError, EMPTY } from 'rxjs';
-import { ToastService } from '../../shared/services/toast.service';
-import { ClienteJuridicoResponse } from '../../api/model/clienteJuridicoResponse';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {catchError, EMPTY, Subscription} from 'rxjs';
+import {ToastService} from '../../shared/services/toast.service';
+import {ClienteJuridicoResponse} from '../../api/model/clienteJuridicoResponse';
 import {ClientesJuridicosService} from "../../api";
 
 @Component({
@@ -19,7 +19,8 @@ export class JuridicoDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private clientesJuridicosService: ClientesJuridicosService,
     private toastService: ToastService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));

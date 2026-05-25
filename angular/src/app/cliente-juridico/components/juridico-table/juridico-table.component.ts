@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription, debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
-import { ToastService } from '../../../shared/services/toast.service';
-import { Pageable } from '../../../api/model/pageable';
-import { JuridicoCreateDialogComponent } from '../juridico-create-dialog/juridico-create-dialog.component';
-import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
-import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {PageEvent} from '@angular/material/paginator';
+import {MatDialog} from '@angular/material/dialog';
+import {catchError, debounceTime, distinctUntilChanged, EMPTY, Subscription} from 'rxjs';
+import {ToastService} from '../../../shared/services/toast.service';
+import {Pageable} from '../../../api/model/pageable';
+import {JuridicoCreateDialogComponent} from '../juridico-create-dialog/juridico-create-dialog.component';
+import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
+import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
 import {ClienteJuridicoListResponse} from "../../../api/model/clienteJuridicoListResponse";
 import {ClientesJuridicosService} from "../../../api";
 
@@ -26,16 +26,20 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
   loading = false;
 
   searchControl = new FormControl('');
-  private subscriptions: Subscription[] = [];
-
   editingId: number | null = null;
-  private inlineValues: { razaoSocial: string; inscricaoEstadual: string; email: string } = { razaoSocial: '', inscricaoEstadual: '', email: '' };
+  private subscriptions: Subscription[] = [];
+  private inlineValues: { razaoSocial: string; inscricaoEstadual: string; email: string } = {
+    razaoSocial: '',
+    inscricaoEstadual: '',
+    email: ''
+  };
 
   constructor(
     private clientesJuridicosService: ClientesJuridicosService,
     private toastService: ToastService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -58,7 +62,7 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
     this.loading = true;
     const q = this.searchControl.value?.trim();
     const pageable = this.makePageable();
-    console.log('[JuridicoTable] loadData', { q, pageable });
+    console.log('[JuridicoTable] loadData', {q, pageable});
 
     const obs$ = q
       ? this.clientesJuridicosService.clientesJuridicosSearch(q, pageable)
@@ -75,15 +79,11 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
       ).subscribe((page) => {
         console.log('[JuridicoTable] API response', page);
         this.dataSource = page.content!;
-        console.log('[JuridicoTable] dataSource set', { content: page.content, length: page.content?.length });
+        console.log('[JuridicoTable] dataSource set', {content: page.content, length: page.content?.length});
         this.totalElements = page.totalElements ?? 0;
         this.loading = false;
       })
     );
-  }
-
-  private makePageable(): Pageable {
-    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
@@ -98,7 +98,7 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
 
   startEdit(row: ClienteJuridicoListResponse): void {
     this.editingId = row.id ?? null;
-    this.inlineValues = { razaoSocial: row.razaoSocial ?? '', inscricaoEstadual: '', email: row.email ?? '' };
+    this.inlineValues = {razaoSocial: row.razaoSocial ?? '', inscricaoEstadual: '', email: row.email ?? ''};
   }
 
   onInlineValueChange(values: { razaoSocial: string; inscricaoEstadual: string; email: string }): void {
@@ -165,13 +165,17 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: 'juridico', searchQuery: this.searchControl.value?.trim() || undefined },
+      data: {clienteType: 'juridico', searchQuery: this.searchControl.value?.trim() || undefined},
     });
   }
 
   openImport(): void {
     this.dialog.open(ImportDialogComponent, {
-      data: { clienteType: 'juridico' },
+      data: {clienteType: 'juridico'},
     });
+  }
+
+  private makePageable(): Pageable {
+    return {page: this.page, size: this.pageSize, sort: []};
   }
 }

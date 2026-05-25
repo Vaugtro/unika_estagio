@@ -6,11 +6,11 @@ import org.springframework.context.annotation.FilterType;
 
 @TestConfiguration
 @ComponentScan(
-    basePackages = "com.desafio.estagio",
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.REGEX,
-        pattern = "com\\.desafio\\.estagio\\.wicket\\..*"
-    )
+        basePackages = "com.desafio.estagio",
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.REGEX,
+                pattern = "com\\.desafio\\.estagio\\.wicket\\..*"
+        )
 )
 public class TestConfig {
 }

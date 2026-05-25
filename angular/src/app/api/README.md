@@ -59,28 +59,29 @@ In your Angular project:
 
 ```typescript
 // without configuring providers
-import { ApiModule } from '';
-import { HttpClientModule } from '@angular/common/http';
+import {ApiModule} from '';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
-    imports: [
-        ApiModule,
-        // make sure to import the HttpClientModule in the AppModule only,
-        // see https://github.com/angular/angular/issues/20575
-        HttpClientModule
-    ],
-    declarations: [ AppComponent ],
-    providers: [],
-    bootstrap: [ AppComponent ]
+  imports: [
+    ApiModule,
+    // make sure to import the HttpClientModule in the AppModule only,
+    // see https://github.com/angular/angular/issues/20575
+    HttpClientModule
+  ],
+  declarations: [AppComponent],
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
 ```
 
 ```typescript
 // configuring providers
-import { ApiModule, Configuration, ConfigurationParameters } from '';
+import {ApiModule, Configuration, ConfigurationParameters} from '';
 
-export function apiConfigFactory (): Configuration {
+export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
     // set configuration parameters here.
   }
@@ -88,44 +89,47 @@ export function apiConfigFactory (): Configuration {
 }
 
 @NgModule({
-    imports: [ ApiModule.forRoot(apiConfigFactory) ],
-    declarations: [ AppComponent ],
-    providers: [],
-    bootstrap: [ AppComponent ]
+  imports: [ApiModule.forRoot(apiConfigFactory)],
+  declarations: [AppComponent],
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
 ```
 
 ```typescript
 // configuring providers with an authentication service that manages your access tokens
-import { ApiModule, Configuration } from '';
+import {ApiModule, Configuration} from '';
 
 @NgModule({
-    imports: [ ApiModule ],
-    declarations: [ AppComponent ],
-    providers: [
-      {
-        provide: Configuration,
-        useFactory: (authService: AuthService) => new Configuration(
-          {
-            basePath: environment.apiUrl,
-            accessToken: authService.getAccessToken.bind(authService)
-          }
-        ),
-        deps: [AuthService],
-        multi: false
-      }
-    ],
-    bootstrap: [ AppComponent ]
+  imports: [ApiModule],
+  declarations: [AppComponent],
+  providers: [
+    {
+      provide: Configuration,
+      useFactory: (authService: AuthService) => new Configuration(
+        {
+          basePath: environment.apiUrl,
+          accessToken: authService.getAccessToken.bind(authService)
+        }
+      ),
+      deps: [AuthService],
+      multi: false
+    }
+  ],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
 ```
 
 ```typescript
-import { DefaultApi } from '';
+import {DefaultApi} from '';
 
 export class AppComponent {
-    constructor(private apiGateway: DefaultApi) { }
+  constructor(private apiGateway: DefaultApi) {
+  }
 }
 ```
 
@@ -139,9 +143,9 @@ you can create an alias name when importing the modules
 in order to avoid naming conflicts:
 
 ```typescript
-import { ApiModule } from 'my-api-path';
-import { ApiModule as OtherApiModule } from 'my-other-api-path';
-import { HttpClientModule } from '@angular/common/http';
+import {ApiModule} from 'my-api-path';
+import {ApiModule as OtherApiModule} from 'my-other-api-path';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -227,10 +231,12 @@ Example value for use in your Configuration-Provider:
 
 ```typescript
 new Configuration({
-    encodeParam: (param: Param) => myFancyParamEncoder(param),
+  encodeParam: (param: Param) => myFancyParamEncoder(param),
 })
 ```
 
 [parameter-locations-url]: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#parameter-locations
+
 [style-values-url]: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#style-values
+
 [@honoluluhenk/http-param-expander]: https://www.npmjs.com/package/@honoluluhenk/http-param-expander

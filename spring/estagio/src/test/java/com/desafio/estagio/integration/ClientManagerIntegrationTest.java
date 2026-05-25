@@ -1,17 +1,19 @@
 package com.desafio.estagio.integration;
 
-import com.desafio.estagio.dto.clientefisico.*;
-import com.desafio.estagio.dto.clientejuridico.*;
+import com.desafio.estagio.dto.clientefisico.ClienteFisicoCreateRequest;
+import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
+import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
+import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
+import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
+import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoReportResponse;
+import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoResponse;
+import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

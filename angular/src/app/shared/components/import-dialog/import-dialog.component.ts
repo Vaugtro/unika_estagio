@@ -1,11 +1,11 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subscription, catchError, EMPTY } from 'rxjs';
+import {Component, Inject, OnDestroy} from '@angular/core';
+import {HttpResponse} from '@angular/common/http';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {catchError, EMPTY, Subscription} from 'rxjs';
 
-import { ArquivoService } from '../../../api/api/arquivo.service';
-import { ToastService } from '../../services/toast.service';
-import { downloadBlob } from '../../services/download.util';
+import {ArquivoService} from '../../../api/api/arquivo.service';
+import {ToastService} from '../../services/toast.service';
+import {downloadBlob} from '../../services/download.util';
 
 export interface ImportDialogData {
   clienteType: 'fisico' | 'juridico' | 'endereco';
@@ -26,7 +26,8 @@ export class ImportDialogComponent implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: ImportDialogData,
     private arquivoService: ArquivoService,
     private toastService: ToastService,
-  ) {}
+  ) {
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

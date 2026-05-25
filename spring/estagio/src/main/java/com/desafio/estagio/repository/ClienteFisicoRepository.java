@@ -86,20 +86,20 @@ public interface ClienteFisicoRepository extends JpaRepository<ClienteFisico, Lo
      * Fuzzy search across nome, CPF, RG, and email
      */
     @Query("SELECT c FROM ClienteFisico c WHERE "
-         + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
+            + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
     Page<ClienteFisico> search(@Param("q") String q, Pageable pageable);
 
     /**
      * Count results for fuzzy search
      */
     @Query("SELECT COUNT(c) FROM ClienteFisico c WHERE "
-         + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
-         + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
+            + "LOWER(c.nome)     LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.cpf)      LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.rg)       LIKE LOWER(CONCAT('%', :q, '%')) OR "
+            + "LOWER(c.email)    LIKE LOWER(CONCAT('%', :q, '%'))")
     long countSearch(@Param("q") String q);
 
     /**

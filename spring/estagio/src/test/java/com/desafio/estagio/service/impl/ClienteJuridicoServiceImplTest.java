@@ -2,13 +2,11 @@ package com.desafio.estagio.service.impl;
 
 import com.desafio.estagio.dto.clientejuridico.*;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
-import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.exceptions.ConflictException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.ClienteJuridicoMapper;
 import com.desafio.estagio.model.ClienteJuridico;
-import com.desafio.estagio.model.formatter.CNPJFormatter;
 import com.desafio.estagio.repository.ClienteJuridicoRepository;
 import com.desafio.estagio.service.EnderecoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,6 +1,6 @@
 {
-    "appName": "OpenAPI definition",
-    "configurationClassName": "Configuration",
-    "configurationParametersInterfaceName": "ConfigurationParameters",
-    "infoEmail": false
+  "appName": "OpenAPI definition",
+  "configurationClassName": "Configuration",
+  "configurationParametersInterfaceName": "ConfigurationParameters",
+  "infoEmail": false
 }

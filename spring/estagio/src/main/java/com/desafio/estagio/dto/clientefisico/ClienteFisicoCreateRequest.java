@@ -1,5 +1,4 @@
 package com.desafio.estagio.dto.clientefisico;
-import lombok.Builder;
 
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.validation.annotation.ValidRG;
@@ -7,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.io.Serial;

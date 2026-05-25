@@ -1,15 +1,15 @@
 <h2 mat-dialog-title>Novo Cliente Físico</h2>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form (ngSubmit)="submit()" [formGroup]="form">
   <mat-dialog-content>
     <div class="form-grid-2">
       <mat-form-field appearance="outline">
         <mat-label>CPF</mat-label>
         <input
-          matInput
+          [dropSpecialCharacters]="false"
           formControlName="cpf"
           mask="000.000.000-00"
-          [dropSpecialCharacters]="false"
+          matInput
         />
         <mat-error *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">
           {{ getFieldError('cpf') }}
@@ -18,7 +18,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Data Nascimento</mat-label>
-        <input matInput formControlName="dataNascimento" type="date" />
+        <input formControlName="dataNascimento" matInput type="date"/>
         <mat-error *ngIf="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched">
           Campo obrigatório
         </mat-error>
@@ -26,7 +26,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
-        <input matInput formControlName="nome" />
+        <input formControlName="nome" matInput/>
         <mat-error *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
           {{ getFieldError('nome') }}
         </mat-error>
@@ -34,7 +34,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>RG</mat-label>
-        <input matInput formControlName="rg" />
+        <input formControlName="rg" matInput/>
         <mat-error *ngIf="form.get('rg')?.invalid && form.get('rg')?.touched">
           {{ getFieldError('rg') }}
         </mat-error>
@@ -42,7 +42,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>E-mail</mat-label>
-        <input matInput formControlName="email" type="email" />
+        <input formControlName="email" matInput type="email"/>
         <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
           {{ getFieldError('email') }}
         </mat-error>
@@ -54,8 +54,8 @@
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-button type="button" [mat-dialog-close]="false">Cancelar</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+    <button [mat-dialog-close]="false" mat-button type="button">Cancelar</button>
+    <button [disabled]="submitting" color="primary" mat-raised-button type="submit">
       {{ submitting ? 'Salvando...' : 'Salvar' }}
     </button>
   </mat-dialog-actions>

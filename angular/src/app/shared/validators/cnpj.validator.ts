@@ -1,12 +1,12 @@
-import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
 export function cnpjValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value?.replace(/\D/g, '');
     if (!value) return null;
-    if (value.length !== 14) return { cnpj: 'CNPJ deve ter 14 dígitos' };
+    if (value.length !== 14) return {cnpj: 'CNPJ deve ter 14 dígitos'};
 
-    if (/^(\d)\1+$/.test(value)) return { cnpj: 'CNPJ inválido' };
+    if (/^(\d)\1+$/.test(value)) return {cnpj: 'CNPJ inválido'};
 
     let size = value.length - 2;
     let numbers = value.substring(0, size);
@@ -20,7 +20,7 @@ export function cnpjValidator(): ValidatorFn {
     }
 
     let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-    if (result !== parseInt(digits.charAt(0))) return { cnpj: 'CNPJ inválido' };
+    if (result !== parseInt(digits.charAt(0))) return {cnpj: 'CNPJ inválido'};
 
     size += 1;
     numbers = value.substring(0, size);
@@ -33,7 +33,7 @@ export function cnpjValidator(): ValidatorFn {
     }
 
     result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-    if (result !== parseInt(digits.charAt(1))) return { cnpj: 'CNPJ inválido' };
+    if (result !== parseInt(digits.charAt(1))) return {cnpj: 'CNPJ inválido'};
 
     return null;
   };

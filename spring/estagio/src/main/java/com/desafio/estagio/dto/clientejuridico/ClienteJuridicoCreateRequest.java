@@ -1,11 +1,11 @@
 package com.desafio.estagio.dto.clientejuridico;
-import lombok.Builder;
 
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.io.Serial;

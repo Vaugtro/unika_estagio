@@ -15,17 +15,6 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("Cliente Model Tests")
 class ClienteModelTest {
 
-    // Concrete test implementation of abstract Cliente
-    static class TestCliente extends Cliente {
-        @Override
-        public void copyFrom(Cliente source) {
-            if (!(source instanceof TestCliente s)) {
-                throw new IllegalArgumentException("Source must be an instance of TestCliente");
-            }
-            // Simple implementation for testing
-        }
-    }
-
     private TestCliente cliente;
     private Endereco endereco1;
     private Endereco endereco2;
@@ -74,6 +63,17 @@ class ClienteModelTest {
                 .estado("MG")
                 .principal(false)
                 .build();
+    }
+
+    // Concrete test implementation of abstract Cliente
+    static class TestCliente extends Cliente {
+        @Override
+        public void copyFrom(Cliente source) {
+            if (!(source instanceof TestCliente s)) {
+                throw new IllegalArgumentException("Source must be an instance of TestCliente");
+            }
+            // Simple implementation for testing
+        }
     }
 
     @Nested

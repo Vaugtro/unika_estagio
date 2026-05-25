@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { ClienteFisicoResponse } from '../../../api/model/clienteFisicoResponse';
+import {Component, Input} from '@angular/core';
+import {ClienteFisicoResponse} from '../../../api/model/clienteFisicoResponse';
 
 @Component({
   selector: 'app-fisico-info-card',

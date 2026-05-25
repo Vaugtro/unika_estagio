@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, of} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 export interface ViaCepResponse {
   cep: string;
@@ -23,16 +23,17 @@ export interface ViaCepResponse {
 export class ViaCepService {
   private readonly baseUrl = 'https://viacep.com.br/ws';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   lookup(cep: string): Observable<ViaCepResponse> {
     const clean = cep.replace(/\D/g, '');
     if (clean.length !== 8) {
-      return of({ erro: true } as ViaCepResponse);
+      return of({erro: true} as ViaCepResponse);
     }
 
     return this.http.get<ViaCepResponse>(`${this.baseUrl}/${clean}/json/`).pipe(
-      catchError(() => of({ erro: true } as ViaCepResponse)),
+      catchError(() => of({erro: true} as ViaCepResponse)),
     );
   }
 }

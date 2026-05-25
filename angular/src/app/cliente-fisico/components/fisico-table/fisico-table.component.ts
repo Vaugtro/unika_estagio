@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription, debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
-import { ToastService } from '../../../shared/services/toast.service';
-import { ClienteFisicoListResponse } from '../../../api/model/clienteFisicoListResponse';
-import { Pageable } from '../../../api/model/pageable';
-import { FisicoCreateDialogComponent } from '../fisico-create-dialog/fisico-create-dialog.component';
-import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
-import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {PageEvent} from '@angular/material/paginator';
+import {MatDialog} from '@angular/material/dialog';
+import {catchError, debounceTime, distinctUntilChanged, EMPTY, Subscription} from 'rxjs';
+import {ToastService} from '../../../shared/services/toast.service';
+import {ClienteFisicoListResponse} from '../../../api/model/clienteFisicoListResponse';
+import {Pageable} from '../../../api/model/pageable';
+import {FisicoCreateDialogComponent} from '../fisico-create-dialog/fisico-create-dialog.component';
+import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
+import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
 import {ClientesFisicosService} from "../../../api";
 
 @Component({
@@ -26,16 +26,16 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
   loading = false;
 
   searchControl = new FormControl('');
-  private subscriptions: Subscription[] = [];
-
   editingId: number | null = null;
-  private inlineValues: { nome: string; email: string } = { nome: '', email: '' };
+  private subscriptions: Subscription[] = [];
+  private inlineValues: { nome: string; email: string } = {nome: '', email: ''};
 
   constructor(
     private clientesFisicosService: ClientesFisicosService,
     private toastService: ToastService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -58,7 +58,7 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
     this.loading = true;
     const q = this.searchControl.value?.trim();
     const pageable = this.makePageable();
-    console.log('[FisicoTable] loadData', { q, pageable });
+    console.log('[FisicoTable] loadData', {q, pageable});
 
     const obs$ = q
       ? this.clientesFisicosService.clientesFisicosSearch(q, pageable)
@@ -75,15 +75,11 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
       ).subscribe((page) => {
         console.log('[FisicoTable] API response', page);
         this.dataSource = page.content!;
-        console.log('[FisicoTable] dataSource set', { content: page.content, length: page.content?.length });
+        console.log('[FisicoTable] dataSource set', {content: page.content, length: page.content?.length});
         this.totalElements = page.totalElements ?? 0;
         this.loading = false;
       })
     );
-  }
-
-  private makePageable(): Pageable {
-    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
@@ -98,7 +94,7 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
 
   startEdit(row: ClienteFisicoListResponse): void {
     this.editingId = row.id ?? null;
-    this.inlineValues = { nome: row.nome ?? '', email: row.email ?? '' };
+    this.inlineValues = {nome: row.nome ?? '', email: row.email ?? ''};
   }
 
   onInlineValueChange(values: { nome: string; email: string }): void {
@@ -162,13 +158,17 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: 'fisico', searchQuery: this.searchControl.value?.trim() || undefined },
+      data: {clienteType: 'fisico', searchQuery: this.searchControl.value?.trim() || undefined},
     });
   }
 
   openImport(): void {
     this.dialog.open(ImportDialogComponent, {
-      data: { clienteType: 'fisico' },
+      data: {clienteType: 'fisico'},
     });
+  }
+
+  private makePageable(): Pageable {
+    return {page: this.page, size: this.pageSize, sort: []};
   }
 }

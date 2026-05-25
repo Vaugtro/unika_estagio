@@ -92,7 +92,10 @@ public abstract class ImportModal extends Panel {
     }
 
     protected abstract byte[] getTemplateData();
+
     protected abstract String getTemplateFileName();
+
     protected abstract int importData(InputStream is) throws Exception;
+
     protected abstract String getSuccessMessage();
 }

@@ -29,6 +29,7 @@ public class EnderecoCreateTablePanel extends Panel {
     private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
     private final ListView<EnderecoCreateFormModel> enderecosView;
     private final List<EnderecoCreateFormModel> enderecos;
+
     public EnderecoCreateTablePanel(String id, List<EnderecoCreateFormModel> enderecos) {
         super(id);
         this.enderecos = enderecos;

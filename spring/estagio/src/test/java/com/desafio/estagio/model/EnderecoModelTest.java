@@ -5,21 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Endereco Model Tests")
 class EnderecoModelTest {
 
     private Endereco endereco;
     private TestCliente cliente;
-
-    // Concrete test implementation of abstract Cliente
-    static class TestCliente extends Cliente {
-        @Override
-        public void copyFrom(Cliente source) {
-            // Simple implementation for testing
-        }
-    }
 
     @BeforeEach
     void setUp() {
@@ -38,6 +30,14 @@ class EnderecoModelTest {
         cliente = new TestCliente();
         cliente.setId(1L);
         cliente.setEmail("test@example.com");
+    }
+
+    // Concrete test implementation of abstract Cliente
+    static class TestCliente extends Cliente {
+        @Override
+        public void copyFrom(Cliente source) {
+            // Simple implementation for testing
+        }
     }
 
     @Nested

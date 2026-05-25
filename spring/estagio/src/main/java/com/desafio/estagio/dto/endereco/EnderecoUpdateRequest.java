@@ -1,10 +1,10 @@
 package com.desafio.estagio.dto.endereco;
-import lombok.Builder;
 
 import com.desafio.estagio.validation.annotation.ValidCEP;
 import com.desafio.estagio.validation.annotation.ValidTelefone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Builder;
 
 import java.io.Serial;
 import java.io.Serializable;

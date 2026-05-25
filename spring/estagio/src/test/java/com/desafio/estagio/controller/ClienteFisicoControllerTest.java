@@ -1,7 +1,6 @@
 package com.desafio.estagio.controller;
 
 import com.desafio.estagio.dto.clientefisico.*;
-import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.model.enums.TipoCliente;
 import com.desafio.estagio.service.ClienteFisicoService;
@@ -24,7 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

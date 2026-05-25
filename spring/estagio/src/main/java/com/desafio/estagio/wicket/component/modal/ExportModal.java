@@ -64,7 +64,10 @@ public abstract class ExportModal extends Panel {
     }
 
     protected abstract byte[] getPdfData();
+
     protected abstract String getPdfName();
+
     protected abstract byte[] getXlsxData();
+
     protected abstract String getXlsxName();
 }

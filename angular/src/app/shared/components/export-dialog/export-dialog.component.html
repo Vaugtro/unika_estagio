@@ -4,12 +4,12 @@
   <p>Selecione o formato para exportação:</p>
 
   <div class="export-options">
-    <button mat-raised-button (click)="exportPdf()" [disabled]="exportingPdf">
+    <button (click)="exportPdf()" [disabled]="exportingPdf" mat-raised-button>
       <lucide-icon name="file-text"></lucide-icon>
       {{ exportingPdf ? 'Exportando...' : 'Exportar PDF' }}
     </button>
 
-    <button mat-raised-button (click)="exportXlsx()" [disabled]="exportingXlsx">
+    <button (click)="exportXlsx()" [disabled]="exportingXlsx" mat-raised-button>
       <lucide-icon name="table"></lucide-icon>
       {{ exportingXlsx ? 'Exportando...' : 'Exportar XLSX' }}
     </button>
@@ -17,5 +17,5 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="false">Fechar</button>
+  <button [mat-dialog-close]="false" mat-button>Fechar</button>
 </mat-dialog-actions>

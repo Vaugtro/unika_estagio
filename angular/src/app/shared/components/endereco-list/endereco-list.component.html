@@ -4,7 +4,7 @@
 
 <mat-list *ngIf="enderecos.length > 0">
   <mat-list-item *ngFor="let end of enderecos">
-    <lucide-icon matListItemIcon [name]="end.principal ? 'house' : 'map-pin'"></lucide-icon>
+    <lucide-icon [name]="end.principal ? 'house' : 'map-pin'" matListItemIcon></lucide-icon>
     <div matListItemTitle>
       {{ end.logradouro }}, {{ end.numero }}{{ end.complemento ? ' - ' + end.complemento : '' }}
     </div>
