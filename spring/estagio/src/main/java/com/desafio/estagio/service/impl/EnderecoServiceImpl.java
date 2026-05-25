@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -216,10 +217,26 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = findEntityById(id);
         Cliente cliente = entity.getCliente();
 
-        // Delegate to model — enforces at-least-one and principal promotion rules.
-        // removeEndereco internally demotes the entity before removal (to avoid
-        // uk_cliente_endereco_principal_unico during Hibernate flush) and
-        // promotes enderecos.get(0) when the deleted address was principal.
+        // If deleting the principal address, promote the earliest remaining
+        // address (by ID ASC) BEFORE deletion.  This explicit principal swap
+        // with a flush avoids uk_cliente_endereco_principal_unico violations:
+        // Hibernate may skip the UPDATE for an entity scheduled for deletion,
+        // so relying on removeEndereco's internal demotion would leave the
+        // promotion UPDATE colliding with the still-true principal in the DB.
+        if (Boolean.TRUE.equals(entity.isPrincipal())) {
+            Long clienteId = cliente.getId();
+            Endereco replacement = enderecoRepository.findByClienteId(clienteId)
+                    .stream()
+                    .filter(e -> !e.getId().equals(id))
+                    .min(Comparator.comparing(Endereco::getId))
+                    .orElseThrow(() -> new BusinessException(
+                            "Nenhum endereço disponível para substituir o endereço principal."));
+
+            replacement.setPrincipal(true);
+            entity.setPrincipal(false);
+            enderecoRepository.flush();
+        }
+
         try {
             cliente.removeEndereco(entity);
         } catch (IllegalStateException e) {

@@ -72,7 +72,9 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
           if (result.uf) patch['estado'] = result.uf;
           if (result.complemento) patch['complemento'] = result.complemento;
           group.patchValue(patch);
-        }
+        };
+
+        this.sub
       })
     );
 

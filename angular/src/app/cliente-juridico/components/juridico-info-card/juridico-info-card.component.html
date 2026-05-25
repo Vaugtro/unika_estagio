@@ -12,7 +12,7 @@
       <div><strong>CNPJ:</strong> {{ cliente.cnpj }}</div>
       <div><strong>Insc. Estadual:</strong> {{ cliente.inscricaoEstadual || '-' }}</div>
       <div><strong>E-mail:</strong> {{ cliente.email || '-' }}</div>
-      <div><strong>Data Criação:</strong> {{ cliente.dataCriacaoEmpresa | date }}</div>
+      <div><strong>Data de Criação da Empresa:</strong> {{ cliente.dataCriacaoEmpresa | date }}</div>
       <div><strong>Criado em:</strong> {{ cliente.createdAt | date:'short' }}</div>
       <div><strong>Atualizado em:</strong> {{ cliente.updatedAt | date:'short' }}</div>
     </div>
