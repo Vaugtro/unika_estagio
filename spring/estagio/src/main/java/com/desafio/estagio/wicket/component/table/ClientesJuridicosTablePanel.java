@@ -2,7 +2,7 @@ package com.desafio.estagio.wicket.component.table;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
 import com.desafio.estagio.service.ClienteJuridicoService;
-import com.desafio.estagio.service.ExportService;
+import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.dataview.ClienteJuridicoDataView;
 import com.desafio.estagio.wicket.component.modal.ClienteJuridicoCreateModal;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
@@ -36,7 +36,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
     private ClienteJuridicoService clienteJuridicoService;
 
     @SpringBean
-    private ExportService exportService;
+    private FileService fileService;
 
     private WebMarkupContainer tableContainer;
     private ClienteJuridicoDataProvider dataProvider;
@@ -70,7 +70,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getPdfData() {
-                return exportService.pdfJuridicos();
+                return fileService.pdfJuridicos();
             }
 
             @Override
@@ -80,7 +80,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getXlsxData() {
-                return exportService.xlsxJuridicos();
+                return fileService.xlsxJuridicos();
             }
 
             @Override
@@ -95,7 +95,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getTemplateData() {
-                return exportService.templateJuridicosImport();
+                return fileService.templateJuridicosImport();
             }
 
             @Override
@@ -105,7 +105,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected int importData(InputStream is) throws Exception {
-                return exportService.importJuridicos(is);
+                return fileService.importJuridicos(is);
             }
 
             @Override

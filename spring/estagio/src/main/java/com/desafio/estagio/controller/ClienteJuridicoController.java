@@ -4,6 +4,7 @@ import com.desafio.estagio.dto.clientejuridico.*;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,7 @@ public class ClienteJuridicoController {
     private final ClienteJuridicoService juridicoService;
 
     @Operation(summary = "Listar todos os clientes jurídicos", description = "Retorna uma página com os clientes pessoa jurídica cadastrados")
-    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping
     public ResponseEntity<Page<ClienteJuridicoListResponse>> getAll(
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
@@ -36,7 +37,7 @@ public class ClienteJuridicoController {
 
     @Operation(summary = "Busca difusa por razão social, CNPJ, inscrição estadual ou e-mail",
             description = "Retorna clientes que correspondem ao termo de busca (busca parcial e case-insensitive)")
-    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/search")
     public ResponseEntity<Page<ClienteJuridicoListResponse>> search(
             @Parameter(description = "Termo de busca") @RequestParam("q") String q,
@@ -46,7 +47,7 @@ public class ClienteJuridicoController {
     }
 
     @Operation(summary = "Listar clientes jurídicos ativos", description = "Retorna uma página com os clientes pessoa jurídica ativos")
-    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/ativos")
     public ResponseEntity<Page<ClienteJuridicoListResponse>> getAllActive(
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
@@ -57,7 +58,7 @@ public class ClienteJuridicoController {
     @Operation(summary = "Buscar cliente jurídico por ID", description = "Retorna um cliente jurídico específico pelo seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/{id}")
     public ResponseEntity<ClienteJuridicoResponse> getById(@PathVariable Long id) {
@@ -67,7 +68,7 @@ public class ClienteJuridicoController {
     @Operation(summary = "Buscar cliente jurídico por CNPJ", description = "Retorna um cliente jurídico pelo número do CNPJ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/cnpj/{cnpj}")
     public ResponseEntity<ClienteJuridicoResponse> getByCnpj(@PathVariable String cnpj) {
@@ -75,7 +76,7 @@ public class ClienteJuridicoController {
     }
 
     @Operation(summary = "Verificar se CNPJ já existe", description = "Verifica se um CNPJ já está cadastrado no sistema")
-    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/cnpj/{cnpj}/exists")
     public ResponseEntity<Boolean> existsByCnpj(@PathVariable String cnpj) {
         return ResponseEntity.ok(juridicoService.existsByCnpj(cnpj));
@@ -85,7 +86,7 @@ public class ClienteJuridicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente sem endereço principal"),
-            @ApiResponse(responseCode = "409", description = "CNPJ já cadastrado")
+            @ApiResponse(responseCode = "409", description = "CNPJ já cadastrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<ClienteJuridicoResponse> create(
@@ -97,7 +98,7 @@ public class ClienteJuridicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json"))
     })
     @PutMapping("/{id}")
     public ResponseEntity<ClienteJuridicoResponse> update(
@@ -110,7 +111,7 @@ public class ClienteJuridicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente ativado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente já está ativo")
+            @ApiResponse(responseCode = "400", description = "Cliente já está ativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/ativar")
     public ResponseEntity<Void> activate(@PathVariable Long id) {
@@ -122,7 +123,7 @@ public class ClienteJuridicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente já está inativo")
+            @ApiResponse(responseCode = "400", description = "Cliente já está inativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/inativar")
     public ResponseEntity<Void> inactivate(@PathVariable Long id) {
@@ -134,7 +135,7 @@ public class ClienteJuridicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente possui endereços associados")
+            @ApiResponse(responseCode = "400", description = "Cliente possui endereços associados", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
@@ -143,7 +144,7 @@ public class ClienteJuridicoController {
     }
 
     @Operation(summary = "Gerar relatório de clientes jurídicos", description = "Retorna dados para geração de relatório de clientes jurídicos")
-    @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso")
+    @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/relatorio")
     public ResponseEntity<Page<ClienteJuridicoReportResponse>> getReport(
             @Parameter(description = "Parâmetros de paginação (page, size)")

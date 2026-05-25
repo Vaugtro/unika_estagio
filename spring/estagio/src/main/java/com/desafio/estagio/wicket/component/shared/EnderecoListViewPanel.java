@@ -4,7 +4,7 @@ import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.dto.endereco.EnderecoUpdateRequest;
 import com.desafio.estagio.service.EnderecoService;
-import com.desafio.estagio.service.ExportService;
+import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
@@ -44,7 +44,7 @@ public class EnderecoListViewPanel extends Panel {
     @SpringBean
     private EnderecoService enderecoService;
     @SpringBean
-    private ExportService exportService;
+    private FileService fileService;
 
     public EnderecoListViewPanel(String id, Long clienteId) {
         super(id);
@@ -241,7 +241,7 @@ public class EnderecoListViewPanel extends Panel {
 
             @Override
             public void onClick() {
-                byte[] bytes = pdf ? exportService.pdfEnderecos(clienteId) : exportService.xlsxEnderecos(clienteId);
+                byte[] bytes = pdf ? fileService.pdfEnderecos(clienteId) : fileService.xlsxEnderecos(clienteId);
                 IResourceStream stream = new ByteArrayResourceStream(bytes, mimeType);
                 getRequestCycle().scheduleRequestHandlerAfterCurrent(
                         new ResourceStreamRequestHandler(stream)
@@ -272,7 +272,7 @@ public class EnderecoListViewPanel extends Panel {
                     return;
                 }
                 try (java.io.InputStream is = upload.getInputStream()) {
-                    int count = exportService.importEnderecos(clienteId, is);
+                    int count = fileService.importEnderecos(clienteId, is);
                     ValidationFeedback.showToast(target, "success",
                             count + " endereço(s) importado(s) com sucesso!");
                     target.add(enderecosContainer);
@@ -300,7 +300,7 @@ public class EnderecoListViewPanel extends Panel {
 
             @Override
             public void onClick() {
-                byte[] bytes = exportService.templateEnderecosImport();
+                byte[] bytes = fileService.templateEnderecosImport();
                 IResourceStream stream = new ByteArrayResourceStream(bytes,
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 getRequestCycle().scheduleRequestHandlerAfterCurrent(

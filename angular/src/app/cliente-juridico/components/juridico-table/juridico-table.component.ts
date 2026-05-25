@@ -8,7 +8,8 @@ import { Pageable } from '../../../api/model/pageable';
 import { JuridicoCreateDialogComponent } from '../juridico-create-dialog/juridico-create-dialog.component';
 import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
 import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
-import {ClienteJuridicoListResponse, ClientesJuridicosService} from "../../../api";
+import {ClienteJuridicoListResponse} from "../../../api/model/clienteJuridicoListResponse";
+import {ClientesJuridicosService} from "../../../api";
 
 @Component({
   selector: 'app-juridico-table',

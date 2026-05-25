@@ -2,7 +2,7 @@ package com.desafio.estagio.wicket.component.table;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.service.ClienteFisicoService;
-import com.desafio.estagio.service.ExportService;
+import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.dataview.ClienteFisicoDataView;
 import com.desafio.estagio.wicket.component.modal.ClienteFisicoCreateModal;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
@@ -36,7 +36,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
     private ClienteFisicoService clienteFisicoService;
 
     @SpringBean
-    private ExportService exportService;
+    private FileService fileService;
 
     private WebMarkupContainer tableContainer;
     private ClienteFisicoDataProvider dataProvider;
@@ -70,7 +70,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getPdfData() {
-                return exportService.pdfFisicos();
+                return fileService.pdfFisicos();
             }
 
             @Override
@@ -80,7 +80,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getXlsxData() {
-                return exportService.xlsxFisicos();
+                return fileService.xlsxFisicos();
             }
 
             @Override
@@ -95,7 +95,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected byte[] getTemplateData() {
-                return exportService.templateFisicosImport();
+                return fileService.templateFisicosImport();
             }
 
             @Override
@@ -105,7 +105,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
 
             @Override
             protected int importData(InputStream is) throws Exception {
-                return exportService.importFisicos(is);
+                return fileService.importFisicos(is);
             }
 
             @Override

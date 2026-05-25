@@ -4,6 +4,7 @@ import com.desafio.estagio.dto.endereco.*;
 import com.desafio.estagio.service.EnderecoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +34,7 @@ public class EnderecoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente não informado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<EnderecoResponse> create(@Valid @RequestBody EnderecoCreateRequest request) {
@@ -45,7 +46,7 @@ public class EnderecoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/clientes/{clienteId}")
     public ResponseEntity<EnderecoResponse> createForCliente(
@@ -62,7 +63,7 @@ public class EnderecoController {
     @Operation(summary = "Buscar endereço por ID", description = "Retorna um endereço específico pelo seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço encontrado"),
-            @ApiResponse(responseCode = "404", description = "Endereço não encontrado")
+            @ApiResponse(responseCode = "404", description = "Endereço não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoResponse> findById(@PathVariable Long id) {
@@ -72,7 +73,7 @@ public class EnderecoController {
     @Operation(summary = "Listar todos os endereços de um cliente", description = "Retorna todos os endereços associados a um cliente específico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/clientes/{clienteId}")
     public ResponseEntity<Page<EnderecoListResponse>> findAllByClienteId(
@@ -85,7 +86,7 @@ public class EnderecoController {
     @Operation(summary = "Buscar endereço principal de um cliente", description = "Retorna o endereço marcado como principal para um cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço principal encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente ou endereço principal não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente ou endereço principal não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/clientes/{clienteId}/principal")
     public ResponseEntity<EnderecoResponse> findPrincipalByClienteId(@PathVariable Long clienteId) {
@@ -93,7 +94,7 @@ public class EnderecoController {
     }
 
     @Operation(summary = "Contar endereços de um cliente", description = "Retorna a quantidade de endereços associados a um cliente")
-    @ApiResponse(responseCode = "200", description = "Contagem realizada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Contagem realizada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/clientes/{clienteId}/count")
     public ResponseEntity<Long> countByClienteId(@PathVariable Long clienteId) {
         return ResponseEntity.ok(enderecoService.countByClienteId(clienteId));
@@ -107,7 +108,7 @@ public class EnderecoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json"))
     })
     @PutMapping("/{id}")
     public ResponseEntity<EnderecoResponse> update(
@@ -120,7 +121,7 @@ public class EnderecoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço definido como principal com sucesso"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Endereço já é principal ou cliente sem endereços")
+            @ApiResponse(responseCode = "400", description = "Endereço já é principal ou cliente sem endereços", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/principal")
     public ResponseEntity<EnderecoResponse> setAsPrincipal(@PathVariable Long id) {
@@ -135,7 +136,7 @@ public class EnderecoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Endereço deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Não é possível deletar o único endereço do cliente")
+            @ApiResponse(responseCode = "400", description = "Não é possível deletar o único endereço do cliente", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -146,7 +147,7 @@ public class EnderecoController {
     @Operation(summary = "Deletar todos os endereços de um cliente", description = "Remove todos os endereços associados a um cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Endereços deletados com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/clientes/{clienteId}")
     public ResponseEntity<Void> deleteAllByClienteId(@PathVariable Long clienteId) {
@@ -160,7 +161,7 @@ public class EnderecoController {
 
     @Operation(summary = "Busca difusa por logradouro, bairro, cidade ou CEP",
             description = "Retorna endereços que correspondem ao termo de busca (busca parcial e case-insensitive)")
-    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/search")
     public ResponseEntity<Page<EnderecoListResponse>> search(
             @Parameter(description = "Termo de busca") @RequestParam("q") String q,
@@ -171,7 +172,7 @@ public class EnderecoController {
 
     @Operation(summary = "Busca difusa por endereços de um cliente específico",
             description = "Retorna endereços do cliente que correspondem ao termo de busca")
-    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/clientes/{clienteId}/search")
     public ResponseEntity<Page<EnderecoListResponse>> searchByClienteId(
             @PathVariable Long clienteId,
@@ -182,14 +183,14 @@ public class EnderecoController {
     }
 
     @Operation(summary = "Verificar se cliente possui endereços", description = "Verifica se um cliente tem pelo menos um endereço cadastrado")
-    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/clientes/{clienteId}/has-addresses")
     public ResponseEntity<Boolean> hasAtLeastOneAddress(@PathVariable Long clienteId) {
         return ResponseEntity.ok(enderecoService.hasAtLeastOneAddress(clienteId));
     }
 
     @Operation(summary = "Verificar se cliente possui endereço principal", description = "Verifica se um cliente tem um endereço marcado como principal")
-    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/clientes/{clienteId}/has-principal")
     public ResponseEntity<Boolean> hasPrincipalAddress(@PathVariable Long clienteId) {
         return ResponseEntity.ok(enderecoService.hasPrincipalAddress(clienteId));

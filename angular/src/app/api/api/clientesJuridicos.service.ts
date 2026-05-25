@@ -24,10 +24,6 @@ import { ClienteJuridicoResponse } from '../model/clienteJuridicoResponse';
 import { ClienteJuridicoUpdateRequest } from '../model/clienteJuridicoUpdateRequest';
 // @ts-ignore
 import { OrgSpringdocCoreConvertersModelsPageable } from '../model/orgSpringdocCoreConvertersModelsPageable';
-// @ts-ignore
-import { OrgSpringframeworkDataDomainPageClienteJuridicoListResponse } from '../model/orgSpringframeworkDataDomainPageClienteJuridicoListResponse';
-// @ts-ignore
-import { OrgSpringframeworkDataDomainPageClienteJuridicoReportResponse } from '../model/orgSpringframeworkDataDomainPageClienteJuridicoReportResponse';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -54,10 +50,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosActivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesJuridicosActivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesJuridicosActivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesJuridicosActivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosActivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosActivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosActivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosActivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesJuridicosActivate.');
         }
@@ -65,14 +61,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -95,7 +90,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -110,10 +104,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteJuridicoResponse>;
-    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteJuridicoResponse>>;
-    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteJuridicoResponse>>;
-    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteJuridicoResponse>;
+    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteJuridicoResponse>>;
+    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteJuridicoResponse>>;
+    public clientesJuridicosCreate(clienteJuridicoCreateRequest: ClienteJuridicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (clienteJuridicoCreateRequest === null || clienteJuridicoCreateRequest === undefined) {
             throw new Error('Required parameter clienteJuridicoCreateRequest was null or undefined when calling clientesJuridicosCreate.');
         }
@@ -121,15 +115,14 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         // to determine the Content-Type header
@@ -162,7 +155,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -177,10 +169,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<boolean>;
-    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<boolean>>;
-    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<boolean>>;
-    public clientesJuridicosExistsByCnpj(cnpj: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosExistsByCnpj(cnpj: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosExistsByCnpj(cnpj: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (cnpj === null || cnpj === undefined) {
             throw new Error('Required parameter cnpj was null or undefined when calling clientesJuridicosExistsByCnpj.');
         }
@@ -188,15 +180,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -212,14 +202,13 @@ export class ClientesJuridicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/juridicos/cnpj/${this.configuration.encodeParam({name: "cnpj", value: cnpj, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/exists`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<boolean>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -234,10 +223,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>;
-    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesJuridicosGetAll.');
         }
@@ -256,15 +245,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -280,7 +267,7 @@ export class ClientesJuridicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/juridicos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -288,7 +275,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -303,10 +289,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>;
-    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesJuridicosGetAllActive.');
         }
@@ -325,15 +311,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -349,7 +333,7 @@ export class ClientesJuridicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/juridicos/ativos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -357,7 +341,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -372,10 +355,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteJuridicoResponse>;
-    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteJuridicoResponse>>;
-    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteJuridicoResponse>>;
-    public clientesJuridicosGetByCnpj(cnpj: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteJuridicoResponse>;
+    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteJuridicoResponse>>;
+    public clientesJuridicosGetByCnpj(cnpj: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteJuridicoResponse>>;
+    public clientesJuridicosGetByCnpj(cnpj: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (cnpj === null || cnpj === undefined) {
             throw new Error('Required parameter cnpj was null or undefined when calling clientesJuridicosGetByCnpj.');
         }
@@ -383,15 +366,14 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -414,7 +396,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -429,10 +410,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteJuridicoResponse>;
-    public clientesJuridicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteJuridicoResponse>>;
-    public clientesJuridicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteJuridicoResponse>>;
-    public clientesJuridicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteJuridicoResponse>;
+    public clientesJuridicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteJuridicoResponse>>;
+    public clientesJuridicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteJuridicoResponse>>;
+    public clientesJuridicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesJuridicosGetById.');
         }
@@ -440,15 +421,14 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -471,7 +451,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -486,10 +465,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteJuridicoReportResponse>;
-    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteJuridicoReportResponse>>;
-    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteJuridicoReportResponse>>;
-    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesJuridicosGetReport.');
         }
@@ -508,15 +487,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -532,7 +509,7 @@ export class ClientesJuridicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/juridicos/relatorio`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteJuridicoReportResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -540,7 +517,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -555,10 +531,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosHardDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesJuridicosHardDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesJuridicosHardDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesJuridicosHardDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosHardDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosHardDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosHardDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosHardDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesJuridicosHardDelete.');
         }
@@ -566,14 +542,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -596,7 +571,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -611,10 +585,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosInactivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesJuridicosInactivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesJuridicosInactivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesJuridicosInactivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosInactivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosInactivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosInactivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosInactivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesJuridicosInactivate.');
         }
@@ -622,14 +596,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -652,7 +625,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -668,10 +640,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>;
-    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>>;
-    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesJuridicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (q === null || q === undefined) {
             throw new Error('Required parameter q was null or undefined when calling clientesJuridicosSearch.');
         }
@@ -702,15 +674,13 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -726,7 +696,7 @@ export class ClientesJuridicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/juridicos/search`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteJuridicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -734,7 +704,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -750,10 +719,10 @@ export class ClientesJuridicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteJuridicoResponse>;
-    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteJuridicoResponse>>;
-    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteJuridicoResponse>>;
-    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteJuridicoResponse>;
+    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteJuridicoResponse>>;
+    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteJuridicoResponse>>;
+    public clientesJuridicosUpdate(id: number, clienteJuridicoUpdateRequest: ClienteJuridicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesJuridicosUpdate.');
         }
@@ -764,15 +733,14 @@ export class ClientesJuridicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         // to determine the Content-Type header
@@ -805,7 +773,6 @@ export class ClientesJuridicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );

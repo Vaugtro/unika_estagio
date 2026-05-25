@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate:api": "openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-angular -o src/app/api"
+    "generate:api": "openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-angular -t ./src/templates -o ./src/app/api --additional-properties=ngVersion=14.2.0,useHttpClient=true,supportsES6=true && node -e \"const m=require('mustache'),f=require('fs'),d=JSON.parse(f.readFileSync('src/templates/provide-api-data.json','utf8')),t=f.readFileSync('src/templates/provide-api.mustache','utf8'),p={licenseInfo:f.readFileSync('src/templates/partials/licenseInfo.mustache','utf8')};f.writeFileSync('src/app/api/provide-api.ts',m.render(t,d,p))\""
   },
   "private": true,
   "dependencies": {
@@ -41,6 +41,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "mustache": "^4.2.0",
     "nx": "15.9.7",
     "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",

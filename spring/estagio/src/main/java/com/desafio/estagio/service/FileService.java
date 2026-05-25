@@ -1,10 +1,14 @@
 package com.desafio.estagio.service;
 
 /**
- * Wicket-facing export façade. Generates PDF (via JasperReports) and XLSX (via Apache POI)
+ * Wicket-facing file façade. Generates PDF (via JasperReports) and XLSX (via Apache POI)
  * for the three exportable entities.
  */
-public interface ExportService {
+public interface FileService {
+
+    // =====================================================================
+    // PDF
+    // =====================================================================
 
     /**
      * PDF of all ClienteFisico records.
@@ -20,6 +24,10 @@ public interface ExportService {
      * PDF of all Enderecos belonging to the given cliente.
      */
     byte[] pdfEnderecos(Long clienteId);
+
+    // =====================================================================
+    // XLSX REPORT
+    // =====================================================================
 
     /**
      * XLSX of all ClienteFisico records.

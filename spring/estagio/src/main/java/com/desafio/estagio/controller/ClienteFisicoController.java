@@ -4,6 +4,7 @@ import com.desafio.estagio.dto.clientefisico.*;
 import com.desafio.estagio.service.ClienteFisicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +28,7 @@ public class ClienteFisicoController {
     private final ClienteFisicoService fisicoService;
 
     @Operation(summary = "Listar todos os clientes físicos", description = "Retorna uma página com os clientes pessoa física cadastrados")
-    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping
     public ResponseEntity<Page<ClienteFisicoListResponse>> getAll(
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
@@ -37,7 +38,7 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Busca difusa por nome, CPF, RG ou e-mail",
             description = "Retorna clientes que correspondem ao termo de busca (busca parcial e case-insensitive)")
-    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso")
+    @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/search")
     public ResponseEntity<Page<ClienteFisicoListResponse>> search(
             @Parameter(description = "Termo de busca") @RequestParam("q") String q,
@@ -47,7 +48,7 @@ public class ClienteFisicoController {
     }
 
     @Operation(summary = "Listar clientes físicos ativos", description = "Retorna uma página com os clientes pessoa física ativos")
-    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Página retornada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/ativos")
     public ResponseEntity<Page<ClienteFisicoListResponse>> getAllActive(
             @Parameter(description = "Parâmetros de paginação (page, size, sort)")
@@ -58,7 +59,7 @@ public class ClienteFisicoController {
     @Operation(summary = "Buscar cliente físico por ID", description = "Retorna um cliente físico específico pelo seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/{id}")
     public ResponseEntity<ClienteFisicoResponse> getById(@PathVariable Long id) {
@@ -68,7 +69,7 @@ public class ClienteFisicoController {
     @Operation(summary = "Buscar cliente físico por CPF", description = "Retorna um cliente físico pelo número do CPF")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<ClienteFisicoResponse> getByCpf(@PathVariable String cpf) {
@@ -76,7 +77,7 @@ public class ClienteFisicoController {
     }
 
     @Operation(summary = "Verificar se CPF já existe", description = "Verifica se um CPF já está cadastrado no sistema")
-    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso")
+    @ApiResponse(responseCode = "200", description = "Verificação realizada com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/cpf/{cpf}/exists")
     public ResponseEntity<Boolean> existsByCpf(@PathVariable String cpf) {
         return ResponseEntity.ok(fisicoService.existsByCpf(cpf));
@@ -86,7 +87,7 @@ public class ClienteFisicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente sem endereço principal"),
-            @ApiResponse(responseCode = "409", description = "CPF já cadastrado")
+            @ApiResponse(responseCode = "409", description = "CPF já cadastrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<ClienteFisicoResponse> create(
@@ -98,7 +99,7 @@ public class ClienteFisicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json"))
     })
     @PutMapping("/{id}")
     public ResponseEntity<ClienteFisicoResponse> update(
@@ -111,7 +112,7 @@ public class ClienteFisicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente ativado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente já está ativo")
+            @ApiResponse(responseCode = "400", description = "Cliente já está ativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/ativar")
     public ResponseEntity<Void> activate(@PathVariable Long id) {
@@ -123,7 +124,7 @@ public class ClienteFisicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente já está inativo")
+            @ApiResponse(responseCode = "400", description = "Cliente já está inativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/inativar")
     public ResponseEntity<Void> inactivate(@PathVariable Long id) {
@@ -134,7 +135,7 @@ public class ClienteFisicoController {
     @Operation(summary = "Soft delete cliente físico", description = "Inativa um cliente físico (mesmo que inativar)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> softDelete(@PathVariable Long id) {
@@ -146,7 +147,7 @@ public class ClienteFisicoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente possui endereços associados")
+            @ApiResponse(responseCode = "400", description = "Cliente possui endereços associados", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}/permanent")
     public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
@@ -155,7 +156,7 @@ public class ClienteFisicoController {
     }
 
     @Operation(summary = "Gerar relatório de clientes físicos", description = "Retorna dados para geração de relatório de clientes físicos")
-    @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso")
+    @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso", content = @Content(mediaType = "application/json"))
     @GetMapping("/relatorio")
     public ResponseEntity<Page<ClienteFisicoReportResponse>> getReport(
             @Parameter(description = "Parâmetros de paginação (page, size)")

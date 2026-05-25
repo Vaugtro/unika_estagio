@@ -24,10 +24,6 @@ import { ClienteFisicoResponse } from '../model/clienteFisicoResponse';
 import { ClienteFisicoUpdateRequest } from '../model/clienteFisicoUpdateRequest';
 // @ts-ignore
 import { OrgSpringdocCoreConvertersModelsPageable } from '../model/orgSpringdocCoreConvertersModelsPageable';
-// @ts-ignore
-import { OrgSpringframeworkDataDomainPageClienteFisicoListResponse } from '../model/orgSpringframeworkDataDomainPageClienteFisicoListResponse';
-// @ts-ignore
-import { OrgSpringframeworkDataDomainPageClienteFisicoReportResponse } from '../model/orgSpringframeworkDataDomainPageClienteFisicoReportResponse';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -54,10 +50,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosActivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesFisicosActivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesFisicosActivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesFisicosActivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosActivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosActivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosActivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosActivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosActivate.');
         }
@@ -65,14 +61,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -95,7 +90,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -110,10 +104,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (clienteFisicoCreateRequest === null || clienteFisicoCreateRequest === undefined) {
             throw new Error('Required parameter clienteFisicoCreateRequest was null or undefined when calling clientesFisicosCreate.');
         }
@@ -121,15 +115,14 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         // to determine the Content-Type header
@@ -162,7 +155,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -177,10 +169,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosExistsByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<boolean>;
-    public clientesFisicosExistsByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<boolean>>;
-    public clientesFisicosExistsByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<boolean>>;
-    public clientesFisicosExistsByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosExistsByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosExistsByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosExistsByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosExistsByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (cpf === null || cpf === undefined) {
             throw new Error('Required parameter cpf was null or undefined when calling clientesFisicosExistsByCpf.');
         }
@@ -188,15 +180,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -212,14 +202,13 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/cpf/${this.configuration.encodeParam({name: "cpf", value: cpf, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/exists`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<boolean>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -234,10 +223,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>;
-    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosGetAll(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesFisicosGetAll.');
         }
@@ -256,15 +245,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -280,7 +267,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -288,7 +275,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -303,10 +289,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>;
-    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosGetAllActive(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesFisicosGetAllActive.');
         }
@@ -325,15 +311,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -349,7 +333,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/ativos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -357,7 +341,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -372,10 +355,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosGetByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
+    public clientesFisicosGetByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (cpf === null || cpf === undefined) {
             throw new Error('Required parameter cpf was null or undefined when calling clientesFisicosGetByCpf.');
         }
@@ -383,15 +366,14 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -414,7 +396,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -429,10 +410,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
+    public clientesFisicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
+    public clientesFisicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
+    public clientesFisicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosGetById.');
         }
@@ -440,15 +421,14 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -471,7 +451,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -486,10 +465,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteFisicoReportResponse>;
-    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteFisicoReportResponse>>;
-    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteFisicoReportResponse>>;
-    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosGetReport(pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling clientesFisicosGetReport.');
         }
@@ -508,15 +487,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -532,7 +509,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/relatorio`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteFisicoReportResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -540,7 +517,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -555,10 +531,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosHardDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesFisicosHardDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesFisicosHardDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesFisicosHardDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosHardDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosHardDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosHardDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosHardDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosHardDelete.');
         }
@@ -566,14 +542,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -596,7 +571,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -611,10 +585,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosInactivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesFisicosInactivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesFisicosInactivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesFisicosInactivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosInactivate(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosInactivate(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosInactivate(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosInactivate(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosInactivate.');
         }
@@ -622,14 +596,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -652,7 +625,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -668,10 +640,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>;
-    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>>;
-    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosSearch(q: string, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (q === null || q === undefined) {
             throw new Error('Required parameter q was null or undefined when calling clientesFisicosSearch.');
         }
@@ -702,15 +674,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -726,7 +696,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/search`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageClienteFisicoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -734,7 +704,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -749,10 +718,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosSoftDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public clientesFisicosSoftDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public clientesFisicosSoftDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public clientesFisicosSoftDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosSoftDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosSoftDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosSoftDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosSoftDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosSoftDelete.');
         }
@@ -760,14 +729,13 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
@@ -790,7 +758,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -806,10 +773,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosUpdate.');
         }
@@ -820,15 +787,14 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            '*/*',
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
         }
 
         const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 
         // to determine the Content-Type header
@@ -861,7 +827,6 @@ export class ClientesFisicosService extends BaseService {
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
