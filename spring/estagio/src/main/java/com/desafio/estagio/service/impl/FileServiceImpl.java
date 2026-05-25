@@ -75,9 +75,9 @@ public class FileServiceImpl implements FileService {
     public byte[] pdfEnderecos(Long clienteId) {
         List<EnderecoResponse> enderecos = enderecoService.findAllByClienteId(clienteId);
 
-        var enderecoMaps = enderecos.stream()
+        List<Map<String, ?>> enderecoMaps = enderecos.stream()
                 .map(this::recordToMap)
-                .toList();
+                .collect(Collectors.toList());
 
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -107,9 +107,9 @@ public class FileServiceImpl implements FileService {
      * bypass JRBeanCollectionDataSource in favour of JRMapCollectionDataSource.
      */
     private byte[] pdfFromRecords(String reportName, List<?> records) {
-        var maps = records.stream()
+        List<Map<String, ?>> maps = records.stream()
                 .map(this::recordToMap)
-                .collect(Collectors.<Map<String, ?>>toList());
+                .collect(Collectors.toList());
 
         Map<String, Object> params = new HashMap<>();
         params.put("TABLE_DATA_SOURCE", new JRMapCollectionDataSource(maps));
