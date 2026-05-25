@@ -1,27 +1,13 @@
-mat-card-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0;
-  gap: 12px;
-}
-
-.card-toolbar {
+.table-toolbar {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.search-field {
-  min-width: 320px;
-  margin: 0;
+  margin-bottom: 12px;
 }
 
 table {
   width: 100%;
-  margin-top: 12px;
 }
 
 .actions-cell {
@@ -37,4 +23,11 @@ table {
   display: flex;
   justify-content: center;
   padding: 32px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: #888;
+  font-style: italic;
 }

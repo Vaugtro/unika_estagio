@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { JuridicoResponse } from '../../../shared/models/juridico.model';
+import { ClienteJuridicoResponse } from '../../../api/model/clienteJuridicoResponse';
 
 @Component({
   selector: 'app-juridico-info-card',
@@ -7,5 +7,5 @@ import { JuridicoResponse } from '../../../shared/models/juridico.model';
   styleUrls: ['./juridico-info-card.component.scss'],
 })
 export class JuridicoInfoCardComponent {
-  @Input() cliente!: JuridicoResponse;
+  @Input() cliente!: ClienteJuridicoResponse;
 }

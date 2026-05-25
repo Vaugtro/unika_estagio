@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   <form [formGroup]="form">
-    <fieldset class="cliente-section">
+    <fieldset *ngIf="!hasClienteContext" class="cliente-section">
       <legend>Cliente</legend>
       <div class="form-row">
         <mat-form-field appearance="outline" class="cliente-tipo-field">

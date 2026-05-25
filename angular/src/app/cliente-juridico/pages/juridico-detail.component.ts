@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, catchError, EMPTY } from 'rxjs';
-import { JuridicoService } from '../../shared/services/juridico.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { JuridicoResponse } from '../../shared/models/juridico.model';
+import { ClienteJuridicoResponse } from '../../api/model/clienteJuridicoResponse';
+import {ClientesJuridicosService} from "../../api";
 
 @Component({
   selector: 'app-juridico-detail',
@@ -11,13 +11,13 @@ import { JuridicoResponse } from '../../shared/models/juridico.model';
   styleUrls: ['./juridico-detail.component.scss'],
 })
 export class JuridicoDetailComponent implements OnInit, OnDestroy {
-  cliente?: JuridicoResponse;
+  cliente?: ClienteJuridicoResponse;
   loading = true;
   private sub = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
-    private juridicoService: JuridicoService,
+    private clientesJuridicosService: ClientesJuridicosService,
     private toastService: ToastService,
   ) {}
 
@@ -25,7 +25,7 @@ export class JuridicoDetailComponent implements OnInit, OnDestroy {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.sub.add(
-        this.juridicoService.findById(id).pipe(
+        this.clientesJuridicosService.clientesJuridicosGetById(id).pipe(
           catchError(() => {
             this.toastService.show('error', 'Erro ao carregar cliente');
             this.loading = false;

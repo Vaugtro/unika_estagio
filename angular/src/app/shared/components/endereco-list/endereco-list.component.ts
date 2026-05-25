@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EnderecoListResponse } from '../../models/endereco.model';
+import { EnderecoResponse } from '../../../api/model/enderecoResponse';
 
 @Component({
   selector: 'app-endereco-list',
@@ -7,5 +7,5 @@ import { EnderecoListResponse } from '../../models/endereco.model';
   styleUrls: ['./endereco-list.component.scss'],
 })
 export class EnderecoListComponent {
-  @Input() enderecos: EnderecoListResponse[] = [];
+  @Input() enderecos: EnderecoResponse[] = [];
 }

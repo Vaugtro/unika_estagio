@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/export")
 @RequiredArgsConstructor
-@Tag(name = "Exportação", description = "Endpoints para exportação de relatórios (PDF, XLSX)")
+@Tag(name = "Exportacao", description = "Endpoints para exportação de relatórios (PDF, XLSX)")
 public class ExportController {
 
     private final ExportService exportService;

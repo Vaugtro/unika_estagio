@@ -15,7 +15,7 @@
       <mat-card-title>Endereços</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <app-endereco-list [enderecos]="cliente.enderecos"></app-endereco-list>
+      <app-endereco-table [clienteId]="cliente.id!" [clienteType]="'juridico'"></app-endereco-table>
     </mat-card-content>
   </mat-card>
 </div>

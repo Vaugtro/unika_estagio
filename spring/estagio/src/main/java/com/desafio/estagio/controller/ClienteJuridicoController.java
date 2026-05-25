@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/clientes/juridicos")
 @RequiredArgsConstructor
-@Tag(name = "Clientes Jurídicos", description = "Endpoints para gerenciamento de clientes pessoa jurídica")
+@Tag(name = "Clientes Juridicos", description = "Endpoints para gerenciamento de clientes pessoa jurídica")
 public class ClienteJuridicoController {
 
     private final ClienteJuridicoService juridicoService;

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/v1/clientes/fisicos")
 @RequiredArgsConstructor
-@Tag(name = "Clientes Físicos", description = "Endpoints para gerenciamento de clientes pessoa física")
+@Tag(name = "Clientes Fisicos", description = "Endpoints para gerenciamento de clientes pessoa física")
 public class ClienteFisicoController {
 
     private final ClienteFisicoService fisicoService;

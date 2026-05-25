@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription, catchError, EMPTY } from 'rxjs';
 import { EnderecoFormComponent } from '../../../shared/components/endereco-form/endereco-form.component';
-import { JuridicoService } from '../../../shared/services/juridico.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { cnpjValidator } from '../../../shared/validators/cnpj.validator';
 import { VALIDATION } from '../../../shared/validators/validation-constants';
+import {ClientesJuridicosService} from "../../../api";
 
 @Component({
   selector: 'app-juridico-create-dialog',
@@ -22,7 +22,7 @@ export class JuridicoCreateDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private juridicoService: JuridicoService,
+    private clientesJuridicosService: ClientesJuridicosService,
     private toastService: ToastService,
     private dialogRef: MatDialogRef<JuridicoCreateDialogComponent>,
   ) {}
@@ -72,7 +72,7 @@ export class JuridicoCreateDialogComponent implements OnInit {
     };
 
     this.subscriptions.push(
-      this.juridicoService.create(dto).pipe(
+      this.clientesJuridicosService.clientesJuridicosCreate(dto).pipe(
         catchError((err) => {
           const msg = err.error?.message || err.statusText || 'Erro ao criar cliente';
           this.toastService.show('error', msg);

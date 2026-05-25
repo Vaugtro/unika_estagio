@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ExportService } from '../../services/export.service';
 import { ToastService } from '../../services/toast.service';
 import { downloadBlob } from '../../services/download.util';
 import { Subscription, catchError, EMPTY } from 'rxjs';
@@ -22,7 +22,7 @@ export class ExportDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ExportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ExportDialogData,
-    private exportService: ExportService,
+    private httpClient: HttpClient,
     private toastService: ToastService,
   ) {}
 
@@ -33,12 +33,12 @@ export class ExportDialogComponent {
     }
 
     this.exportingPdf = true;
-    const obs$ = this.data.clienteType === 'fisico'
-      ? this.exportService.pdfFisicos()
-      : this.exportService.pdfJuridicos();
+    const url = this.data.clienteType === 'fisico'
+      ? '/v1/export/clientes/fisicos/pdf'
+      : '/v1/export/clientes/juridicos/pdf';
 
     this.subscriptions.push(
-      obs$.pipe(
+      this.httpClient.get(url, { responseType: 'blob' }).pipe(
         catchError(() => {
           this.toastService.show('error', 'Erro ao exportar PDF');
           this.exportingPdf = false;
@@ -60,12 +60,12 @@ export class ExportDialogComponent {
     }
 
     this.exportingXlsx = true;
-    const obs$ = this.data.clienteType === 'fisico'
-      ? this.exportService.xlsxFisicos()
-      : this.exportService.xlsxJuridicos();
+    const url = this.data.clienteType === 'fisico'
+      ? '/v1/export/clientes/fisicos/xlsx'
+      : '/v1/export/clientes/juridicos/xlsx';
 
     this.subscriptions.push(
-      obs$.pipe(
+      this.httpClient.get(url, { responseType: 'blob' }).pipe(
         catchError((err) => {
           this.toastService.show('error', err.message || 'Exportação XLSX não disponível');
           this.exportingXlsx = false;

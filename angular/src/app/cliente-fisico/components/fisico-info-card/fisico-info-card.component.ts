@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FisicoResponse } from '../../../shared/models/fisico.model';
+import { ClienteFisicoResponse } from '../../../api/model/clienteFisicoResponse';
 
 @Component({
   selector: 'app-fisico-info-card',
@@ -7,5 +7,5 @@ import { FisicoResponse } from '../../../shared/models/fisico.model';
   styleUrls: ['./fisico-info-card.component.scss'],
 })
 export class FisicoInfoCardComponent {
-  @Input() cliente!: FisicoResponse;
+  @Input() cliente!: ClienteFisicoResponse;
 }

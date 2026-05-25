@@ -3,12 +3,13 @@ import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
-import { FisicoService } from '../../../shared/services/fisico.service';
 import { ToastService } from '../../../shared/services/toast.service';
-import { FisicoListResponse } from '../../../shared/models/fisico.model';
+import { ClienteFisicoListResponse } from '../../../api/model/clienteFisicoListResponse';
+import { Pageable } from '../../../api/model/pageable';
 import { FisicoCreateDialogComponent } from '../fisico-create-dialog/fisico-create-dialog.component';
 import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
 import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {ClientesFisicosService} from "../../../api";
 
 @Component({
   selector: 'app-fisico-table',
@@ -18,7 +19,7 @@ import { ImportDialogComponent } from '../../../shared/components/import-dialog/
 export class FisicoTableComponent implements OnInit, OnDestroy {
   displayedColumns = ['id', 'nome', 'cpf', 'email', 'status', 'actions'];
 
-  dataSource: FisicoListResponse[] = [];
+  dataSource: ClienteFisicoListResponse[] = [];
   totalElements = 0;
   page = 0;
   pageSize = 10;
@@ -31,7 +32,7 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
   private inlineValues: { nome: string; email: string } = { nome: '', email: '' };
 
   constructor(
-    private fisicoService: FisicoService,
+    private clientesFisicosService: ClientesFisicosService,
     private toastService: ToastService,
     private dialog: MatDialog,
   ) {}
@@ -56,24 +57,33 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.loading = true;
     const q = this.searchControl.value?.trim();
+    const pageable = this.makePageable();
+    console.log('[FisicoTable] loadData', { q, pageable });
 
     const obs$ = q
-      ? this.fisicoService.search(q, this.page, this.pageSize)
-      : this.fisicoService.findAll(this.page, this.pageSize);
+      ? this.clientesFisicosService.clientesFisicosSearch(q, pageable)
+      : this.clientesFisicosService.clientesFisicosGetAll(pageable);
 
     this.subscriptions.push(
       obs$.pipe(
-        catchError(() => {
+        catchError((err) => {
+          console.error('[FisicoTable] API error', err);
           this.toastService.show('error', 'Erro ao carregar clientes');
           this.loading = false;
           return EMPTY;
         })
       ).subscribe((page) => {
-        this.dataSource = page.content;
-        this.totalElements = page.totalElements;
+        console.log('[FisicoTable] API response', page);
+        this.dataSource = page.content!;
+        console.log('[FisicoTable] dataSource set', { content: page.content, length: page.content?.length });
+        this.totalElements = page.totalElements ?? 0;
         this.loading = false;
       })
     );
+  }
+
+  private makePageable(): Pageable {
+    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
@@ -86,20 +96,20 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 
-  startEdit(row: FisicoListResponse): void {
-    this.editingId = row.id;
-    this.inlineValues = { nome: row.nome, email: row.email };
+  startEdit(row: ClienteFisicoListResponse): void {
+    this.editingId = row.id ?? null;
+    this.inlineValues = { nome: row.nome ?? '', email: row.email ?? '' };
   }
 
   onInlineValueChange(values: { nome: string; email: string }): void {
     this.inlineValues = values;
   }
 
-  saveInline(row: FisicoListResponse): void {
+  saveInline(row: ClienteFisicoListResponse): void {
     if (!this.editingId) return;
 
     this.subscriptions.push(
-      this.fisicoService.update(row.id, {
+      this.clientesFisicosService.clientesFisicosUpdate(row.id!, {
         nome: this.inlineValues.nome,
         email: this.inlineValues.email || undefined,
         estaAtivo: row.estaAtivo,
@@ -120,10 +130,10 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
     this.editingId = null;
   }
 
-  toggleStatus(row: FisicoListResponse): void {
+  toggleStatus(row: ClienteFisicoListResponse): void {
     const obs$ = row.estaAtivo
-      ? this.fisicoService.inactivate(row.id)
-      : this.fisicoService.activate(row.id);
+      ? this.clientesFisicosService.clientesFisicosInactivate(row.id!)
+      : this.clientesFisicosService.clientesFisicosActivate(row.id!);
 
     this.subscriptions.push(
       obs$.pipe(

@@ -3,12 +3,12 @@ import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
-import { JuridicoService } from '../../../shared/services/juridico.service';
 import { ToastService } from '../../../shared/services/toast.service';
-import { JuridicoListResponse } from '../../../shared/models/juridico.model';
+import { Pageable } from '../../../api/model/pageable';
 import { JuridicoCreateDialogComponent } from '../juridico-create-dialog/juridico-create-dialog.component';
 import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
 import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {ClienteJuridicoListResponse, ClientesJuridicosService} from "../../../api";
 
 @Component({
   selector: 'app-juridico-table',
@@ -18,7 +18,7 @@ import { ImportDialogComponent } from '../../../shared/components/import-dialog/
 export class JuridicoTableComponent implements OnInit, OnDestroy {
   displayedColumns = ['id', 'razaoSocial', 'cnpj', 'email', 'status', 'actions'];
 
-  dataSource: JuridicoListResponse[] = [];
+  dataSource: ClienteJuridicoListResponse[] = [];
   totalElements = 0;
   page = 0;
   pageSize = 10;
@@ -31,7 +31,7 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
   private inlineValues: { razaoSocial: string; inscricaoEstadual: string; email: string } = { razaoSocial: '', inscricaoEstadual: '', email: '' };
 
   constructor(
-    private juridicoService: JuridicoService,
+    private clientesJuridicosService: ClientesJuridicosService,
     private toastService: ToastService,
     private dialog: MatDialog,
   ) {}
@@ -56,24 +56,33 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.loading = true;
     const q = this.searchControl.value?.trim();
+    const pageable = this.makePageable();
+    console.log('[JuridicoTable] loadData', { q, pageable });
 
     const obs$ = q
-      ? this.juridicoService.search(q, this.page, this.pageSize)
-      : this.juridicoService.findAll(this.page, this.pageSize);
+      ? this.clientesJuridicosService.clientesJuridicosSearch(q, pageable)
+      : this.clientesJuridicosService.clientesJuridicosGetAll(pageable);
 
     this.subscriptions.push(
       obs$.pipe(
-        catchError(() => {
+        catchError((err) => {
+          console.error('[JuridicoTable] API error', err);
           this.toastService.show('error', 'Erro ao carregar clientes');
           this.loading = false;
           return EMPTY;
         })
       ).subscribe((page) => {
-        this.dataSource = page.content;
-        this.totalElements = page.totalElements;
+        console.log('[JuridicoTable] API response', page);
+        this.dataSource = page.content!;
+        console.log('[JuridicoTable] dataSource set', { content: page.content, length: page.content?.length });
+        this.totalElements = page.totalElements ?? 0;
         this.loading = false;
       })
     );
+  }
+
+  private makePageable(): Pageable {
+    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
@@ -86,25 +95,26 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 
-  startEdit(row: JuridicoListResponse): void {
-    this.editingId = row.id;
-    this.inlineValues = { razaoSocial: row.razaoSocial, inscricaoEstadual: '', email: row.email };
+  startEdit(row: ClienteJuridicoListResponse): void {
+    this.editingId = row.id ?? null;
+    this.inlineValues = { razaoSocial: row.razaoSocial ?? '', inscricaoEstadual: '', email: row.email ?? '' };
   }
 
   onInlineValueChange(values: { razaoSocial: string; inscricaoEstadual: string; email: string }): void {
     this.inlineValues = values;
   }
 
-  saveInline(row: JuridicoListResponse): void {
+  saveInline(row: ClienteJuridicoListResponse): void {
     if (!this.editingId) return;
 
     this.subscriptions.push(
-      this.juridicoService.update(row.id, {
+      this.clientesJuridicosService.clientesJuridicosUpdate(row.id!, {
         razaoSocial: this.inlineValues.razaoSocial,
         inscricaoEstadual: this.inlineValues.inscricaoEstadual,
         email: this.inlineValues.email || undefined,
         dataCriacaoEmpresa: '',
         estaAtivo: row.estaAtivo,
+        enderecos: [],
       }).pipe(
         catchError(() => {
           this.toastService.show('error', 'Erro ao atualizar cliente');
@@ -122,10 +132,10 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
     this.editingId = null;
   }
 
-  toggleStatus(row: JuridicoListResponse): void {
+  toggleStatus(row: ClienteJuridicoListResponse): void {
     const obs$ = row.estaAtivo
-      ? this.juridicoService.inactivate(row.id)
-      : this.juridicoService.activate(row.id);
+      ? this.clientesJuridicosService.clientesJuridicosInactivate(row.id!)
+      : this.clientesJuridicosService.clientesJuridicosActivate(row.id!);
 
     this.subscriptions.push(
       obs$.pipe(

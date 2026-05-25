@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.22.0",
+    "generators": {
+      "angular-client": {
+        "generatorName": "typescript-angular",
+        "inputSpec": "./api.yaml",
+        "output": "./src/app/api",
+        "additionalProperties": {
+          "ngVersion": "14.2.0",
+          "supportsES6": true,
+          "npmName": "unika-angular",
+          "npmVersion": "0.0.0"
+        }
+      }
+    }
+  }
+}

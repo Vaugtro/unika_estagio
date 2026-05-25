@@ -7,10 +7,10 @@ import {
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription, catchError, EMPTY } from 'rxjs';
 import { EnderecoFormComponent } from '../../../shared/components/endereco-form/endereco-form.component';
-import { FisicoService } from '../../../shared/services/fisico.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { cpfValidator } from '../../../shared/validators/cpf.validator';
 import { VALIDATION } from '../../../shared/validators/validation-constants';
+import {ClientesFisicosService} from "../../../api";
 
 @Component({
   selector: 'app-fisico-create-dialog',
@@ -26,7 +26,7 @@ export class FisicoCreateDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private fisicoService: FisicoService,
+    private clientesFisicosService: ClientesFisicosService,
     private toastService: ToastService,
     private dialogRef: MatDialogRef<FisicoCreateDialogComponent>,
   ) {}
@@ -76,7 +76,7 @@ export class FisicoCreateDialogComponent implements OnInit {
     };
 
     this.subscriptions.push(
-      this.fisicoService.create(dto).pipe(
+      this.clientesFisicosService.clientesFisicosCreate(dto).pipe(
         catchError((err) => {
           const msg = err.error?.message || err.statusText || 'Erro ao criar cliente';
           this.toastService.show('error', msg);

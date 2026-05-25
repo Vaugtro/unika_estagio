@@ -1,12 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, catchError, EMPTY } from 'rxjs';
-import { EnderecoService } from '../../../shared/services/endereco.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { cepValidator } from '../../../shared/validators/cep.validator';
 import { telefoneValidator } from '../../../shared/validators/telefone.validator';
 import { VALIDATION } from '../../../shared/validators/validation-constants';
+import {EnderecosService} from "../../../api";
+
+export interface EnderecoCreateDialogData {
+  clienteId?: number;
+  clienteType?: 'fisico' | 'juridico';
+}
 
 @Component({
   selector: 'app-endereco-create-dialog',
@@ -16,19 +21,21 @@ import { VALIDATION } from '../../../shared/validators/validation-constants';
 export class EnderecoCreateDialogComponent implements OnInit {
   form!: FormGroup;
   submitting = false;
+  hasClienteContext = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private enderecoService: EnderecoService,
+    private enderecosService: EnderecosService,
     private toastService: ToastService,
     public dialogRef: MatDialogRef<EnderecoCreateDialogComponent>,
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: EnderecoCreateDialogData,
+  ) {
+    this.hasClienteContext = !!data?.clienteId;
+  }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      clienteTipo: ['FISICA', Validators.required],
-      clienteId: [null, [Validators.required, Validators.min(1)]],
+    const group: Record<string, unknown> = {
       logradouro: ['', [Validators.required, Validators.minLength(VALIDATION.LOGRADOURO_MIN), Validators.maxLength(VALIDATION.LOGRADOURO_MAX)]],
       numero: [null, [Validators.required, Validators.min(1)]],
       bairro: ['', [Validators.required, Validators.minLength(VALIDATION.BAIRRO_MIN), Validators.maxLength(VALIDATION.BAIRRO_MAX)]],
@@ -38,7 +45,14 @@ export class EnderecoCreateDialogComponent implements OnInit {
       telefone: ['', telefoneValidator()],
       complemento: ['', Validators.maxLength(VALIDATION.COMPLEMENTO_MAX)],
       principal: [false],
-    });
+    };
+
+    if (!this.hasClienteContext) {
+      group['clienteTipo'] = ['FISICA', Validators.required];
+      group['clienteId'] = [null, [Validators.required, Validators.min(1)]];
+    }
+
+    this.form = this.fb.group(group);
   }
 
   submit(): void {
@@ -50,21 +64,27 @@ export class EnderecoCreateDialogComponent implements OnInit {
     this.submitting = true;
     const v = this.form.value;
 
-    const dto = {
+    const addressDto = {
       logradouro: v.logradouro,
       numero: v.numero,
-      cep: v.cep.replace(/\D/g, ''),
+      cep: (v.cep || '').replace(/\D/g, ''),
       bairro: v.bairro,
-      telefone: v.telefone.replace(/\D/g, ''),
+      telefone: (v.telefone || '').replace(/\D/g, ''),
       estado: v.estado,
       cidade: v.cidade,
       principal: v.principal,
       complemento: v.complemento || undefined,
-      clienteId: v.clienteId,
     };
 
+    let obs$;
+    if (this.hasClienteContext) {
+      obs$ = this.enderecosService.enderecosCreateForCliente(this.data.clienteId!, addressDto);
+    } else {
+      obs$ = this.enderecosService.enderecosCreate({ ...addressDto, clienteId: v.clienteId });
+    }
+
     this.subscriptions.push(
-      this.enderecoService.create(dto).pipe(
+      obs$.pipe(
         catchError((err) => {
           const msg = err.error?.message || err.statusText || 'Erro ao criar endereço';
           this.toastService.show('error', msg);

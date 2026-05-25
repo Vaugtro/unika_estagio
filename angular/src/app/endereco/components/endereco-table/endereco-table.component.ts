@@ -1,15 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription, debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
-import { EnderecoService } from '../../../shared/services/endereco.service';
+import { Subscription, catchError, EMPTY } from 'rxjs';
 import { ToastService } from '../../../shared/services/toast.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { EnderecoListResponse } from '../../../shared/models/endereco.model';
-import { EnderecoCreateDialogComponent } from '../endereco-create-dialog/endereco-create-dialog.component';
+import { EnderecoListResponse } from '../../../api/model/enderecoListResponse';
+import { Pageable } from '../../../api/model/pageable';
+import {
+  EnderecoCreateDialogComponent,
+  EnderecoCreateDialogData,
+} from '../endereco-create-dialog/endereco-create-dialog.component';
 import { ExportDialogComponent } from '../../../shared/components/export-dialog/export-dialog.component';
 import { ImportDialogComponent } from '../../../shared/components/import-dialog/import-dialog.component';
+import {EnderecosService} from "../../../api";
 
 @Component({
   selector: 'app-endereco-table',
@@ -17,7 +20,10 @@ import { ImportDialogComponent } from '../../../shared/components/import-dialog/
   styleUrls: ['./endereco-table.component.scss'],
 })
 export class EnderecoTableComponent implements OnInit, OnDestroy {
-  displayedColumns = ['id', 'logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'principal', 'actions'];
+  @Input() clienteId!: number;
+  @Input() clienteType!: 'fisico' | 'juridico';
+
+  displayedColumns = ['logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'principal', 'actions'];
 
   dataSource: EnderecoListResponse[] = [];
   totalElements = 0;
@@ -25,27 +31,17 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   pageSize = 10;
   loading = false;
 
-  searchControl = new FormControl('');
   private subscriptions: Subscription[] = [];
   private dataSubscription?: Subscription;
 
   constructor(
-    private enderecoService: EnderecoService,
+    private enderecosService: EnderecosService,
     private toastService: ToastService,
     private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
     this.loadData();
-
-    this.subscriptions.push(
-      this.searchControl.valueChanges
-        .pipe(debounceTime(300), distinctUntilChanged())
-        .subscribe(() => {
-          this.page = 0;
-          this.loadData();
-        })
-    );
   }
 
   ngOnDestroy(): void {
@@ -55,30 +51,34 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
 
   loadData(): void {
     this.loading = true;
-    const q = this.searchControl.value?.trim() || '';
+    const pageable = this.makePageable();
+    console.log('[EnderecoTable] loadData', { clienteId: this.clienteId, pageable });
 
     this.dataSubscription?.unsubscribe();
-    this.dataSubscription = this.enderecoService.search(q, this.page, this.pageSize).pipe(
-      catchError(() => {
+    this.dataSubscription = this.enderecosService.enderecosFindAllByClienteId(this.clienteId, this.makePageable()).pipe(
+      catchError((err) => {
+        console.error('[EnderecoTable] API error', err);
         this.toastService.show('error', 'Erro ao carregar endereços');
         this.loading = false;
         return EMPTY;
       })
     ).subscribe((page) => {
-      this.dataSource = page.content;
-      this.totalElements = page.totalElements;
+      console.log('[EnderecoTable] API response', page);
+      this.dataSource = page.content!;
+      console.log('[EnderecoTable] dataSource set', { content: page.content, length: page.content?.length });
+      this.totalElements = page.totalElements ?? 0;
       this.loading = false;
     });
+  }
+
+  private makePageable(): Pageable {
+    return { page: this.page, size: this.pageSize, sort: [] };
   }
 
   onPageChange(event: PageEvent): void {
     this.page = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadData();
-  }
-
-  clearSearch(): void {
-    this.searchControl.setValue('');
   }
 
   setAsPrincipal(row: EnderecoListResponse): void {
@@ -88,7 +88,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
     }
 
     this.subscriptions.push(
-      this.enderecoService.setAsPrincipal(row.id).pipe(
+      this.enderecosService.enderecosSetAsPrincipal(row.id!).pipe(
         catchError(() => {
           this.toastService.show('error', 'Erro ao definir endereço como principal');
           return EMPTY;
@@ -113,7 +113,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
         if (!confirmed) return;
 
         this.subscriptions.push(
-          this.enderecoService.delete(row.id).pipe(
+          this.enderecosService.enderecosDelete(row.id!).pipe(
             catchError(() => {
               this.toastService.show('error', 'Erro ao excluir endereço');
               return EMPTY;
@@ -128,9 +128,13 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   }
 
   openCreate(): void {
-    const dialogRef = this.dialog.open(EnderecoCreateDialogComponent, {
-      width: '600px',
-    });
+    const dialogRef = this.dialog.open<EnderecoCreateDialogComponent, EnderecoCreateDialogData, boolean>(
+      EnderecoCreateDialogComponent,
+      {
+        width: '600px',
+        data: { clienteId: this.clienteId, clienteType: this.clienteType },
+      }
+    );
 
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe((result) => {
@@ -141,13 +145,13 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: { clienteType: 'endereco' },
+      data: { clienteType: this.clienteType },
     });
   }
 
   openImport(): void {
     this.dialog.open(ImportDialogComponent, {
-      data: { clienteType: 'endereco' },
+      data: { clienteType: this.clienteType },
     });
   }
 }

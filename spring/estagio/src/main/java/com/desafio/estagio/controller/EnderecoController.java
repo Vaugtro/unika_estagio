@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/enderecos")
 @RequiredArgsConstructor
-@Tag(name = "Endereços", description = "Endpoints para gerenciamento de endereços dos clientes (Físicos e Jurídicos)")
+@Tag(name = "Enderecos", description = "Endpoints para gerenciamento de endereços dos clientes (Físicos e Jurídicos)")
 public class EnderecoController {
 
     private final EnderecoService enderecoService;
