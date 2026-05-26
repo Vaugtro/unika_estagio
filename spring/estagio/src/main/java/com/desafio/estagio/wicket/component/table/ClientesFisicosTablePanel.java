@@ -39,6 +39,7 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
     private FileService fileService;
 
     private WebMarkupContainer tableContainer;
+    private WebMarkupContainer editModalContainer;
     private ClienteFisicoDataProvider dataProvider;
     private AjaxPagingNavigator navigator;
 
@@ -57,6 +58,11 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
         dataProvider = new ClienteFisicoDataProvider(clienteFisicoService);
         DataView<ClienteFisicoListResponse> dataView = new ClienteFisicoDataView("rows", dataProvider, 10);
         tableContainer.add(dataView);
+
+        editModalContainer = new WebMarkupContainer("editModalContainer");
+        editModalContainer.setOutputMarkupId(true);
+        editModalContainer.add(new WebMarkupContainer("editModal").setVisible(false));
+        add(editModalContainer);
 
         navigator = new AjaxPagingNavigator("navigator", dataView) {
             @Serial
@@ -196,5 +202,14 @@ public class ClientesFisicosTablePanel extends DevUtilsPanel {
         return searchForm;
     }
 
+    public WebMarkupContainer getEditModalContainer() {
+        return editModalContainer;
+    }
+
+    public void refreshTable(AjaxRequestTarget target) {
+        target.add(tableContainer);
+        target.add(navigator);
+        target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+    }
 
 }
