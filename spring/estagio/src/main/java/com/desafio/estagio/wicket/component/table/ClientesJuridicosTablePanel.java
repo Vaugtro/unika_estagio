@@ -207,7 +207,10 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
     public void refreshTable(AjaxRequestTarget target) {
         target.add(tableContainer);
         target.add(navigator);
-        target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+        target.appendJavaScript(
+                "if(typeof lucide !== 'undefined') lucide.createIcons();" +
+                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
+        );
     }
 
 }

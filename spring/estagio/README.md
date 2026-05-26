@@ -7,3 +7,4 @@ FIXME: Add a delete Cliente button, only available if inactive.
 FIXME: Telefone and RG must be templated properly.
 FIXME: Calendar must be default DD/MM/YYYY.
 FIXME: Modal must not show the same data from the input validations.
+FIXME: Telefone is optional.

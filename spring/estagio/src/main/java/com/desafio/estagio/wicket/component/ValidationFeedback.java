@@ -62,36 +62,50 @@ public final class ValidationFeedback implements Serializable {
      * FeedbackCollector + highlightJS + showToast pattern in modals and pages.
      */
     public static void handleFormError(AjaxRequestTarget target, Form<?> form) {
+        // Preserve user input: update model even for invalid components
+        // so the form re-renders with what the user typed, not the stale model.
+        form.visitFormComponents((fc, visit) -> {
+            if (!fc.isValid()) {
+                Object converted = fc.getConvertedInput();
+                if (converted != null) {
+                    try {
+                        ((FormComponent) fc).setModelObject(converted);
+                    } catch (Exception ignored) {
+                        // component may not support setting model this way
+                    }
+                }
+            }
+        });
         target.add(form);
         target.appendJavaScript("lucide.createIcons();");
-        StringBuilder errors = new StringBuilder();
+        target.appendJavaScript(
+                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
+        );
+        boolean hasErrors = false;
         StringBuilder highlightJS = new StringBuilder();
-        new FeedbackCollector(form).collect()
-                .stream()
-                .filter(msg -> msg.getLevel() == FeedbackMessage.ERROR)
-                .forEach(msg -> {
-                    if (!errors.isEmpty()) errors.append("<br>");
-                    errors.append(msg.getMessage());
-                    var source = msg.getReporter();
-                    if (source instanceof FormComponent) {
-                        String inputName = ((FormComponent) source).getInputName();
-                        if (inputName != null) {
-                            String escapedMsg = msg.getMessage().toString()
-                                    .replace("\\", "\\\\").replace("'", "\\'");
-                            highlightJS.append(
-                                    "var inp=document.querySelector('[name=\"" + inputName + "\"]');" +
-                                            "if(inp){inp.classList.add('is-invalid');" +
-                                            "var fb=inp.parentNode.querySelector('.invalid-feedback');" +
-                                            "if(fb)fb.textContent='" + escapedMsg + "';}"
-                            );
-                        }
-                    }
-                });
+        for (FeedbackMessage msg : new FeedbackCollector(form).collect()) {
+            if (msg.getLevel() != FeedbackMessage.ERROR) continue;
+            hasErrors = true;
+            var source = msg.getReporter();
+            if (source instanceof FormComponent) {
+                String inputName = ((FormComponent) source).getInputName();
+                if (inputName != null) {
+                    String escapedMsg = msg.getMessage().toString()
+                            .replace("\\", "\\\\").replace("'", "\\'");
+                    highlightJS.append(
+                            "var inp=document.querySelector('[name=\"" + inputName + "\"]');" +
+                                    "if(inp){inp.classList.add('is-invalid');" +
+                                    "var fb=inp.parentNode.querySelector('.invalid-feedback');" +
+                                    "if(fb)fb.textContent='" + escapedMsg + "';}"
+                    );
+                }
+            }
+        }
         if (highlightJS.length() > 0) {
             target.appendJavaScript(highlightJS.toString());
         }
-        if (!errors.isEmpty()) {
-            showToast(target, "error", errors.toString());
+        if (hasErrors) {
+            showToast(target, "error", "Corrija os campos destacados.");
         }
     }
 

@@ -3,6 +3,8 @@ package com.desafio.estagio.wicket.component.shared;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.dto.endereco.EnderecoUpdateRequest;
+import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.model.formatter.TelefoneFormatter;
 import com.desafio.estagio.service.EnderecoService;
 import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
@@ -93,7 +95,7 @@ public class EnderecoListViewPanel extends Panel {
                 item.add(new Label("cep", end.cep() != null ? end.cep() : ""));
                 item.add(new Label("cidade", end.cidade() != null ? end.cidade() : ""));
                 item.add(new Label("estado", end.estado() != null ? end.estado() : ""));
-                item.add(new Label("telefone", end.telefone() != null ? end.telefone() : ""));
+                item.add(new Label("telefone", end.telefone() != null ? TelefoneFormatter.format(end.telefone()) : ""));
 
                 Long endId = end.id();
                 boolean isPrincipal = Boolean.TRUE.equals(end.principal());
@@ -114,7 +116,15 @@ public class EnderecoListViewPanel extends Panel {
                                     "Endereço definido como principal!");
                             target.appendJavaScript("lucide.createIcons();");
                         } catch (Exception e) {
-                            ValidationFeedback.showToast(target, "error", e.getMessage());
+                            String message;
+                            if (e instanceof DataIntegrityViolationException) {
+                                message = "Já existe um endereço principal para este cliente.";
+                            } else if (e instanceof BusinessException) {
+                                message = e.getMessage();
+                            } else {
+                                message = "Erro ao acessar o banco de dados. Tente novamente.";
+                            }
+                            ValidationFeedback.showToast(target, "error", message);
                         }
                     }
                 };
@@ -127,6 +137,9 @@ public class EnderecoListViewPanel extends Panel {
 
                 if (isPrincipal) {
                     principalBtn.add(new AttributeModifier("disabled", "disabled"));
+                } else if (getList().size() <= 1) {
+                    principalBtn.setEnabled(false);
+                    principalBtn.add(new AttributeModifier("title", "Endereço único — já é principal"));
                 }
 
                 item.add(principalBtn);
@@ -139,6 +152,7 @@ public class EnderecoListViewPanel extends Panel {
                     public void onClick(AjaxRequestTarget target) {
                         EnderecoResponse end = item.getModelObject();
                         modalEnderecos.clear();
+                        modalForm.getFeedbackMessages().clear();
                         EnderecoCreateFormModel formModel = new EnderecoCreateFormModel();
                         formModel.setId(end.id());
                         formModel.setLogradouro(end.logradouro());
@@ -169,7 +183,15 @@ public class EnderecoListViewPanel extends Panel {
                             ValidationFeedback.showToast(target, "success", "Endereço excluído com sucesso!");
                             target.appendJavaScript("lucide.createIcons();");
                         } catch (Exception e) {
-                            ValidationFeedback.showToast(target, "error", e.getMessage());
+                            String message;
+                            if (e instanceof DataIntegrityViolationException) {
+                                message = "Já existe um endereço principal para este cliente.";
+                            } else if (e instanceof BusinessException) {
+                                message = e.getMessage();
+                            } else {
+                                message = "Erro ao acessar o banco de dados. Tente novamente.";
+                            }
+                            ValidationFeedback.showToast(target, "error", message);
                         }
                     }
                 });
@@ -227,15 +249,18 @@ public class EnderecoListViewPanel extends Panel {
                 } catch (DataIntegrityViolationException e) {
                     ValidationFeedback.showToast(target, "error",
                             "Já existe um endereço principal para este cliente. Desmarque o endereço principal atual primeiro.");
+                } catch (BusinessException e) {
+                    ValidationFeedback.showToast(target, "error", e.getMessage());
                 } catch (Exception e) {
                     ValidationFeedback.showToast(target, "error",
-                            e.getMessage() != null ? e.getMessage() : "Erro ao salvar endereço.");
+                            "Erro ao salvar endereço. Tente novamente.");
                 }
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
                 ValidationFeedback.handleFormError(target, form);
+                target.add(form);
             }
         });
 
@@ -247,6 +272,7 @@ public class EnderecoListViewPanel extends Panel {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 modalEnderecos.clear();
+                modalForm.getFeedbackMessages().clear();
                 EnderecoCreateFormModel end = new EnderecoCreateFormModel();
                 end.setPrincipal(false);
                 modalEnderecos.add(end);
@@ -312,9 +338,14 @@ public class EnderecoListViewPanel extends Panel {
                     target.add(enderecosContainer);
                     target.add(importForm);
                     target.appendJavaScript("lucide.createIcons();");
+                } catch (DataIntegrityViolationException e) {
+                    ValidationFeedback.showToast(target, "error",
+                            "Já existe um endereço principal para este cliente.");
+                } catch (BusinessException e) {
+                    ValidationFeedback.showToast(target, "error", e.getMessage());
                 } catch (Exception e) {
                     ValidationFeedback.showToast(target, "error",
-                            "Erro na importação: " + e.getMessage());
+                            "Erro na importação. Tente novamente.");
                 }
             }
 

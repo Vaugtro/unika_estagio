@@ -161,6 +161,7 @@ public class EnderecoCreateTablePanel extends Panel {
                 enderecos.add(new EnderecoCreateFormModel());
                 target.add(EnderecoCreateTablePanel.this);
                 target.appendJavaScript("lucide.createIcons();");
+                target.appendJavaScript("$('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});");
             }
         };
         add(addEnderecoBtn);

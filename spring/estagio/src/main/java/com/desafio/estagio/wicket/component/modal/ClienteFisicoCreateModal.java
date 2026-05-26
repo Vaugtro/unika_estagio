@@ -2,6 +2,7 @@ package com.desafio.estagio.wicket.component.modal;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
+import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.validation.internal.CPFValidator;
@@ -11,6 +12,7 @@ import com.desafio.estagio.wicket.model.ClienteFisicoCreateFormModel;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -18,6 +20,9 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -56,6 +61,12 @@ public class ClienteFisicoCreateModal extends Panel {
         cpfField.add(new CPFValidator());
         cpfField.add(new AttributeModifier("placeholder", "000.000.000-00"));
         cpfField.add(new AttributeModifier("data-mask", "000.000.000-00"));
+        cpfField.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                cpfField.add(new AttributeModifier("data-mask", "000.000.000-00"));
+            }
+        });
         Label cpfFeedback = ValidationFeedback.createFeedbackLabel("cpfFeedback", cpfField);
         ValidationFeedback.attachRealTimeValidation(cpfField, cpfFeedback);
         form.add(cpfField);
@@ -72,7 +83,21 @@ public class ClienteFisicoCreateModal extends Panel {
 
         TextField<String> rgField = new TextField<>("rg", String.class);
         rgField.setRequired(true);
-        rgField.add(StringValidator.lengthBetween(ValidationConstants.RG_LENGTH_MIN, ValidationConstants.RG_LENGTH_MAX));
+        rgField.add(new IValidator<String>() {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void validate(IValidatable<String> validatable) {
+                String value = validatable.getValue();
+                if (value != null) {
+                    long digitCount = value.chars().filter(Character::isDigit).count();
+                    if (digitCount < ValidationConstants.RG_LENGTH_MIN || digitCount > ValidationConstants.RG_LENGTH_MAX) {
+                        validatable.error(new ValidationError("RG deve ter entre " + ValidationConstants.RG_LENGTH_MIN + " e " + ValidationConstants.RG_LENGTH_MAX + " dígitos."));
+                    }
+                }
+            }
+        });
         rgField.add(new AttributeModifier("placeholder", "RG"));
         rgField.add(new AttributeModifier("data-mask", "99.999.999-9"));
         rgField.add(new PatternValidator("^\\d{1,2}\\.?\\d{1,3}\\.?\\d{1,3}-?\\d$"));
@@ -152,6 +177,9 @@ public class ClienteFisicoCreateModal extends Panel {
                 } catch (DataIntegrityViolationException e) {
                     ValidationFeedback.showToast(target, "error",
                             "Já existe um cliente com esses dados (CPF ou email duplicado).");
+                    return;
+                } catch (BusinessException e) {
+                    ValidationFeedback.showToast(target, "error", e.getMessage());
                     return;
                 } catch (RuntimeException e) {
                     ValidationFeedback.showToast(target, "error",
