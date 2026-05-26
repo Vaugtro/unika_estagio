@@ -50,16 +50,10 @@
                     <tbody class="table-group-divider" wicket:id="rows">
                     <tr class="align-middle" wicket:id="editarForm">
                         <td class="fw-medium text-muted" wicket:id="id">?</td>
-                        <td><input class="form-control form-control-sm border-0 bg-light" type="text"
-                                   wicket:id="razaoSocial"/></td>
+                        <td wicket:id="razaoSocial">?</td>
                         <td wicket:id="cnpj">?</td>
-                        <td><input class="form-control form-control-sm border-0 bg-light" type="text"
-                                   wicket:id="email"/></td>
-                        <td>
-                            <a class="text-decoration-none" wicket:id="statusBtn">
-                                <span wicket:id="status"></span>
-                            </a>
-                        </td>
+                        <td wicket:id="email">?</td>
+                        <td><a class="btn btn-sm" wicket:id="toggleBtn"><span class="badge" wicket:id="statusBadge"></span></a></td>
                         <td>
                             <div class="d-flex gap-1">
                                 <a class="btn btn-sm btn-outline-info rounded-circle p-1"
@@ -67,10 +61,9 @@
                                    wicket:id="detalhesBtn">
                                     <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
                                 </a>
-                                <button class="btn btn-sm btn-warning rounded-pill px-3" type="submit"
-                                        wicket:id="editarBtn">
-                                    <i data-lucide="save" style="width: 14px; height: 14px;"></i> Salvar
-                                </button>
+                                <a class="btn btn-sm btn-primary rounded-pill px-3" wicket:id="editarBtn">
+                                    <i data-lucide="edit" style="width: 14px; height: 14px;"></i> Editar
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -86,5 +79,8 @@
     <div wicket:id="exportModal"></div>
     <div wicket:id="importModal"></div>
     <div wicket:id="createModal"></div>
+    <div wicket:id="editModalContainer">
+        <div wicket:id="editModal"></div>
+    </div>
 </wicket:panel>
 </html>

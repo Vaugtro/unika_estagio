@@ -39,6 +39,7 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
     private FileService fileService;
 
     private WebMarkupContainer tableContainer;
+    private WebMarkupContainer editModalContainer;
     private ClienteJuridicoDataProvider dataProvider;
     private AjaxPagingNavigator navigator;
 
@@ -57,6 +58,11 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
         dataProvider = new ClienteJuridicoDataProvider(clienteJuridicoService);
         DataView<ClienteJuridicoListResponse> dataView = new ClienteJuridicoDataView("rows", dataProvider, 10);
         tableContainer.add(dataView);
+
+        editModalContainer = new WebMarkupContainer("editModalContainer");
+        editModalContainer.setOutputMarkupId(true);
+        editModalContainer.add(new WebMarkupContainer("editModal").setVisible(false));
+        add(editModalContainer);
 
         navigator = new AjaxPagingNavigator("navigator", dataView) {
             @Serial
@@ -194,5 +200,14 @@ public class ClientesJuridicosTablePanel extends DevUtilsPanel {
         return searchForm;
     }
 
+    public WebMarkupContainer getEditModalContainer() {
+        return editModalContainer;
+    }
+
+    public void refreshTable(AjaxRequestTarget target) {
+        target.add(tableContainer);
+        target.add(navigator);
+        target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+    }
 
 }
