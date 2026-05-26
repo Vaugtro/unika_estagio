@@ -63,6 +63,11 @@ public abstract class AbstractClienteService<T extends Cliente, R extends JpaRep
     public void hardDelete(Long id) {
         log.debug("Hard deleting {} with ID: {}", getEntityName(), id);
         T model = findModelById(id);
+        // Demote all enderecos to bypass @PreRemove check on principal enderecos
+        // (the check throws when a principal endereco is removed via cascade)
+        if (model.getEnderecos() != null) {
+            model.getEnderecos().forEach(e -> e.setPrincipal(false));
+        }
         repository.delete(model);
         log.info("Hard deleted {} with ID: {}", getEntityName(), id);
     }
