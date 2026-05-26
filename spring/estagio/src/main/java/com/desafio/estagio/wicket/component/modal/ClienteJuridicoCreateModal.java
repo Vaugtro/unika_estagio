@@ -2,6 +2,7 @@ package com.desafio.estagio.wicket.component.modal;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
+import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.validation.internal.CNPJValidator;
@@ -147,6 +148,9 @@ public class ClienteJuridicoCreateModal extends Panel {
                 } catch (DataIntegrityViolationException e) {
                     ValidationFeedback.showToast(target, "error",
                             "Já existe um cliente com esses dados (CNPJ ou email duplicado).");
+                    return;
+                } catch (BusinessException e) {
+                    ValidationFeedback.showToast(target, "error", e.getMessage());
                     return;
                 } catch (RuntimeException e) {
                     ValidationFeedback.showToast(target, "error",
