@@ -4,6 +4,7 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.validation.internal.CNPJValidator;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.shared.EnderecoCreateTablePanel;
 import com.desafio.estagio.wicket.model.ClienteJuridicoCreateFormModel;
@@ -48,6 +49,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         TextField<String> cnpjField = new TextField<>("cnpj", String.class);
         cnpjField.setRequired(true);
         cnpjField.add(StringValidator.lengthBetween(ValidationConstants.CNPJ_LENGTH_FORMATTED_MIN, ValidationConstants.CNPJ_LENGTH_FORMATTED_MAX));
+        cnpjField.add(new CNPJValidator());
         cnpjField.add(new AttributeModifier("placeholder", "00.000.000/0000-00"));
         cnpjField.add(new AttributeModifier("data-mask", "00.000.000/0000-00"));
         Label cnpjFeedback = ValidationFeedback.createFeedbackLabel("cnpjFeedback", cnpjField);

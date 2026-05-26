@@ -1,29 +1,61 @@
-# AI Assistant Behavioral Constraints
+# spring/estagio — Spring Boot + Wicket Backend
 
-- SYSTEM PERSONA: You are a concise, zero-fluff engineering terminal compiler.
-- Never greet, never apologize, never say "Certainly", "Sure", or "I've updated...".
-- Do not explain code changes unless explicitly asked with a "?" character.
-- Output text must use imperative, brief verbs (e.g., "Fix type error", "Add routing").
-- If code is requested, output ONLY the code block. Zero conversational wrapper text.
-- Every TODOS plan must overwrite TODO.md first, before executing the plan.
+**Parent:** [root AGENTS.md](../../AGENTS.md) for monorepo-level conventions.
 
-# Repository Setup & Tooling
+## OVERVIEW
 
-- Stack: Java 17, Spring Boot 4.0.6, Apache Wicket 7.17.0, MapStruct, Lombok, Flyway.
-- Workspace: Run commands in `/data/Workspace/unika_estagio/spring/estagio/`.
-- Commands: `rtk gradlew compileJava`, `rtk gradlew test`.
+Spring Boot backend (JAR/WAR) serving REST endpoints + Apache Wicket server-rendered UI. Client management with CRUD, validation, file export/import, and JasperReports.
 
-# Architecture & Conventions
+## STRUCTURE
 
-- **Validation**: Use `ValidationConstants.java` for constraints (e.g., field lengths). Apply to DTOs and Wicket
-  validators; do not hardcode limits.
-- **DTOs vs FormModels**: DTOs are immutable `record`s. Since Wicket's `CompoundPropertyModel` requires mutable beans,
-  maintain `*FormModel` classes as mutable adapters for forms. Map to DTOs strictly on submit.
-- **Wicket HTML Form Constraints**: Never nest `<form>` tags inside `<table>`, `<tbody>`, or `<tr>`. Browsers hoist
-  invalid tags, breaking Wicket AJAX DOM replacement. To bind a Wicket `Form` per row, map the Wicket `Form` component
-  directly to a `<tr wicket:id="...">` tag.
-- **Service Layer**: `@Transactional` must be at the service layer. `AbstractClienteService` defines `final` methods (
-  like `activate`/`inactivate`) that subclasses must not override. Rely on Spring for persistence context; avoid direct
-  `EntityManager` usage.
-- **Code Duplication**: Extract shared logic (e.g., `EnderecoCreateTablePanel`) for cross-cutting components but
-  preserve type-specific markup for Wicket's `wicket:id` bindings.
+```
+com.desafio.estagio/
+├── config/              # Spring @Configuration classes
+├── controller/          # REST endpoints (ClienteFisico, ClienteJuridico, Endereco)
+├── dto/                 # Immutable records (clientefisico/, clientejuridico/, endereco/)
+├── exceptions/          # Custom exceptions + global handlers
+├── factory/             # Object factories
+├── mapper/              # MapStruct mappers (ClienteFisicoMapper, ClienteJuridicoMapper, EnderecoMapper)
+├── model/               # JPA entities (Cliente, Endereco, enums/, formatters/)
+├── repository/          # Spring Data JPA repositories
+├── service/             # Business logic (impl/, lifecycle/, query/)
+├── validation/          # Constraints (annotation/, internal/)
+└── wicket/              # Wicket UI layer
+    ├── application/     # WicketApplication setup
+    ├── component/       # Reusable components (form/, modal/, shared/, table/, dataview/)
+    ├── model/           # Wicket-specific models
+    ├── page/            # Pages (base/, clientes/, home/)
+    ├── provider/        # Data providers
+    └── util/            # Utilities
+```
+
+## WHERE TO LOOK
+
+| Task | Package | Notes |
+|------|---------|-------|
+| Add REST endpoint | `controller/` | Spring REST controllers |
+| Modify entity | `model/` | JPA entities + enums |
+| Add service logic | `service/impl/` | Concrete service implementations |
+| Add Wicket page | `wicket/page/` | HTML template alongside Java |
+| Add Wicket component | `wicket/component/` | Reusable panels, forms, modals |
+| Add/enforce validation | `validation/` | Use `ValidationConstants` |
+| Add DTO | `dto/` | Immutable `record`, create `*FormModel` for Wicket |
+| Add migration | `src/main/resources/db/migration/main/` | `V{next}__description.sql` |
+| Run tests | `src/test/java/` | Mirrors main package structure |
+
+## CONVENTIONS
+
+- **Service layer**: `@Transactional` only at service. `AbstractClienteService` defines `final activate/inactivate` — do not override.
+- **DTO → FormModel pattern**: Every DTO needs a mutable `*FormModel` for Wicket form binding. Map DTO ↔ FormModel at submit time only.
+- **Validation constants**: `ValidationConstants.java` centralizes field length limits. Apply in DTO annotations AND Wicket validators.
+- **Wicket HTML placement**: `.html` files beside their `.java` component in `src/main/java/`. Build script handles packaging.
+- **Form bindings**: Never nest `<form>` inside `<table>/<tbody>/<tr>`. Bind `Form` component directly to `<tr wicket:id="...">`.
+- **Code organization**: Shared Wicket components (e.g., `EnderecoCreateTablePanel`) extract cross-cutting logic but keep type-specific `wicket:id` markup.
+- **Tests**: JUnit 5 + Mockito. Test classes mirror production package structure. Heavy use of parameterized tests for validators.
+
+## ANTI-PATTERNS
+
+- Direct `EntityManager` injection — use Spring-managed persistence context
+- Suppressing warnings (`@SuppressWarnings`) — fix root cause
+- Overriding `AbstractClienteService` final methods
+- Hardcoded field limits — always reference `ValidationConstants`

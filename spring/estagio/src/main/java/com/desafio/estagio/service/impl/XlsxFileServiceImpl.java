@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class XlsxFileService {
+public class XlsxFileServiceImpl {
 
     private final ClienteFisicoService clienteFisicoService;
     private final ClienteJuridicoService clienteJuridicoService;

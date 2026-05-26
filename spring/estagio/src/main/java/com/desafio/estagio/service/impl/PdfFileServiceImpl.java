@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FileServiceImpl implements FileService {
+public class PdfFileServiceImpl implements FileService {
 
     private final ClienteFisicoService clienteFisicoService;
     private final ClienteJuridicoService clienteJuridicoService;
     private final EnderecoService enderecoService;
     private final JasperReportService jasperReportService;
-    private final XlsxFileService xlsxFileService;
+    private final XlsxFileServiceImpl xlsxFileService;
     private final ClienteRepository<Cliente> clienteRepository;
 
     // =====================================================================

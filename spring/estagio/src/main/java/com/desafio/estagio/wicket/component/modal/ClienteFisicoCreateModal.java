@@ -4,6 +4,7 @@ import com.desafio.estagio.dto.clientefisico.ClienteFisicoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.validation.internal.CPFValidator;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.shared.EnderecoCreateTablePanel;
 import com.desafio.estagio.wicket.model.ClienteFisicoCreateFormModel;
@@ -49,6 +50,7 @@ public class ClienteFisicoCreateModal extends Panel {
         TextField<String> cpfField = new TextField<>("cpf", String.class);
         cpfField.setRequired(true);
         cpfField.add(StringValidator.lengthBetween(ValidationConstants.CPF_LENGTH_FORMATTED_MIN, ValidationConstants.CPF_LENGTH_FORMATTED_MAX));
+        cpfField.add(new CPFValidator());
         cpfField.add(new AttributeModifier("placeholder", "000.000.000-00"));
         cpfField.add(new AttributeModifier("data-mask", "000.000.000-00"));
         Label cpfFeedback = ValidationFeedback.createFeedbackLabel("cpfFeedback", cpfField);
