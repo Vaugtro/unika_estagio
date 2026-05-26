@@ -144,6 +144,7 @@
     },
     "oracle": {
       "fallback_models": [
+        "opencode-go/minimax-m2.7",
         "opencode/nemotron-3-super-free",
         "kilo/nvidia/nemotron-3-super-120b-a12b:free",
         "google/antigravity-claude-opus-4-6-thinking",
