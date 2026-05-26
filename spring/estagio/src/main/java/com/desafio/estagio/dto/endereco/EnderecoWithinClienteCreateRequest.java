@@ -35,8 +35,7 @@ public record EnderecoWithinClienteCreateRequest(
         @NotBlank(message = "Bairro é obrigatório")
         String bairro,
 
-        @Schema(description = "Telefone", example = "(11) 91234-5678", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "Telefone é obrigatório")
+        @Schema(description = "Telefone", example = "(11) 91234-5678", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @ValidTelefone
         String telefone,
 

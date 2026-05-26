@@ -111,10 +111,11 @@ public class EnderecoCreateTablePanel extends Panel {
                 item.add(estadoFeedback);
 
                 TextField<String> telefoneField = new TextField<>("telefone", String.class);
-                telefoneField.setRequired(true);
+                telefoneField.setRequired(false);
                 telefoneField.add(StringValidator.maximumLength(ValidationConstants.TELEFONE_MAX));
                 telefoneField.add(new AttributeModifier("placeholder", "Telefone"));
                 telefoneField.add(new AttributeModifier("data-mask", "(00) 00000-0000"));
+                telefoneField.add(new PatternValidator("^\\(\\d{2}\\)\\s?\\d{4,5}-?\\d{4}$"));
                 Label telefoneFeedback = ValidationFeedback.createFeedbackLabel("telefoneFeedback", telefoneField);
                 ValidationFeedback.attachRealTimeValidation(telefoneField, telefoneFeedback);
                 telefoneField.add(VALIDATION_STYLE_INSTANCE);

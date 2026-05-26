@@ -12,7 +12,6 @@ import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -21,8 +20,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import java.io.Serial;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,17 +85,10 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(emailField);
         form.add(emailFeedback);
 
-        TextField<String> dataCriacaoEmpresaField = new TextField<String>("dataCriacaoEmpresa") {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                tag.put("type", "date");
-            }
-        };
+        TextField<String> dataCriacaoEmpresaField = new TextField<>("dataCriacaoEmpresa", String.class);
         dataCriacaoEmpresaField.setRequired(true);
+        dataCriacaoEmpresaField.add(new AttributeModifier("data-mask", "99/99/9999"));
+        dataCriacaoEmpresaField.add(new AttributeModifier("placeholder", "DD/MM/YYYY"));
         Label dataCriacaoEmpresaFeedback = ValidationFeedback.createFeedbackLabel("dataCriacaoEmpresaFeedback", dataCriacaoEmpresaField);
         ValidationFeedback.attachRealTimeValidation(dataCriacaoEmpresaField, dataCriacaoEmpresaFeedback);
         form.add(dataCriacaoEmpresaField);
@@ -131,7 +126,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 LocalDate dataCriacao = null;
                 if (dataCriacaoStr != null && !dataCriacaoStr.isBlank()) {
                     try {
-                        dataCriacao = LocalDate.parse(dataCriacaoStr);
+                        dataCriacao = LocalDate.parse(dataCriacaoStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                     } catch (DateTimeParseException e) {
                         ValidationFeedback.showToast(target, "error", "Data de criação inválida.");
                         return;
@@ -149,9 +144,13 @@ public class ClienteJuridicoCreateModal extends Panel {
 
                 try {
                     clienteJuridicoService.create(dto);
+                } catch (DataIntegrityViolationException e) {
+                    ValidationFeedback.showToast(target, "error",
+                            "Já existe um cliente com esses dados (CNPJ ou email duplicado).");
+                    return;
                 } catch (RuntimeException e) {
                     ValidationFeedback.showToast(target, "error",
-                            e.getMessage() != null ? e.getMessage() : "Erro ao criar cliente.");
+                            "Erro inesperado ao criar cliente. Tente novamente.");
                     return;
                 }
                 setResponsePage(getPage());
