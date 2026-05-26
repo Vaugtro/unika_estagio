@@ -140,6 +140,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
             @Override
             public void onClick(AjaxRequestTarget target) {
                 ClientesFisicosTablePanel tablePanel = findParent(ClientesFisicosTablePanel.class);
+                tablePanel.refreshTable(target);
                 WebMarkupContainer container = tablePanel.getEditModalContainer();
                 ClienteFisicoEditModal editModal = new ClienteFisicoEditModal("editModal", cliente.id());
                 container.addOrReplace(editModal);
