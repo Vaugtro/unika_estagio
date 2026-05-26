@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -163,6 +164,110 @@ class EnderecoServiceImplTest {
         assertNotNull(result);
         assertEquals(1L, result.id());
         verify(clienteRepository).findById(1L);
+        verify(enderecoRepository).save(any(Endereco.class));
+    }
+
+    @Test
+    @DisplayName("create: success without telefone (telefone is optional)")
+    void testCreateWithoutTelefone() {
+        // Arrange
+        Endereco enderecoSemTelefone = Endereco.builder()
+                .id(1L)
+                .logradouro("Rua A")
+                .numero(123L)
+                .cep("12345-678")
+                .bairro("Centro")
+                .telefone(null)
+                .estado("SP")
+                .cidade("São Paulo")
+                .principal(false)
+                .complemento("Apt 101")
+                .cliente(mockCliente)
+                .build();
+
+        EnderecoResponse responseSemTelefone = EnderecoResponse.builder()
+                .id(1L)
+                .logradouro("Rua A")
+                .numero(123L)
+                .cep("12345-678")
+                .bairro("Centro")
+                .telefone(null)
+                .estado("SP")
+                .cidade("São Paulo")
+                .principal(false)
+                .complemento("Apt 101")
+                .build();
+
+        EnderecoCreateRequest request = EnderecoCreateRequest.builder()
+                .logradouro("Rua A")
+                .numero(123L)
+                .cep("12345-678")
+                .bairro("Centro")
+                .telefone(null)
+                .estado("SP")
+                .cidade("São Paulo")
+                .principal(false)
+                .complemento("Apt 101")
+                .clienteId(1L)
+                .build();
+
+        when(enderecoMapper.toEntity(request)).thenReturn(enderecoSemTelefone);
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(mockCliente));
+        when(enderecoRepository.countByClienteId(1L)).thenReturn(1L);
+        when(enderecoRepository.save(any(Endereco.class))).thenReturn(enderecoSemTelefone);
+        when(enderecoMapper.toResponse(enderecoSemTelefone)).thenReturn(responseSemTelefone);
+
+        // Act
+        EnderecoResponse result = service.create(request);
+
+        // Assert
+        assertNotNull(result);
+        assertNull(result.telefone());
+        verify(clienteRepository).findById(1L);
+        verify(enderecoRepository).save(any(Endereco.class));
+    }
+
+    @Test
+    @DisplayName("create: success for first address without telefone (first address auto-set as principal)")
+    void testCreateFirstAddressWithoutTelefone() {
+        // Arrange
+        Endereco enderecoSemTelefone = Endereco.builder()
+                .id(1L)
+                .logradouro("Rua A")
+                .numero(123L)
+                .cep("12345-678")
+                .bairro("Centro")
+                .telefone(null)
+                .estado("SP")
+                .cidade("São Paulo")
+                .principal(false)
+                .complemento("Apt 101")
+                .cliente(mockCliente)
+                .build();
+
+        EnderecoCreateRequest request = EnderecoCreateRequest.builder()
+                .logradouro("Rua A")
+                .numero(123L)
+                .cep("12345-678")
+                .bairro("Centro")
+                .telefone(null)
+                .estado("SP")
+                .cidade("São Paulo")
+                .principal(false)
+                .complemento("Apt 101")
+                .clienteId(1L)
+                .build();
+
+        when(enderecoMapper.toEntity(request)).thenReturn(enderecoSemTelefone);
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(mockCliente));
+        when(enderecoRepository.countByClienteId(1L)).thenReturn(0L);
+        when(enderecoRepository.save(any(Endereco.class))).thenReturn(enderecoSemTelefone);
+        when(enderecoMapper.toResponse(enderecoSemTelefone)).thenReturn(mockResponse);
+
+        // Act
+        service.create(request);
+
+        // Assert
         verify(enderecoRepository).save(any(Endereco.class));
     }
 
@@ -586,6 +691,49 @@ class EnderecoServiceImplTest {
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> service.setAsPrincipal(999L));
         verify(enderecoRepository).findById(999L);
+    }
+
+    @Test
+    @DisplayName("setAsPrincipal: demotes existing principal and promotes target")
+    void testSetAsPrincipalWithExistingPrincipal() {
+        // Arrange — cliente has two enderecos: mockEnderecoPrincipal (principal=true) and mockEndereco (principal=false)
+        mockCliente.getEnderecos().add(mockEnderecoPrincipal);
+        mockCliente.getEnderecos().add(mockEndereco);
+
+        when(enderecoRepository.findById(2L)).thenReturn(Optional.of(mockEnderecoPrincipal));
+        when(enderecoMapper.toResponse(mockEnderecoPrincipal)).thenReturn(mockResponse);
+
+        // Act
+        EnderecoResponse result = service.setAsPrincipal(2L);
+
+        // Assert
+        assertNotNull(result);
+        // All addresses should have been demoted first, then target set to principal
+        assertThat(mockEndereco.getPrincipal()).isFalse();
+        assertThat(mockEnderecoPrincipal.getPrincipal()).isTrue();
+        verify(enderecoRepository).findById(2L);
+        verify(enderecoRepository).flush();
+    }
+
+    @Test
+    @DisplayName("setAsPrincipal: when target is already principal, still works (demotes all and re-promotes)")
+    void testSetAsPrincipalWhenAlreadyPrincipal() {
+        // Arrange — target endereco is already principal
+        mockEndereco.setPrincipal(true);
+        mockCliente.getEnderecos().add(mockEndereco);
+
+        when(enderecoRepository.findById(1L)).thenReturn(Optional.of(mockEndereco));
+        when(enderecoMapper.toResponse(mockEndereco)).thenReturn(mockResponse);
+
+        // Act
+        EnderecoResponse result = service.setAsPrincipal(1L);
+
+        // Assert
+        assertNotNull(result);
+        // It was demoted then re-promoted, still principal
+        assertThat(mockEndereco.getPrincipal()).isTrue();
+        verify(enderecoRepository).findById(1L);
+        verify(enderecoRepository).flush();
     }
 
     // =====================================================
