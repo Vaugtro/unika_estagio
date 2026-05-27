@@ -96,4 +96,95 @@ public final class JavaScriptUtils implements Serializable {
         String escaped = url.replace("'", "\\'");
         return "window.location.href='" + escaped + "';";
     }
+
+    // ──────────────────────────────────────────────
+    //  Wave 3 — extracted from inline appendJavaScript calls
+    // ──────────────────────────────────────────────
+
+    /**
+     * Calls {@code lucide.createIcons()} only when the Lucide library is loaded.
+     * <p>
+     * Safer than {@link #createIcons(AjaxRequestTarget)} for contexts where
+     * {@code lucide} may not be on the page yet.
+     */
+    public static void createIconsSafe(AjaxRequestTarget target) {
+        target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+    }
+
+    /**
+     * Re-applies jQuery input masks with a guard for the {@code $} and
+     * {@code $.fn.mask} globals.
+     * <p>
+     * Safer than {@link #reapplyMasks(AjaxRequestTarget)} for contexts where
+     * jQuery or the mask plugin may not be available.
+     */
+    public static void reapplyMasksSafe(AjaxRequestTarget target) {
+        target.appendJavaScript(
+                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
+        );
+    }
+
+    /**
+     * Shows a Bootstrap modal by its DOM id.
+     *
+     * @param target  the AJAX target to append JS to
+     * @param modalId the DOM id of the modal element (without {@code #})
+     */
+    public static void showModal(AjaxRequestTarget target, String modalId) {
+        target.appendJavaScript("$('#" + modalId + "').modal('show');");
+    }
+
+    /**
+     * Shows a Bootstrap modal and re-initialises Lucide icons (with guard).
+     *
+     * @param target  the AJAX target to append JS to
+     * @param modalId the DOM id of the modal element (without {@code #})
+     */
+    public static void showModalWithIcons(AjaxRequestTarget target, String modalId) {
+        target.appendJavaScript(
+                "$('#" + modalId + "').modal('show');" +
+                        "if(typeof lucide !== 'undefined') lucide.createIcons();"
+        );
+    }
+
+    /**
+     * Hides a Bootstrap modal and removes its DOM element after a short delay.
+     *
+     * @param target  the AJAX target to append JS to
+     * @param modalId the DOM id of the modal element (without {@code #})
+     */
+    public static void hideModalAndRemove(AjaxRequestTarget target, String modalId) {
+        target.appendJavaScript(
+                "$('#" + modalId + "').modal('hide');" +
+                        "setTimeout(function(){ $('#" + modalId + "').remove(); }, 500);"
+        );
+    }
+
+    /**
+     * Reloads the current page after a delay.
+     *
+     * @param target  the AJAX target to append JS to
+     * @param delayMs delay in milliseconds before reload
+     */
+    public static void reloadAfterDelay(AjaxRequestTarget target, int delayMs) {
+        target.appendJavaScript(
+                "setTimeout(function(){window.location.reload();}," + delayMs + ");"
+        );
+    }
+
+    /**
+     * Calls the custom {@code abrirModalEndereco()} function defined in
+     * the EnderecoListViewPanel HTML template.
+     */
+    public static void callAbrirModalEndereco(AjaxRequestTarget target) {
+        target.appendJavaScript("abrirModalEndereco();");
+    }
+
+    /**
+     * Calls the custom {@code fecharModalEndereco()} function defined in
+     * the EnderecoListViewPanel HTML template.
+     */
+    public static void callFecharModalEndereco(AjaxRequestTarget target) {
+        target.appendJavaScript("fecharModalEndereco();");
+    }
 }

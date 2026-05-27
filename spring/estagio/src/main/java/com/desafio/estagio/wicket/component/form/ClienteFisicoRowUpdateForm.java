@@ -2,13 +2,14 @@ package com.desafio.estagio.wicket.component.form;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.builder.FormFieldBundle;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
@@ -149,28 +150,24 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                try {
-                    ClienteFisicoUpdateFormModel model = (ClienteFisicoUpdateFormModel) form.getModelObject();
-                    if (model == null) {
-                        ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
-                        return;
-                    }
-                    ClienteFisicoUpdateRequest updateRequest = new ClienteFisicoUpdateRequest(
-                            model.getNome(), model.getEmail(), model.getEstaAtivo()
-                    );
+                ClienteFisicoUpdateFormModel model = (ClienteFisicoUpdateFormModel) form.getModelObject();
+                if (model == null) {
+                    ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
+                    return;
+                }
+                ClienteFisicoUpdateRequest updateRequest = new ClienteFisicoUpdateRequest(
+                        model.getNome(), model.getEmail(), model.getEstaAtivo()
+                );
+                Boolean success = ErrorHandler.handleServiceCall(() -> {
                     clienteFisicoService.update(model.getId(), updateRequest);
-
+                    return true;
+                }, target);
+                if (Boolean.TRUE.equals(success)) {
                     form.setDefaultModelObject(new ClienteFisicoUpdateFormModel(
                             clienteFisicoService.findById(model.getId())));
-
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
                     target.add(form);
-                    target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
+                    JavaScriptUtils.createIconsSafe(target);
                 }
             }
 
@@ -198,8 +195,8 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteFisicoRowUpdateForm.this);
-                target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-            }
+JavaScriptUtils.createIconsSafe(target);
+                        }
         };
     }
 }

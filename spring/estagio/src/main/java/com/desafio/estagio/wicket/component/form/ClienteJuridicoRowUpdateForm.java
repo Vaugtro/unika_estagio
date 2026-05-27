@@ -2,13 +2,14 @@ package com.desafio.estagio.wicket.component.form;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.builder.FormFieldBundle;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
@@ -134,30 +135,26 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                try {
-                    ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
-                    if (model == null) {
-                        ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
-                        return;
-                    }
-                    ClienteJuridicoUpdateRequest updateRequest = new ClienteJuridicoUpdateRequest(
-                            model.getRazaoSocial(), model.getInscricaoEstadual(),
-                            model.getEmail(), model.getDataCriacaoEmpresa(),
-                            model.getEstaAtivo(), null
-                    );
+                ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
+                if (model == null) {
+                    ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
+                    return;
+                }
+                ClienteJuridicoUpdateRequest updateRequest = new ClienteJuridicoUpdateRequest(
+                        model.getRazaoSocial(), model.getInscricaoEstadual(),
+                        model.getEmail(), model.getDataCriacaoEmpresa(),
+                        model.getEstaAtivo(), null
+                );
+                Boolean success = ErrorHandler.handleServiceCall(() -> {
                     clienteJuridicoService.update(model.getId(), updateRequest);
-
+                    return true;
+                }, target);
+                if (Boolean.TRUE.equals(success)) {
                     form.setDefaultModelObject(new ClienteJuridicoUpdateFormModel(
                             clienteJuridicoService.findById(model.getId())));
-
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
                     target.add(form);
-                    target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
+                    JavaScriptUtils.createIconsSafe(target);
                 }
             }
 
@@ -185,8 +182,8 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteJuridicoRowUpdateForm.this);
-                target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-            }
+JavaScriptUtils.createIconsSafe(target);
+                        }
         };
     }
 

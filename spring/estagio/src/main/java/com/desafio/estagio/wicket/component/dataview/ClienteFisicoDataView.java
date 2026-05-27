@@ -1,13 +1,14 @@
 package com.desafio.estagio.wicket.component.dataview;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.modal.ClienteFisicoEditModal;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -85,7 +86,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     Long id = cliente.id();
                     if (Boolean.TRUE.equals(cliente.estaAtivo())) {
                         clienteFisicoService.inactivate(id);
@@ -94,9 +95,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
                         clienteFisicoService.activate(id);
                         ValidationFeedback.showToast(target, "success", "Cliente ativado com sucesso!");
                     }
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                }
+                }, target);
                 findParent(ClientesFisicosTablePanel.class).refreshTable(target);
             }
         };
@@ -153,8 +152,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
                 ClienteFisicoEditModal editModal = new ClienteFisicoEditModal("editModal", cliente.id());
                 container.addOrReplace(editModal);
                 target.add(container);
-                target.appendJavaScript("$('#editClienteFisicoModal').modal('show');" +
-                        "if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.showModalWithIcons(target, "editClienteFisicoModal");
             }
         };
         ComponentAttributeBuilder.of(editarBtn).setOutputMarkupId(true).build();

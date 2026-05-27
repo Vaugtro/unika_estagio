@@ -1,13 +1,14 @@
 package com.desafio.estagio.wicket.component.dataview;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.modal.ClienteJuridicoEditModal;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -86,7 +87,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     Long id = cliente.id();
                     if (Boolean.TRUE.equals(cliente.estaAtivo())) {
                         clienteJuridicoService.inactivate(id);
@@ -95,9 +96,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
                         clienteJuridicoService.activate(id);
                         ValidationFeedback.showToast(target, "success", "Cliente ativado com sucesso!");
                     }
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                }
+                }, target);
                 findParent(ClientesJuridicosTablePanel.class).refreshTable(target);
             }
         };
@@ -148,8 +147,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
                 ClienteJuridicoEditModal editModal = new ClienteJuridicoEditModal("editModal", cliente.id());
                 container.addOrReplace(editModal);
                 target.add(container);
-                target.appendJavaScript("$('#editClienteJuridicoModal').modal('show');" +
-                        "if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.showModalWithIcons(target, "editClienteJuridicoModal");
             }
         };
         ComponentAttributeBuilder.of(editarBtn).setOutputMarkupId(true).build();

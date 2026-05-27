@@ -105,30 +105,4 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('[data-mask]').each(function () {
-                $(this).mask($(this).data('mask'));
-            });
-        });
-
-        function abrirModalEndereco() {
-            var modal = new bootstrap.Modal(document.getElementById('enderecoModal'));
-            modal.show();
-
-            setTimeout(function () {
-                $('#enderecoModal [data-mask]').each(function () {
-                    $(this).mask($(this).data('mask'));
-                });
-                lucide.createIcons();
-            }, 100);
-        }
-
-        function fecharModalEndereco() {
-            var modalEl = document.getElementById('enderecoModal');
-            var modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-        }
-    </script>
 </wicket:panel>

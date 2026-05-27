@@ -1,8 +1,11 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
+import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
-import org.apache.wicket.AttributeModifier;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -26,7 +29,7 @@ public abstract class ImportModal extends Panel {
     public ImportModal(String id, String modalHtmlId) {
         super(id);
         WebMarkupContainer modalRoot = new WebMarkupContainer("modalRoot");
-        modalRoot.add(new AttributeModifier("id", modalHtmlId));
+        AttributeModifierBuilder.create().attribute("id", modalHtmlId).buildAndAdd(modalRoot);
         add(modalRoot);
     }
 
@@ -72,16 +75,16 @@ public abstract class ImportModal extends Panel {
                     ValidationFeedback.showToast(target, "error", "Selecione um arquivo XLSX.");
                     return;
                 }
-                try (InputStream is = upload.getInputStream()) {
-                    int count = importData(is);
-                    ValidationFeedback.showToast(target, "success",
-                            count + " " + getSuccessMessage());
-                    target.appendJavaScript(
-                            "setTimeout(function(){window.location.reload();},3000);");
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Erro na importação: " + e.getMessage());
-                }
+                ErrorHandler.handleServiceCall(() -> {
+                    try (InputStream is = upload.getInputStream()) {
+                        int count = importData(is);
+                        ValidationFeedback.showToast(target, "success",
+                                count + " " + getSuccessMessage());
+                        JavaScriptUtils.reloadAfterDelay(target, 3000);
+                    } catch (Exception ex) {
+                        throw new BusinessException("Erro na importação: " + ex.getMessage());
+                    }
+                }, target);
             }
 
             @Override

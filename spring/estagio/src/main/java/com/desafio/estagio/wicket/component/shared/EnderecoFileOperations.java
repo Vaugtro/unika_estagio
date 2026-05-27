@@ -4,6 +4,8 @@ import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -66,22 +68,20 @@ public final class EnderecoFileOperations implements Serializable {
                     ValidationFeedback.showToast(target, "error", "Selecione um arquivo XLSX.");
                     return;
                 }
-                try (java.io.InputStream is = upload.getInputStream()) {
-                    int count = fileService.importEnderecos(clienteId, is);
-                    ValidationFeedback.showToast(target, "success",
-                            count + " endereço(s) importado(s) com sucesso!");
-                    target.add(enderecosContainer);
-                    target.add(importForm);
-                    target.appendJavaScript("lucide.createIcons();");
-                } catch (DataIntegrityViolationException e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Já existe um endereço principal para este cliente.");
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Erro na importação. Tente novamente.");
-                }
+                ErrorHandler.handleServiceCall(() -> {
+                    try (java.io.InputStream is = upload.getInputStream()) {
+                        int count = fileService.importEnderecos(clienteId, is);
+                        ValidationFeedback.showToast(target, "success",
+                                count + " endereço(s) importado(s) com sucesso!");
+                        target.add(enderecosContainer);
+                        target.add(importForm);
+                        JavaScriptUtils.createIconsSafe(target);
+                    } catch (DataIntegrityViolationException e) {
+                        throw new BusinessException("Já existe um endereço principal para este cliente.");
+                    } catch (java.io.IOException e) {
+                        throw new BusinessException("Erro de leitura do arquivo.");
+                    }
+                }, target);
             }
 
             @Override

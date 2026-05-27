@@ -8,10 +8,14 @@ import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.mapper.EnderecoDtoMapper;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -20,6 +24,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
@@ -105,7 +111,7 @@ public class EnderecoListViewPanel extends Panel {
                             target.add(enderecosContainer);
                             ValidationFeedback.showToast(target, "success",
                                     "Endereço definido como principal!");
-                            target.appendJavaScript("lucide.createIcons();");
+                            JavaScriptUtils.createIcons(target);
                         }, target);
                     }
                 };
@@ -148,7 +154,7 @@ public class EnderecoListViewPanel extends Panel {
                         modalEnderecos.add(formModel);
                         enderecoModalLabel.setDefaultModelObject("Editar Endereço");
                         target.add(modalForm);
-                        target.appendJavaScript("abrirModalEndereco();");
+                        JavaScriptUtils.callAbrirModalEndereco(target);
                     }
                 });
 
@@ -162,7 +168,7 @@ public class EnderecoListViewPanel extends Panel {
                             enderecoService.delete(endId);
                             target.add(enderecosContainer);
                             ValidationFeedback.showToast(target, "success", "Endereço excluído com sucesso!");
-                            target.appendJavaScript("lucide.createIcons();");
+                            JavaScriptUtils.createIcons(target);
                         }, target, "endereço");
                     }
                 });
@@ -194,7 +200,8 @@ public class EnderecoListViewPanel extends Panel {
                     modalEnderecos.clear();
                     target.add(enderecosContainer);
                     target.add(modalForm);
-                    target.appendJavaScript("fecharModalEndereco(); lucide.createIcons();");
+                    JavaScriptUtils.callFecharModalEndereco(target);
+                    JavaScriptUtils.createIcons(target);
                 }, target);
             }
 
@@ -219,7 +226,7 @@ public class EnderecoListViewPanel extends Panel {
                 modalEnderecos.add(end);
                 enderecoModalLabel.setDefaultModelObject("Novo Endereço");
                 target.add(modalForm);
-                target.appendJavaScript("abrirModalEndereco();");
+                JavaScriptUtils.callAbrirModalEndereco(target);
             }
         });
 
@@ -233,4 +240,18 @@ public class EnderecoListViewPanel extends Panel {
         add(EnderecoFileOperations.buildTemplateLink("downloadEnderecoTemplateBtn", fileService));
     }
 
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(
+                new UrlResourceReference(org.apache.wicket.request.Url.parse(
+                        "https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"))
+        ));
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(JavaScriptUtils.class, "js/mask-init.js")
+        ));
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(JavaScriptUtils.class, "js/endereco-modal.js")
+        ));
+    }
 }

@@ -1,10 +1,10 @@
 package com.desafio.estagio.wicket.page.clientes;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.model.formatter.CNPJFormatter;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.shared.EnderecoListViewPanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
 import com.desafio.estagio.wicket.page.home.HomePage;
@@ -48,12 +48,10 @@ public class ClienteJuridicoDetalhePage extends BasePage {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     clienteJuridicoService.hardDelete(clienteId);
                     setResponsePage(HomePage.class);
-                } catch (BusinessException e) {
-                    // button only visible when inactive, so hardDelete should succeed
-                }
+                }, target);
             }
         })
             .setVisible(Boolean.FALSE.equals(cliente.estaAtivo()))

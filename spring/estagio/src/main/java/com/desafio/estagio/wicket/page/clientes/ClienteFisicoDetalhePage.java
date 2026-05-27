@@ -1,11 +1,11 @@
 package com.desafio.estagio.wicket.page.clientes;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.model.formatter.CPFFormatter;
 import com.desafio.estagio.model.formatter.RGFormatter;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.shared.EnderecoListViewPanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
 import com.desafio.estagio.wicket.page.home.HomePage;
@@ -49,12 +49,10 @@ public class ClienteFisicoDetalhePage extends BasePage {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     clienteFisicoService.hardDelete(clienteId);
                     setResponsePage(HomePage.class);
-                } catch (BusinessException e) {
-                    // should not happen since button only shows when inactive
-                }
+                }, target);
             }
         };
         add(ComponentAttributeBuilder.of(excluirBtn)

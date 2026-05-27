@@ -12,11 +12,16 @@ import com.desafio.estagio.wicket.mapper.ClienteJuridicoDtoMapper;
 import com.desafio.estagio.wicket.model.ClienteJuridicoCreateFormModel;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
@@ -115,5 +120,17 @@ public class ClienteJuridicoCreateModal extends Panel {
         });
 
         add(form);
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(
+                new UrlResourceReference(org.apache.wicket.request.Url.parse(
+                        "https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"))
+        ));
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(JavaScriptUtils.class, "js/mask-init.js")
+        ));
     }
 }

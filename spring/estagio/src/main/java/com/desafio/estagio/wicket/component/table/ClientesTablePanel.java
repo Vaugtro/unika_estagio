@@ -4,6 +4,7 @@ import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
 import com.desafio.estagio.wicket.component.modal.ImportModal;
 import com.desafio.estagio.wicket.provider.AbstractClienteDataProvider;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -98,7 +99,7 @@ public abstract class ClientesTablePanel<T> extends DevUtilsPanel {
             protected void onAjaxEvent(AjaxRequestTarget target) {
                 super.onAjaxEvent(target);
                 target.add(this);
-                target.appendJavaScript("lucide.createIcons();");
+                JavaScriptUtils.createIcons(target);
             }
         };
         navigator.setOutputMarkupId(true);
@@ -134,7 +135,7 @@ public abstract class ClientesTablePanel<T> extends DevUtilsPanel {
                 setSearchQuery(q);
                 target.add(tableContainer);
                 target.add(navigator);
-                target.appendJavaScript("lucide.createIcons();");
+                JavaScriptUtils.createIcons(target);
             }
         };
         searchField.add(ajaxBehavior);
@@ -168,10 +169,10 @@ public abstract class ClientesTablePanel<T> extends DevUtilsPanel {
                 target.add(tableContainer);
                 target.add(navigator);
                 target.add(searchForm);
-                target.appendJavaScript("lucide.createIcons();");
+                JavaScriptUtils.createIcons(target);
             }
         });
-
+        
         return searchForm;
     }
 
@@ -186,9 +187,7 @@ public abstract class ClientesTablePanel<T> extends DevUtilsPanel {
     public void refreshTable(AjaxRequestTarget target) {
         target.add(tableContainer);
         target.add(navigator);
-        target.appendJavaScript(
-                "if(typeof lucide !== 'undefined') lucide.createIcons();" +
-                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
-        );
+        JavaScriptUtils.createIconsSafe(target);
+        JavaScriptUtils.reapplyMasksSafe(target);
     }
 }
