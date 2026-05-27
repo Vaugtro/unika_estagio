@@ -67,7 +67,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 .maxLength(ValidationConstants.RAZAO_SOCIAL_MAX)
                 .validationStyle(VALIDATION_STYLE_INSTANCE)
                 .build();
-        add(razaoSocial.getField());
+        add(razaoSocial.field());
 
         FormFieldBundle email = FormFieldBuilder.create(String.class)
                 .id("email")
@@ -75,7 +75,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 .maxLength(ValidationConstants.EMAIL_MAX)
                 .validationStyle(VALIDATION_STYLE_INSTANCE)
                 .build();
-        add(email.getField());
+        add(email.field());
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
             @Override

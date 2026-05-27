@@ -1,0 +1,15 @@
+---
+id: selector-delegation
+trigger: "when exploration task is scoped but broader than a single file lookup"
+confidence: 0.75
+domain: workflow
+source: git-history-analysis
+scope: project
+---
+
+## Action
+Delegate exploration to a Task subagent with subagent_type=explore. This saves context in the main session while the subagent independently searches, reads, and synthesizes.
+
+## Evidence
+- Task subagents run with independent context — ideal for exploration without polluting main session
+- explorer-selector already implements this pattern via Question → Task pipeline

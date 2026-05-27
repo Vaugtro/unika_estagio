@@ -43,36 +43,6 @@ public class EnderecoCreateTablePanel extends Panel {
             protected void populateItem(ListItem<EnderecoCreateFormModel> item) {
                 item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
 
-                FormFieldBundle logradouro = FormFieldBuilder.create(String.class)
-                        .id("logradouro").required()
-                        .placeholder("Logradouro").dataField("logradouro")
-                        .maxLength(ValidationConstants.LOGRADOURO_MAX)
-                        .minLength(ValidationConstants.LOGRADOURO_MIN)
-                        .feedbackLabel("logradouroFeedback")
-                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
-                        .build();
-                item.add(logradouro.getField());
-                item.add(logradouro.getFeedbackLabel());
-
-                FormFieldBundle numero = FormFieldBuilder.create(Long.class)
-                        .id("numero").required()
-                        .placeholder("Nº")
-                        .feedbackLabel("numeroFeedback")
-                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
-                        .build();
-                item.add(numero.getField());
-                item.add(numero.getFeedbackLabel());
-
-                FormFieldBundle bairro = FormFieldBuilder.create(String.class)
-                        .id("bairro").required()
-                        .placeholder("Bairro").dataField("bairro")
-                        .maxLength(ValidationConstants.BAIRRO_MAX)
-                        .minLength(ValidationConstants.BAIRRO_MIN)
-                        .feedbackLabel("bairroFeedback")
-                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
-                        .build();
-                item.add(bairro.getField());
-                item.add(bairro.getFeedbackLabel());
 
                 FormFieldBundle cep = FormFieldBuilder.create(String.class)
                         .id("cep").required()
@@ -83,8 +53,39 @@ public class EnderecoCreateTablePanel extends Panel {
                         .feedbackLabel("cepFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
                         .build();
-                item.add(cep.getField());
-                item.add(cep.getFeedbackLabel());
+                item.add(cep.field());
+                item.add(cep.feedbackLabel());
+
+                FormFieldBundle logradouro = FormFieldBuilder.create(String.class)
+                        .id("logradouro").required()
+                        .placeholder("Logradouro").dataField("logradouro")
+                        .maxLength(ValidationConstants.LOGRADOURO_MAX)
+                        .minLength(ValidationConstants.LOGRADOURO_MIN)
+                        .feedbackLabel("logradouroFeedback")
+                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
+                        .build();
+                item.add(logradouro.field());
+                item.add(logradouro.feedbackLabel());
+
+                FormFieldBundle numero = FormFieldBuilder.create(Long.class)
+                        .id("numero").required()
+                        .placeholder("Nº")
+                        .feedbackLabel("numeroFeedback")
+                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
+                        .build();
+                item.add(numero.field());
+                item.add(numero.feedbackLabel());
+
+                FormFieldBundle bairro = FormFieldBuilder.create(String.class)
+                        .id("bairro").required()
+                        .placeholder("Bairro").dataField("bairro")
+                        .maxLength(ValidationConstants.BAIRRO_MAX)
+                        .minLength(ValidationConstants.BAIRRO_MIN)
+                        .feedbackLabel("bairroFeedback")
+                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
+                        .build();
+                item.add(bairro.field());
+                item.add(bairro.feedbackLabel());
 
                 FormFieldBundle cidade = FormFieldBuilder.create(String.class)
                         .id("cidade").required()
@@ -94,8 +95,8 @@ public class EnderecoCreateTablePanel extends Panel {
                         .feedbackLabel("cidadeFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
                         .build();
-                item.add(cidade.getField());
-                item.add(cidade.getFeedbackLabel());
+                item.add(cidade.field());
+                item.add(cidade.feedbackLabel());
 
                 FormFieldBundle estado = FormFieldBuilder.create(String.class)
                         .id("estado").required()
@@ -104,8 +105,8 @@ public class EnderecoCreateTablePanel extends Panel {
                         .feedbackLabel("estadoFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
                         .build();
-                item.add(estado.getField());
-                item.add(estado.getFeedbackLabel());
+                item.add(estado.field());
+                item.add(estado.feedbackLabel());
 
                 FormFieldBundle telefone = FormFieldBuilder.create(String.class)
                         .id("telefone")
@@ -115,8 +116,8 @@ public class EnderecoCreateTablePanel extends Panel {
                         .feedbackLabel("telefoneFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
                         .build();
-                item.add(telefone.getField());
-                item.add(telefone.getFeedbackLabel());
+                item.add(telefone.field());
+                item.add(telefone.feedbackLabel());
 
                 FormFieldBundle complemento = FormFieldBuilder.create(String.class)
                         .id("complemento")
@@ -125,8 +126,8 @@ public class EnderecoCreateTablePanel extends Panel {
                         .feedbackLabel("complementoFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
                         .build();
-                item.add(complemento.getField());
-                item.add(complemento.getFeedbackLabel());
+                item.add(complemento.field());
+                item.add(complemento.feedbackLabel());
 
                 CheckBox principalField = new CheckBox("principal");
                 item.add(principalField);

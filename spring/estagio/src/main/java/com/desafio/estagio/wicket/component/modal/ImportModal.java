@@ -82,7 +82,11 @@ public abstract class ImportModal extends Panel {
                                 count + " " + getSuccessMessage());
                         JavaScriptUtils.reloadAfterDelay(target, 3000);
                     } catch (Exception ex) {
-                        throw new BusinessException("Erro na importação: " + ex.getMessage());
+                        String causeMsg = ex.getMessage();
+                        if (causeMsg != null && causeMsg.contains("rolled back")) {
+                            throw new BusinessException("Erro na importação: Verifique os dados do arquivo e tente novamente.");
+                        }
+                        throw new BusinessException("Erro na importação: " + causeMsg);
                     }
                 }, target);
             }

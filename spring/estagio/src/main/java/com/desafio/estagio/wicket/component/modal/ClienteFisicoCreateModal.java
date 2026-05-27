@@ -13,17 +13,13 @@ import com.desafio.estagio.wicket.model.ClienteFisicoCreateFormModel;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
-import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -44,32 +40,27 @@ public class ClienteFisicoCreateModal extends Panel {
         Form<ClienteFisicoCreateFormModel> form = new Form<>("form", new CompoundPropertyModel<>(formModel));
         form.setOutputMarkupId(true);
 
-        // CPF field — builder for standard setup, behavior for data-mask workaround
         FormFieldBundle cpfBundle = FormFieldBuilder.create(String.class)
                 .id("cpf").required().placeholder("000.000.000-00").dataMask("000.000.000-00")
                 .minLength(ValidationConstants.CPF_LENGTH_FORMATTED_MIN)
                 .maxLength(ValidationConstants.CPF_LENGTH_FORMATTED_MAX)
                 .validator(new CPFValidator()).feedbackLabel("cpfFeedback").realTimeValidation().build();
-        cpfBundle.getField().add(new AjaxFormComponentUpdatingBehavior("change") {
-            @Serial private static final long serialVersionUID = 1L;
-            @Override protected void onUpdate(AjaxRequestTarget target) {
-                cpfBundle.getField().add(new AttributeModifier("data-mask", "000.000.000-00"));
-            }
-        });
-        form.add(cpfBundle.getField(), cpfBundle.getFeedbackLabel());
+        form.add(cpfBundle.field(), cpfBundle.feedbackLabel());
 
         // Nome field
         FormFieldBundle nomeBundle = FormFieldBuilder.create(String.class)
                 .id("nome").required().placeholder("Nome completo")
                 .minLength(ValidationConstants.NOME_MIN).maxLength(ValidationConstants.NOME_MAX)
                 .feedbackLabel("nomeFeedback").realTimeValidation().build();
-        form.add(nomeBundle.getField(), nomeBundle.getFeedbackLabel());
+        form.add(nomeBundle.field(), nomeBundle.feedbackLabel());
 
         // RG field — custom digit-count validator
         FormFieldBundle rgBundle = FormFieldBuilder.create(String.class)
                 .id("rg").required()
                 .placeholder("RG").dataMask("99.999.999-9")
                 .pattern("^\\d{1,2}\\.?\\d{1,3}\\.?\\d{1,3}-?\\d$")
+                .minLength(ValidationConstants.RG_LENGTH_MIN)
+                .maxLength(ValidationConstants.RG_LENGTH_MAX)
                 .validator(new IValidator<String>() {
                     @Serial private static final long serialVersionUID = 1L;
                     @Override public void validate(IValidatable<String> validatable) {
@@ -80,20 +71,20 @@ public class ClienteFisicoCreateModal extends Panel {
                         }
                     }
                 }).feedbackLabel("rgFeedback").realTimeValidation().build();
-        form.add(rgBundle.getField(), rgBundle.getFeedbackLabel());
+        form.add(rgBundle.field(), rgBundle.feedbackLabel());
 
         // Email field
         FormFieldBundle emailBundle = FormFieldBuilder.create(String.class)
                 .id("email").placeholder("E-mail")
                 .maxLength(ValidationConstants.EMAIL_MAX)
                 .feedbackLabel("emailFeedback").realTimeValidation().build();
-        form.add(emailBundle.getField(), emailBundle.getFeedbackLabel());
+        form.add(emailBundle.field(), emailBundle.feedbackLabel());
 
         // Data de Nascimento field
         FormFieldBundle dataNascimentoBundle = FormFieldBuilder.create(String.class)
                 .id("dataNascimento").required().placeholder("DD/MM/YYYY").dataMask("99/99/9999")
                 .feedbackLabel("dataNascimentoFeedback").realTimeValidation().build();
-        form.add(dataNascimentoBundle.getField(), dataNascimentoBundle.getFeedbackLabel());
+        form.add(dataNascimentoBundle.field(), dataNascimentoBundle.feedbackLabel());
 
         form.add(new EnderecoCreateTablePanel("enderecosContainer", formModel.getEnderecos()));
 
@@ -124,12 +115,7 @@ public class ClienteFisicoCreateModal extends Panel {
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.render(JavaScriptHeaderItem.forReference(
-                new UrlResourceReference(org.apache.wicket.request.Url.parse(
-                        "https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"))
-        ));
-        response.render(JavaScriptHeaderItem.forReference(
-                new JavaScriptResourceReference(JavaScriptUtils.class, "js/mask-init.js")
-        ));
+        response.render(JavaScriptHeaderItem.forReference(JavaScriptUtils.getMaskLibraryReference()));
+        response.render(JavaScriptHeaderItem.forReference(JavaScriptUtils.getMaskInitReference()));
     }
 }

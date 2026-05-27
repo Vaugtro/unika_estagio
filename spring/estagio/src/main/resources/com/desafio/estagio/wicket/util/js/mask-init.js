@@ -13,7 +13,8 @@
  */
 function aplicarMascaras() {
     $('[data-mask]').each(function () {
-        $(this).mask($(this).data('mask'));
+        var m = $(this).data('mask');
+        if (typeof m === 'string') $(this).mask(m);
     });
 }
 

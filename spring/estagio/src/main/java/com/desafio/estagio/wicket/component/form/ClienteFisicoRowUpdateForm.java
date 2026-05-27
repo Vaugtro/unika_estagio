@@ -82,7 +82,7 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
                 .pattern("[^\\d]+")
                 .validationStyle(VALIDATION_STYLE)
                 .build();
-        add(nomeField.getField());
+        add(nomeField.field());
 
         FormFieldBundle emailField = FormFieldBuilder.create(String.class)
                 .id("email")
@@ -90,7 +90,7 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
                 .validator(EmailAddressValidator.getInstance())
                 .validationStyle(VALIDATION_STYLE)
                 .build();
-        add(emailField.getField());
+        add(emailField.field());
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
             @Override

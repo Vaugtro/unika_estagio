@@ -12,24 +12,8 @@ import java.io.Serializable;
  * Returned by {@link FormFieldBuilder#build()} so both field and feedback
  * label can be added to the component tree together.
  */
-public class FormFieldBundle implements Serializable {
+public record FormFieldBundle(TextField<?> field, Label feedbackLabel) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    private final TextField<?> field;
-    private final Label feedbackLabel;
-
-    public FormFieldBundle(TextField<?> field, Label feedbackLabel) {
-        this.field = field;
-        this.feedbackLabel = feedbackLabel;
-    }
-
-    public TextField<?> getField() {
-        return field;
-    }
-
-    public Label getFeedbackLabel() {
-        return feedbackLabel;
-    }
 }

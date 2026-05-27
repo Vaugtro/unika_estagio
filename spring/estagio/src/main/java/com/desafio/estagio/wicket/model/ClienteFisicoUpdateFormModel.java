@@ -1,6 +1,7 @@
 package com.desafio.estagio.wicket.model;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
+import com.desafio.estagio.validation.ValidationConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class ClienteFisicoUpdateFormModel implements Serializable {
     private String nome;
     private String cpf;
     private String email;
+
     private Boolean estaAtivo;
 
     public ClienteFisicoUpdateFormModel() {

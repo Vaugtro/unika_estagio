@@ -106,10 +106,11 @@ public class FormFieldBuilder<T> implements Serializable {
         return this;
     }
 
-    /** Adds a CSS class attribute. */
-    public FormFieldBuilder<T> cssClass(String cssClass) {
+    /**
+     * Adds a CSS class attribute.
+     */
+    public void cssClass(String cssClass) {
         this.cssClass = cssClass;
-        return this;
     }
 
     /** Adds a custom validator. */

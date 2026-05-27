@@ -53,6 +53,7 @@ public final class ValidationFeedback implements Serializable {
             protected void onUpdate(AjaxRequestTarget target) {
                 target.add(field);
                 target.add(feedback);
+                JavaScriptUtils.reapplyMasksSafe(target);
             }
         });
     }

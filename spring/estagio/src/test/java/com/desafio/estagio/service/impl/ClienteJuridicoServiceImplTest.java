@@ -2,6 +2,7 @@ package com.desafio.estagio.service.impl;
 
 import com.desafio.estagio.dto.clientejuridico.*;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
+import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.exceptions.ConflictException;
 import com.desafio.estagio.exceptions.ResourceNotFoundException;
@@ -72,7 +73,7 @@ class ClienteJuridicoServiceImplTest {
                 .estaAtivo(true)
                 .build();
 
-        EnderecoCreateRequest endereco = EnderecoCreateRequest.builder()
+        EnderecoWithinClienteCreateRequest endereco = EnderecoWithinClienteCreateRequest.builder()
                 .logradouro("Avenida B")
                 .numero(456L)
                 .cep("02001-000")
@@ -82,7 +83,6 @@ class ClienteJuridicoServiceImplTest {
                 .cidade("São Paulo")
                 .principal(true)
                 .complemento("Sala 100")
-                .clienteId(1L)
                 .build();
 
         createRequest = ClienteJuridicoCreateRequest.builder()
@@ -163,7 +163,7 @@ class ClienteJuridicoServiceImplTest {
     @DisplayName("create: throws BusinessException when no principal endereco")
     void testCreateNoPrincipalEndereco() {
         // Arrange
-        EnderecoCreateRequest endereco = EnderecoCreateRequest.builder()
+        EnderecoWithinClienteCreateRequest endereco = EnderecoWithinClienteCreateRequest.builder()
                 .logradouro("Avenida B")
                 .numero(456L)
                 .cep("02001-000")
@@ -173,7 +173,6 @@ class ClienteJuridicoServiceImplTest {
                 .cidade("São Paulo")
                 .principal(false)
                 .complemento("Sala 100")
-                .clienteId(1L)
                 .build();
 
         ClienteJuridicoCreateRequest requestNoPrincipal = ClienteJuridicoCreateRequest.builder()

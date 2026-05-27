@@ -1,0 +1,15 @@
+---
+id: dont-skip-selector
+trigger: "when tempted to directly search or explore without asking the user for depth first"
+confidence: 0.7
+domain: anti-pattern
+source: git-history-analysis
+scope: project
+---
+
+## Action
+Pause and check: does the user's request clearly identify an exact file, class, or function? If not, use the explorer-selector. Direct search without scoping risks context waste and irrelevant results.
+
+## Evidence
+- Common anti-pattern in AI-assisted development: agents jump to search without clarifying scope
+- The selector adds <30 seconds but prevents wasted exploration

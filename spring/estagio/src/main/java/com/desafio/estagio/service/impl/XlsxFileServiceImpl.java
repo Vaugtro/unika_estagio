@@ -10,13 +10,14 @@ import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -129,7 +130,6 @@ public class XlsxFileServiceImpl {
     // XLSX IMPORT
     // =====================================================================
 
-    @Transactional
     public int importFisicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
@@ -139,6 +139,8 @@ public class XlsxFileServiceImpl {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
+
+                int rowNum = row.getRowNum() + 1;
 
                 try {
                     String cpf = getCellString(row, 0);
@@ -181,8 +183,9 @@ public class XlsxFileServiceImpl {
                     clienteFisicoService.create(request);
                     count++;
                 } catch (Exception e) {
-                    errors.add("Linha " + (row.getRowNum() + 1) + ": " + e.getMessage());
-                    log.warn("Erro ao importar linha {}: {}", row.getRowNum() + 1, e.getMessage());
+                    String msg = translateError(rowNum, e);
+                    errors.add(msg);
+                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -196,7 +199,6 @@ public class XlsxFileServiceImpl {
         return count;
     }
 
-    @Transactional
     public int importJuridicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
@@ -206,6 +208,8 @@ public class XlsxFileServiceImpl {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
+
+                int rowNum = row.getRowNum() + 1;
 
                 try {
                     String cnpj = getCellString(row, 0);
@@ -224,7 +228,7 @@ public class XlsxFileServiceImpl {
                     Boolean principal = getCellBoolean(row, 12);
                     String complemento = getCellString(row, 13);
 
-                    var endereco = EnderecoCreateRequest.builder()
+                    var endereco = EnderecoWithinClienteCreateRequest.builder()
                             .logradouro(logradouro)
                             .numero(numero)
                             .cep(cep)
@@ -234,7 +238,6 @@ public class XlsxFileServiceImpl {
                             .cidade(cidade)
                             .principal(principal)
                             .complemento(complemento)
-                            .clienteId(null)
                             .build();
 
                     var request = ClienteJuridicoCreateRequest.builder()
@@ -249,8 +252,9 @@ public class XlsxFileServiceImpl {
                     clienteJuridicoService.create(request);
                     count++;
                 } catch (Exception e) {
-                    errors.add("Linha " + (row.getRowNum() + 1) + ": " + e.getMessage());
-                    log.warn("Erro ao importar linha {}: {}", row.getRowNum() + 1, e.getMessage());
+                    String msg = translateError(rowNum, e);
+                    errors.add(msg);
+                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -264,7 +268,6 @@ public class XlsxFileServiceImpl {
         return count;
     }
 
-    @Transactional
     public int importEnderecos(Long clienteId, InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
@@ -274,6 +277,8 @@ public class XlsxFileServiceImpl {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
+
+                int rowNum = row.getRowNum() + 1;
 
                 try {
                     String logradouro = getCellString(row, 0);
@@ -302,8 +307,9 @@ public class XlsxFileServiceImpl {
                     enderecoService.create(request);
                     count++;
                 } catch (Exception e) {
-                    errors.add("Linha " + (row.getRowNum() + 1) + ": " + e.getMessage());
-                    log.warn("Erro ao importar linha {}: {}", row.getRowNum() + 1, e.getMessage());
+                    String msg = translateError(rowNum, e);
+                    errors.add(msg);
+                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -437,8 +443,48 @@ public class XlsxFileServiceImpl {
     }
 
     // =====================================================================
-    // XLSX cell helpers and date parsing
+    // XLSX cell helpers, date parsing, error translation
     // =====================================================================
+
+    private String translateError(int rowNum, Exception e) {
+        Throwable cause = e;
+        while (cause != null) {
+            if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
+                String constraintName = cve.getConstraintName();
+                if (constraintName != null) {
+                    return switch (constraintName) {
+                        case "che_cep_length" ->
+                                "Linha " + rowNum + ": O CEP informado é inválido. Deve conter exatamente 8 dígitos numéricos.";
+                        case "che_cep_digits" ->
+                                "Linha " + rowNum + ": O CEP informado é inválido. Deve conter apenas números.";
+                        case "che_telefone_length" ->
+                                "Linha " + rowNum + ": O telefone informado é inválido. Deve ter 10 ou 11 dígitos.";
+                        case "che_telefone_digits" ->
+                                "Linha " + rowNum + ": O telefone informado é inválido. Deve conter apenas números.";
+                        default ->
+                                "Linha " + rowNum + ": Erro de integridade dos dados. Verifique os campos obrigatórios.";
+                    };
+                }
+            }
+            if (cause instanceof ConstraintViolationException cve) {
+                StringBuilder sb = new StringBuilder("Linha ").append(rowNum).append(": ");
+                for (var cv : cve.getConstraintViolations()) {
+                    String field = cv.getPropertyPath().toString();
+                    sb.append(field).append(": ").append(cv.getMessage()).append(". ");
+                }
+                return sb.toString();
+            }
+            if (cause instanceof DataIntegrityViolationException) {
+                return "Linha " + rowNum + ": Erro de integridade dos dados. Verifique se todos os campos obrigatórios estão preenchidos corretamente.";
+            }
+            cause = cause.getCause();
+        }
+        String msg = e.getMessage();
+        if (msg == null || msg.isBlank()) {
+            return "Linha " + rowNum + ": Erro inesperado. Verifique os dados informados.";
+        }
+        return "Linha " + rowNum + ": " + msg;
+    }
 
     private String getCellString(Row row, int idx) {
         Cell cell = row.getCell(idx);

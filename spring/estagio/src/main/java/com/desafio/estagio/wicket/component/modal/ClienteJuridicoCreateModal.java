@@ -20,8 +20,6 @@ import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
-import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
@@ -55,7 +53,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 .feedbackLabel("cnpjFeedback")
                 .realTimeValidation()
                 .build();
-        form.add(cnpjBundle.getField(), cnpjBundle.getFeedbackLabel());
+        form.add(cnpjBundle.field(), cnpjBundle.feedbackLabel());
 
         FormFieldBundle razaoSocialBundle = FormFieldBuilder.create(String.class)
                 .id("razaoSocial").required()
@@ -65,7 +63,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 .feedbackLabel("razaoSocialFeedback")
                 .realTimeValidation()
                 .build();
-        form.add(razaoSocialBundle.getField(), razaoSocialBundle.getFeedbackLabel());
+        form.add(razaoSocialBundle.field(), razaoSocialBundle.feedbackLabel());
 
         FormFieldBundle ieBundle = FormFieldBuilder.create(String.class)
                 .id("inscricaoEstadual").required()
@@ -74,7 +72,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 .feedbackLabel("ieFeedback")
                 .realTimeValidation()
                 .build();
-        form.add(ieBundle.getField(), ieBundle.getFeedbackLabel());
+        form.add(ieBundle.field(), ieBundle.feedbackLabel());
 
         FormFieldBundle emailBundle = FormFieldBuilder.create(String.class)
                 .id("email")
@@ -83,7 +81,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 .feedbackLabel("emailFeedback")
                 .realTimeValidation()
                 .build();
-        form.add(emailBundle.getField(), emailBundle.getFeedbackLabel());
+        form.add(emailBundle.field(), emailBundle.feedbackLabel());
 
         FormFieldBundle dataCriacaoBundle = FormFieldBuilder.create(String.class)
                 .id("dataCriacaoEmpresa").required()
@@ -92,7 +90,7 @@ public class ClienteJuridicoCreateModal extends Panel {
                 .feedbackLabel("dataCriacaoEmpresaFeedback")
                 .realTimeValidation()
                 .build();
-        form.add(dataCriacaoBundle.getField(), dataCriacaoBundle.getFeedbackLabel());
+        form.add(dataCriacaoBundle.field(), dataCriacaoBundle.feedbackLabel());
 
         form.add(new EnderecoCreateTablePanel("enderecosContainer", formModel.getEnderecos()));
 
@@ -125,12 +123,7 @@ public class ClienteJuridicoCreateModal extends Panel {
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.render(JavaScriptHeaderItem.forReference(
-                new UrlResourceReference(org.apache.wicket.request.Url.parse(
-                        "https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"))
-        ));
-        response.render(JavaScriptHeaderItem.forReference(
-                new JavaScriptResourceReference(JavaScriptUtils.class, "js/mask-init.js")
-        ));
+        response.render(JavaScriptHeaderItem.forReference(JavaScriptUtils.getMaskLibraryReference()));
+        response.render(JavaScriptHeaderItem.forReference(JavaScriptUtils.getMaskInitReference()));
     }
 }

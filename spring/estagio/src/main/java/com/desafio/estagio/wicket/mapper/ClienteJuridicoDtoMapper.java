@@ -1,7 +1,7 @@
 package com.desafio.estagio.wicket.mapper;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
-import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
+import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.wicket.model.ClienteJuridicoCreateFormModel;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 
@@ -20,9 +20,9 @@ public final class ClienteJuridicoDtoMapper implements Serializable {
     }
 
     public static ClienteJuridicoCreateRequest toCreateRequest(ClienteJuridicoCreateFormModel formModel) {
-        List<EnderecoCreateRequest> enderecosDTO = new ArrayList<>();
+        List<EnderecoWithinClienteCreateRequest> enderecosDTO = new ArrayList<>();
         for (EnderecoCreateFormModel endForm : formModel.getEnderecos()) {
-            enderecosDTO.add(EnderecoDtoMapper.toCreateRequest(endForm));
+            enderecosDTO.add(EnderecoDtoMapper.toWithinClienteCreateRequest(endForm));
         }
 
         String dataCriacaoStr = formModel.getDataCriacaoEmpresa();
