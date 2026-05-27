@@ -1,15 +1,13 @@
 package com.desafio.estagio.wicket.component.shared;
 
-import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
-import com.desafio.estagio.dto.endereco.EnderecoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.model.formatter.TelefoneFormatter;
 import com.desafio.estagio.service.EnderecoService;
 import com.desafio.estagio.service.FileService;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
+import com.desafio.estagio.wicket.mapper.EnderecoDtoMapper;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
-import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -17,19 +15,12 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
-import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.resource.IResourceStream;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -109,23 +100,13 @@ public class EnderecoListViewPanel extends Panel {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        try {
+                        ErrorHandler.handleServiceCall(() -> {
                             enderecoService.setAsPrincipal(endId);
                             target.add(enderecosContainer);
                             ValidationFeedback.showToast(target, "success",
                                     "Endereço definido como principal!");
                             target.appendJavaScript("lucide.createIcons();");
-                        } catch (Exception e) {
-                            String message;
-                            if (e instanceof DataIntegrityViolationException) {
-                                message = "Já existe um endereço principal para este cliente.";
-                            } else if (e instanceof BusinessException) {
-                                message = e.getMessage();
-                            } else {
-                                message = "Erro ao acessar o banco de dados. Tente novamente.";
-                            }
-                            ValidationFeedback.showToast(target, "error", message);
-                        }
+                        }, target);
                     }
                 };
 
@@ -177,22 +158,12 @@ public class EnderecoListViewPanel extends Panel {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        try {
+                        ErrorHandler.handleDelete(() -> {
                             enderecoService.delete(endId);
                             target.add(enderecosContainer);
                             ValidationFeedback.showToast(target, "success", "Endereço excluído com sucesso!");
                             target.appendJavaScript("lucide.createIcons();");
-                        } catch (Exception e) {
-                            String message;
-                            if (e instanceof DataIntegrityViolationException) {
-                                message = "Já existe um endereço principal para este cliente.";
-                            } else if (e instanceof BusinessException) {
-                                message = e.getMessage();
-                            } else {
-                                message = "Erro ao acessar o banco de dados. Tente novamente.";
-                            }
-                            ValidationFeedback.showToast(target, "error", message);
-                        }
+                        }, target, "endereço");
                     }
                 });
             }
@@ -209,36 +180,14 @@ public class EnderecoListViewPanel extends Panel {
                 if (modalEnderecos.isEmpty()) return;
 
                 EnderecoCreateFormModel endForm = modalEnderecos.get(0);
-                String cepClean = endForm.getCep() != null ? endForm.getCep().replaceAll("\\D", "") : null;
-                String telefoneClean = endForm.getTelefone() != null ? endForm.getTelefone().replaceAll("\\D", "") : null;
 
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     if (endForm.getId() != null) {
-                        enderecoService.update(endForm.getId(), new EnderecoUpdateRequest(
-                                endForm.getLogradouro(),
-                                endForm.getNumero(),
-                                cepClean,
-                                endForm.getBairro(),
-                                telefoneClean,
-                                endForm.getEstado(),
-                                endForm.getCidade(),
-                                endForm.getPrincipal(),
-                                endForm.getComplemento()
-                        ));
+                        enderecoService.update(endForm.getId(), EnderecoDtoMapper.toUpdateRequest(endForm));
                         ValidationFeedback.showToast(target, "success", "Endereço atualizado com sucesso!");
                     } else {
-                        enderecoService.create(new EnderecoCreateRequest(
-                                endForm.getLogradouro(),
-                                endForm.getNumero(),
-                                cepClean,
-                                endForm.getBairro(),
-                                telefoneClean,
-                                endForm.getEstado(),
-                                endForm.getCidade(),
-                                endForm.getPrincipal(),
-                                endForm.getComplemento(),
-                                clienteId
-                        ));
+                        enderecoService.createForCliente(clienteId,
+                                EnderecoDtoMapper.toWithinClienteCreateRequest(endForm));
                         ValidationFeedback.showToast(target, "success", "Endereço adicionado com sucesso!");
                     }
 
@@ -246,15 +195,7 @@ public class EnderecoListViewPanel extends Panel {
                     target.add(enderecosContainer);
                     target.add(modalForm);
                     target.appendJavaScript("fecharModalEndereco(); lucide.createIcons();");
-                } catch (DataIntegrityViolationException e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Já existe um endereço principal para este cliente. Desmarque o endereço principal atual primeiro.");
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Erro ao salvar endereço. Tente novamente.");
-                }
+                }, target);
             }
 
             @Override
@@ -282,98 +223,14 @@ public class EnderecoListViewPanel extends Panel {
             }
         });
 
-        // --- Export buttons ---
-        add(buildEnderecoExportLink("exportEnderecosPdfBtn", "enderecos.pdf", "application/pdf", true));
-        add(buildEnderecoExportLink("exportEnderecosXlsxBtn", "enderecos.xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", false));
-
-        // --- Import form ---
-        add(buildEnderecoImportForm());
-
-        // --- Template download ---
-        add(buildEnderecoTemplateLink("downloadEnderecoTemplateBtn"));
+        // --- File operations (export / import / template) ---
+        add(EnderecoFileOperations.buildExportLink("exportEnderecosPdfBtn", "enderecos.pdf",
+                "application/pdf", true, fileService, clienteId));
+        add(EnderecoFileOperations.buildExportLink("exportEnderecosXlsxBtn", "enderecos.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                false, fileService, clienteId));
+        add(EnderecoFileOperations.buildImportForm(enderecosContainer, fileService, clienteId));
+        add(EnderecoFileOperations.buildTemplateLink("downloadEnderecoTemplateBtn", fileService));
     }
 
-    private Link<Void> buildEnderecoExportLink(String id, String filename, String mimeType, boolean pdf) {
-        return new Link<>(id) {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onClick() {
-                byte[] bytes = pdf ? fileService.pdfEnderecos(clienteId) : fileService.xlsxEnderecos(clienteId);
-                IResourceStream stream = new ByteArrayResourceStream(bytes, mimeType);
-                getRequestCycle().scheduleRequestHandlerAfterCurrent(
-                        new ResourceStreamRequestHandler(stream)
-                                .setFileName(filename)
-                                .setContentDisposition(ContentDisposition.ATTACHMENT)
-                );
-            }
-        };
-    }
-
-    private Form<Void> buildEnderecoImportForm() {
-        Form<Void> importForm = new Form<>("importEnderecoForm");
-        importForm.setMultiPart(true);
-        importForm.setOutputMarkupId(true);
-
-        FileUploadField fileUpload = new FileUploadField("enderecoFileUpload");
-        importForm.add(fileUpload);
-
-        importForm.add(new AjaxButton("importEnderecoBtn") {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                FileUpload upload = fileUpload.getFileUpload();
-                if (upload == null) {
-                    ValidationFeedback.showToast(target, "error", "Selecione um arquivo XLSX.");
-                    return;
-                }
-                try (java.io.InputStream is = upload.getInputStream()) {
-                    int count = fileService.importEnderecos(clienteId, is);
-                    ValidationFeedback.showToast(target, "success",
-                            count + " endereço(s) importado(s) com sucesso!");
-                    target.add(enderecosContainer);
-                    target.add(importForm);
-                    target.appendJavaScript("lucide.createIcons();");
-                } catch (DataIntegrityViolationException e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Já existe um endereço principal para este cliente.");
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error",
-                            "Erro na importação. Tente novamente.");
-                }
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
-                ValidationFeedback.handleFormError(target, form);
-            }
-        });
-
-        return importForm;
-    }
-
-    private Link<Void> buildEnderecoTemplateLink(String id) {
-        return new Link<>(id) {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onClick() {
-                byte[] bytes = fileService.templateEnderecosImport();
-                IResourceStream stream = new ByteArrayResourceStream(bytes,
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                getRequestCycle().scheduleRequestHandlerAfterCurrent(
-                        new ResourceStreamRequestHandler(stream)
-                                .setFileName("template-enderecos.xlsx")
-                                .setContentDisposition(ContentDisposition.ATTACHMENT)
-                );
-            }
-        };
-    }
 }

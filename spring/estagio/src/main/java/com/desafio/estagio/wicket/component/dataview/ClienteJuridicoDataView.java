@@ -3,6 +3,8 @@ package com.desafio.estagio.wicket.component.dataview;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
+import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
+import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.modal.ClienteJuridicoEditModal;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
@@ -37,8 +39,9 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
     protected void populateRow(Item<ClienteJuridicoListResponse> item) {
         ClienteJuridicoListResponse cliente = item.getModelObject();
 
-        WebMarkupContainer row = new WebMarkupContainer("editarForm");
-        row.setOutputMarkupId(true);
+        WebMarkupContainer row = ComponentAttributeBuilder.of(new WebMarkupContainer("editarForm"))
+                .setOutputMarkupId(true)
+                .build();
 
         row.add(new Label("id", new AbstractReadOnlyModel<String>() {
             @Serial
@@ -130,7 +133,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
         BookmarkablePageLink<Void> detalhesBtn = new BookmarkablePageLink<>("detalhesBtn",
                 ClienteJuridicoDetalhePage.class,
                 new PageParameters().set("clienteId", cliente.id()));
-        detalhesBtn.add(new AttributeModifier("class", "btn btn-sm btn-outline-info rounded-circle p-1"));
+        AttributeModifierBuilder.create().cssClass("btn btn-sm btn-outline-info rounded-circle p-1").buildAndAdd(detalhesBtn);
         row.add(detalhesBtn);
 
         AjaxLink<Void> editarBtn = new AjaxLink<>("editarBtn") {
@@ -149,7 +152,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
                         "if(typeof lucide !== 'undefined') lucide.createIcons();");
             }
         };
-        editarBtn.setOutputMarkupId(true);
+        ComponentAttributeBuilder.of(editarBtn).setOutputMarkupId(true).build();
         row.add(editarBtn);
 
         item.add(row);

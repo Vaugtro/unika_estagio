@@ -5,19 +5,21 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.wicket.builder.FormFieldBuilder;
+import com.desafio.estagio.wicket.builder.FormFieldBundle;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -27,7 +29,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.StringValidator;
 
 import java.io.Serial;
 
@@ -35,6 +36,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
     @Getter
     private final Item<ClienteJuridicoListResponse> parentItem;
     @SpringBean
@@ -58,35 +60,21 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
         add(new Label("id"));
         add(new Label("cnpj"));
 
-        TextField<String> razaoSocialField = new TextField<>("razaoSocial");
-        razaoSocialField.setRequired(true);
-        razaoSocialField.add(StringValidator.lengthBetween(ValidationConstants.RAZAO_SOCIAL_MIN, ValidationConstants.RAZAO_SOCIAL_MAX));
-        razaoSocialField.setOutputMarkupId(true);
-        razaoSocialField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
+        FormFieldBundle razaoSocial = FormFieldBuilder.create(String.class)
+                .id("razaoSocial").required()
+                .minLength(ValidationConstants.RAZAO_SOCIAL_MIN)
+                .maxLength(ValidationConstants.RAZAO_SOCIAL_MAX)
+                .validationStyle(VALIDATION_STYLE_INSTANCE)
+                .build();
+        add(razaoSocial.getField());
 
-            @Override
-            public String getObject() {
-                return !razaoSocialField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
-            }
-        }));
-        add(razaoSocialField);
-
-        TextField<String> emailField = new TextField<>("email");
-        emailField.add(EmailAddressValidator.getInstance());
-        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
-        emailField.setOutputMarkupId(true);
-        emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getObject() {
-                return !emailField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
-            }
-        }));
-        add(emailField);
+        FormFieldBundle email = FormFieldBuilder.create(String.class)
+                .id("email")
+                .validator(EmailAddressValidator.getInstance())
+                .maxLength(ValidationConstants.EMAIL_MAX)
+                .validationStyle(VALIDATION_STYLE_INSTANCE)
+                .build();
+        add(email.getField());
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
             @Override
@@ -200,5 +188,18 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
             }
         };
+    }
+
+    private static final class ValidationStyleBehavior extends Behavior {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onComponentTag(Component component, ComponentTag tag) {
+            if (!component.getFeedbackMessages().isEmpty()) {
+                String cls = tag.getAttribute("class");
+                tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
+            }
+        }
     }
 }
