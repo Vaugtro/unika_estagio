@@ -10,6 +10,7 @@ import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,7 +131,7 @@ public class XlsxFileServiceImpl {
     // XLSX IMPORT
     // =====================================================================
 
-    public int importFisicos(InputStream xlsx) {
+    public ImportResult importFisicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
 
@@ -196,10 +197,10 @@ public class XlsxFileServiceImpl {
             log.warn("Importação concluída com {} sucessos e {} erros: {}",
                     count, errors.size(), String.join(" | ", errors));
         }
-        return count;
+        return new ImportResult(count, errors);
     }
 
-    public int importJuridicos(InputStream xlsx) {
+    public ImportResult importJuridicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
 
@@ -265,10 +266,10 @@ public class XlsxFileServiceImpl {
             log.warn("Importação concluída com {} sucessos e {} erros: {}",
                     count, errors.size(), String.join(" | ", errors));
         }
-        return count;
+        return new ImportResult(count, errors);
     }
 
-    public int importEnderecos(Long clienteId, InputStream xlsx) {
+    public ImportResult importEnderecos(Long clienteId, InputStream xlsx) {
         List<String> errors = new ArrayList<>();
         int count = 0;
 
@@ -320,7 +321,7 @@ public class XlsxFileServiceImpl {
             log.warn("Importação concluída com {} sucessos e {} erros: {}",
                     count, errors.size(), String.join(" | ", errors));
         }
-        return count;
+        return new ImportResult(count, errors);
     }
 
     // =====================================================================

@@ -2,6 +2,7 @@ package com.desafio.estagio.wicket.component.table;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
 import com.desafio.estagio.service.ClienteJuridicoService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.component.dataview.ClienteJuridicoDataView;
 import com.desafio.estagio.wicket.component.modal.ClienteJuridicoCreateModal;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
@@ -97,7 +98,7 @@ public class ClientesJuridicosTablePanel extends ClientesTablePanel<ClienteJurid
             }
 
             @Override
-            protected int importData(InputStream is) throws Exception {
+            protected ImportResult importData(InputStream is) throws Exception {
                 return fileService.importJuridicos(is);
             }
 

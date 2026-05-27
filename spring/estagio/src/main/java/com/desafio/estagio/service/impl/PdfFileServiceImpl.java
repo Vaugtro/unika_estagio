@@ -9,6 +9,7 @@ import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.service.*;
+import com.desafio.estagio.service.FileService.ImportResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -206,19 +207,19 @@ public class PdfFileServiceImpl implements FileService {
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public int importFisicos(java.io.InputStream xlsx) {
+    public ImportResult importFisicos(java.io.InputStream xlsx) {
         return xlsxFileService.importFisicos(xlsx);
     }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public int importJuridicos(java.io.InputStream xlsx) {
+    public ImportResult importJuridicos(java.io.InputStream xlsx) {
         return xlsxFileService.importJuridicos(xlsx);
     }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public int importEnderecos(Long clienteId, java.io.InputStream xlsx) {
+    public ImportResult importEnderecos(Long clienteId, java.io.InputStream xlsx) {
         return xlsxFileService.importEnderecos(clienteId, xlsx);
     }
 }

@@ -2,6 +2,7 @@ package com.desafio.estagio.wicket.component.table;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
 import com.desafio.estagio.service.ClienteFisicoService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.component.dataview.ClienteFisicoDataView;
 import com.desafio.estagio.wicket.component.modal.ClienteFisicoCreateModal;
 import com.desafio.estagio.wicket.component.modal.ExportModal;
@@ -85,7 +86,7 @@ public class ClientesFisicosTablePanel extends ClientesTablePanel<ClienteFisicoL
                 return "template-clientes-fisicos.xlsx";
             }
             @Override
-            protected int importData(InputStream is) throws Exception {
+            protected ImportResult importData(InputStream is) throws Exception {
                 return fileService.importFisicos(is);
             }
             @Override

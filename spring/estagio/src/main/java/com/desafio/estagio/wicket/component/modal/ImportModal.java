@@ -1,5 +1,6 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
@@ -77,9 +78,24 @@ public abstract class ImportModal extends Panel {
                 }
                 ErrorHandler.handleServiceCall(() -> {
                     try (InputStream is = upload.getInputStream()) {
-                        int count = importData(is);
-                        ValidationFeedback.showToast(target, "success",
-                                count + " " + getSuccessMessage());
+                        ImportResult result = importData(is);
+                        StringBuilder msg = new StringBuilder();
+                        msg.append(result.successCount()).append(" ").append(getSuccessMessage());
+                        if (!result.errors().isEmpty()) {
+                            msg.append(" | Linhas com erro: ").append(result.errors().size());
+                        }
+                        ValidationFeedback.showToast(target,
+                                result.errors().isEmpty() ? "success" : "warning",
+                                msg.toString());
+                        if (!result.errors().isEmpty()) {
+                            StringBuilder errorsJs = new StringBuilder();
+                            errorsJs.append("console.error('Erros na importacao:');");
+                            for (String error : result.errors()) {
+                                String escaped = error.replace("\\", "\\\\").replace("'", "\\'");
+                                errorsJs.append("console.error('  ").append(escaped).append("');");
+                            }
+                            target.appendJavaScript(errorsJs.toString());
+                        }
                         JavaScriptUtils.reloadAfterDelay(target, 3000);
                     } catch (Exception ex) {
                         String causeMsg = ex.getMessage();
@@ -102,7 +118,7 @@ public abstract class ImportModal extends Panel {
 
     protected abstract String getTemplateFileName();
 
-    protected abstract int importData(InputStream is) throws Exception;
+    protected abstract ImportResult importData(InputStream is) throws Exception;
 
     protected abstract String getSuccessMessage();
 }

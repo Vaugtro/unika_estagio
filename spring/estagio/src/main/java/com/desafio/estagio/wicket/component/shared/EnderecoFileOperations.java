@@ -2,6 +2,7 @@ package com.desafio.estagio.wicket.component.shared;
 
 import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.FileService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
 import com.desafio.estagio.wicket.util.ErrorHandler;
@@ -70,9 +71,23 @@ public final class EnderecoFileOperations implements Serializable {
                 }
                 ErrorHandler.handleServiceCall(() -> {
                     try (java.io.InputStream is = upload.getInputStream()) {
-                        int count = fileService.importEnderecos(clienteId, is);
-                        ValidationFeedback.showToast(target, "success",
-                                count + " endereço(s) importado(s) com sucesso!");
+                        ImportResult result = fileService.importEnderecos(clienteId, is);
+                        StringBuilder msg = new StringBuilder();
+                        msg.append(result.successCount()).append(" endereço(s) importado(s) com sucesso!");
+                        if (!result.errors().isEmpty()) {
+                            msg.append(" | ").append(result.errors().size()).append(" linha(s) com erro.");
+                        }
+                        ValidationFeedback.showToast(target,
+                                result.errors().isEmpty() ? "success" : "warning",
+                                msg.toString());
+                        if (!result.errors().isEmpty()) {
+                            StringBuilder errorsJs = new StringBuilder();
+                            for (String error : result.errors()) {
+                                String escaped = error.replace("\\", "\\\\").replace("'", "\\'");
+                                errorsJs.append("console.error('").append(escaped).append("');");
+                            }
+                            target.appendJavaScript(errorsJs.toString());
+                        }
                         target.add(enderecosContainer);
                         target.add(importForm);
                         JavaScriptUtils.createIconsSafe(target);

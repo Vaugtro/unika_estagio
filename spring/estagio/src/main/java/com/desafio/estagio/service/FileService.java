@@ -1,10 +1,15 @@
 package com.desafio.estagio.service;
 
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * Wicket-facing file façade. Generates PDF (via JasperReports) and XLSX (via Apache POI)
  * for the three exportable entities.
  */
 public interface FileService {
+
+    record ImportResult(int successCount, List<String> errors) {}
 
     // =====================================================================
     // PDF
@@ -91,22 +96,22 @@ public interface FileService {
      * Imports ClienteFisico records from an XLSX file.
      * Each row contains ClienteFisico fields + Endereco fields.
      *
-     * @return number of successfully imported rows
+     * @return ImportResult with success count and list of error messages (with row number and field info)
      */
-    int importFisicos(java.io.InputStream xlsx);
+    ImportResult importFisicos(java.io.InputStream xlsx);
 
     /**
      * Imports ClienteJuridico records from an XLSX file.
      * Each row contains ClienteJuridico fields + Endereco fields.
      *
-     * @return number of successfully imported rows
+     * @return ImportResult with success count and list of error messages (with row number and field info)
      */
-    int importJuridicos(java.io.InputStream xlsx);
+    ImportResult importJuridicos(java.io.InputStream xlsx);
 
     /**
      * Imports Endereco records for the given cliente from an XLSX file.
      *
-     * @return number of successfully imported rows
+     * @return ImportResult with success count and list of error messages (with row number and field info)
      */
-    int importEnderecos(Long clienteId, java.io.InputStream xlsx);
+    ImportResult importEnderecos(Long clienteId, java.io.InputStream xlsx);
 }
