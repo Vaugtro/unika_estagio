@@ -63,6 +63,23 @@
             [data-lucide] {
                 vertical-align: middle;
             }
+
+            html, body {
+                height: 100%;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+            }
+
+            main {
+                flex: 1 0 auto;
+            }
+
+            footer {
+                flex-shrink: 0;
+            }
         </style>
         <script>
             // Initialize Lucide icons
@@ -170,5 +187,10 @@
 <main class="container mt-4">
     <wicket:child/> <!-- Child page content goes here -->
 </main>
+
+<footer class="text-center text-muted py-4 mt-4 border-top"
+        style="background: linear-gradient(135deg, #212529 0%, #343a40 100%); font-size: 0.85rem;">
+    <span class="text-light opacity-75">&copy; 2026 Desafio Estágio &mdash; Todos os direitos reservados.</span>
+</footer>
 </body>
 </html>

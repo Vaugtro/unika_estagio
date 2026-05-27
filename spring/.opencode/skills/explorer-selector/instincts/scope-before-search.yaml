@@ -9,7 +9,7 @@ scope: project
 
 ## Action
 Before running any search or exploration, determine the appropriate depth: quick (single file/concept), medium (follow references), or very thorough (full architecture + history).
-
-## Evidence
-- Project has Spring controllers, Wicket pages, Angular SPA, Flyway migrations — each requires different search strategies
-- "quick" exploration for specific classes, "very thorough" for cross-layer architecture questions
+  
+  ## Evidence
+  - Project has Spring controllers, Wicket pages, Angular SPA, Flyway migrations — each requires different search strategies
+  - "quick" exploration for specific classes, "very thorough" for cross-layer architecture questions

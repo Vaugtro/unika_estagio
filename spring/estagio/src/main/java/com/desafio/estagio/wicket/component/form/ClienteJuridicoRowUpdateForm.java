@@ -8,9 +8,9 @@ import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.builder.FormFieldBundle;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
+import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
-import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -182,8 +182,8 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteJuridicoRowUpdateForm.this);
-JavaScriptUtils.createIconsSafe(target);
-                        }
+                JavaScriptUtils.createIconsSafe(target);
+            }
         };
     }
 

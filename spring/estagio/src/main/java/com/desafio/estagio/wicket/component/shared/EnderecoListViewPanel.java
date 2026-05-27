@@ -4,11 +4,13 @@ import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.model.formatter.TelefoneFormatter;
 import com.desafio.estagio.service.EnderecoService;
 import com.desafio.estagio.service.FileService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
+import com.desafio.estagio.wicket.component.modal.ExportModal;
+import com.desafio.estagio.wicket.component.modal.ImportModal;
 import com.desafio.estagio.wicket.mapper.EnderecoDtoMapper;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.ErrorHandler;
-import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -28,6 +30,7 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.UrlResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.io.InputStream;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
@@ -230,14 +233,56 @@ public class EnderecoListViewPanel extends Panel {
             }
         });
 
-        // --- File operations (export / import / template) ---
-        add(EnderecoFileOperations.buildExportLink("exportEnderecosPdfBtn", "enderecos.pdf",
-                "application/pdf", true, fileService, clienteId));
-        add(EnderecoFileOperations.buildExportLink("exportEnderecosXlsxBtn", "enderecos.xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                false, fileService, clienteId));
-        add(EnderecoFileOperations.buildImportForm(enderecosContainer, fileService, clienteId));
-        add(EnderecoFileOperations.buildTemplateLink("downloadEnderecoTemplateBtn", fileService));
+        // --- Export and Import modals ---
+        add(new ExportModal("exportModal", "exportEnderecoModal") {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected byte[] getPdfData() {
+                return fileService.pdfEnderecos(clienteId);
+            }
+
+            @Override
+            protected String getPdfName() {
+                return "enderecos.pdf";
+            }
+
+            @Override
+            protected byte[] getXlsxData() {
+                return fileService.xlsxEnderecos(clienteId);
+            }
+
+            @Override
+            protected String getXlsxName() {
+                return "enderecos.xlsx";
+            }
+        });
+
+        add(new ImportModal("importModal", "importEnderecoModal") {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected byte[] getTemplateData() {
+                return fileService.templateEnderecosImport();
+            }
+
+            @Override
+            protected String getTemplateFileName() {
+                return "template-enderecos.xlsx";
+            }
+
+            @Override
+            protected ImportResult importData(InputStream is) throws Exception {
+                return fileService.importEnderecos(clienteId, is);
+            }
+
+            @Override
+            protected String getSuccessMessage() {
+                return "endereço(s) importado(s) com sucesso!";
+            }
+        });
     }
 
     @Override

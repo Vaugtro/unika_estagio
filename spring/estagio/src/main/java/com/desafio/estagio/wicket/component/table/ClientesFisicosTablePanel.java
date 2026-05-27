@@ -13,6 +13,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import java.io.InputStream;
 import java.io.Serial;
 
@@ -51,20 +52,24 @@ public class ClientesFisicosTablePanel extends ClientesTablePanel<ClienteFisicoL
         return new ExportModal(id, "exportFisicoModal") {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             protected byte[] getPdfData() {
                 String q = dataProvider.getSearchQuery();
                 return (q != null && !q.isBlank()) ? fileService.pdfFisicosPorFiltro(q) : fileService.pdfFisicos();
             }
+
             @Override
             protected String getPdfName() {
                 return "clientes-fisicos.pdf";
             }
+
             @Override
             protected byte[] getXlsxData() {
                 String q = dataProvider.getSearchQuery();
                 return (q != null && !q.isBlank()) ? fileService.xlsxFisicosPorFiltro(q) : fileService.xlsxFisicos();
             }
+
             @Override
             protected String getXlsxName() {
                 return "clientes-fisicos.xlsx";
@@ -77,18 +82,22 @@ public class ClientesFisicosTablePanel extends ClientesTablePanel<ClienteFisicoL
         return new ImportModal(id, "importFisicoModal") {
             @Serial
             private static final long serialVersionUID = 1L;
+
             @Override
             protected byte[] getTemplateData() {
                 return fileService.templateFisicosImport();
             }
+
             @Override
             protected String getTemplateFileName() {
                 return "template-clientes-fisicos.xlsx";
             }
+
             @Override
             protected ImportResult importData(InputStream is) throws Exception {
                 return fileService.importFisicos(is);
             }
+
             @Override
             protected String getSuccessMessage() {
                 return "cliente(s) físico(s) importado(s) com sucesso!";

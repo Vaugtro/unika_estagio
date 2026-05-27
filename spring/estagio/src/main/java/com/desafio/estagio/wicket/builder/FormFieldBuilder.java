@@ -38,6 +38,8 @@ public class FormFieldBuilder<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Class<T> fieldType;
+    private final List<IValidator<? super T>> validators = new ArrayList<>();
+    private final List<AttributeModifier> modifiers = new ArrayList<>();
     private String id;
     private boolean required;
     private String placeholder;
@@ -52,8 +54,6 @@ public class FormFieldBuilder<T> implements Serializable {
     private String feedbackLabelId;
     private boolean realTimeValidation;
     private Behavior validationStyleBehavior;
-    private final List<IValidator<? super T>> validators = new ArrayList<>();
-    private final List<AttributeModifier> modifiers = new ArrayList<>();
 
     private FormFieldBuilder(Class<T> fieldType) {
         this.fieldType = fieldType;
@@ -70,37 +70,49 @@ public class FormFieldBuilder<T> implements Serializable {
         return new FormFieldBuilder<>(fieldType);
     }
 
-    /** Sets the Wicket component id (wicket:id). */
+    /**
+     * Sets the Wicket component id (wicket:id).
+     */
     public FormFieldBuilder<T> id(String id) {
         this.id = id;
         return this;
     }
 
-    /** Marks the field as required. */
+    /**
+     * Marks the field as required.
+     */
     public FormFieldBuilder<T> required() {
         this.required = true;
         return this;
     }
 
-    /** Adds a {@code placeholder} attribute. */
+    /**
+     * Adds a {@code placeholder} attribute.
+     */
     public FormFieldBuilder<T> placeholder(String placeholder) {
         this.placeholder = placeholder;
         return this;
     }
 
-    /** Adds a {@code data-field} attribute. */
+    /**
+     * Adds a {@code data-field} attribute.
+     */
     public FormFieldBuilder<T> dataField(String dataField) {
         this.dataField = dataField;
         return this;
     }
 
-    /** Adds a {@code data-mask} attribute (for jQuery Mask Plugin). */
+    /**
+     * Adds a {@code data-mask} attribute (for jQuery Mask Plugin).
+     */
     public FormFieldBuilder<T> dataMask(String dataMask) {
         this.dataMask = dataMask;
         return this;
     }
 
-    /** Adds an {@code onblur} JavaScript handler. */
+    /**
+     * Adds an {@code onblur} JavaScript handler.
+     */
     public FormFieldBuilder<T> onblur(String onblur) {
         this.onblur = onblur;
         return this;
@@ -113,37 +125,49 @@ public class FormFieldBuilder<T> implements Serializable {
         this.cssClass = cssClass;
     }
 
-    /** Adds a custom validator. */
+    /**
+     * Adds a custom validator.
+     */
     public FormFieldBuilder<T> validator(IValidator<? super T> validator) {
         this.validators.add(validator);
         return this;
     }
 
-    /** Adds a generic attribute modifier. */
+    /**
+     * Adds a generic attribute modifier.
+     */
     public FormFieldBuilder<T> attribute(String name, String value) {
         this.modifiers.add(new AttributeModifier(name, value));
         return this;
     }
 
-    /** Adds {@link StringValidator#maximumLength(int)}. */
+    /**
+     * Adds {@link StringValidator#maximumLength(int)}.
+     */
     public FormFieldBuilder<T> maxLength(int max) {
         this.maxLength = max;
         return this;
     }
 
-    /** Adds {@link StringValidator#minimumLength(int)}. */
+    /**
+     * Adds {@link StringValidator#minimumLength(int)}.
+     */
     public FormFieldBuilder<T> minLength(int min) {
         this.minLength = min;
         return this;
     }
 
-    /** Adds {@link StringValidator#exactLength(int)}. */
+    /**
+     * Adds {@link StringValidator#exactLength(int)}.
+     */
     public FormFieldBuilder<T> exactLength(int length) {
         this.exactLength = length;
         return this;
     }
 
-    /** Adds a {@link PatternValidator} with the given regex. */
+    /**
+     * Adds a {@link PatternValidator} with the given regex.
+     */
     public FormFieldBuilder<T> pattern(String regex) {
         this.regexPattern = regex;
         return this;
@@ -168,7 +192,9 @@ public class FormFieldBuilder<T> implements Serializable {
         return this;
     }
 
-    /** Adds a validation style {@link Behavior} (e.g. adds {@code is-invalid} class on error). */
+    /**
+     * Adds a validation style {@link Behavior} (e.g. adds {@code is-invalid} class on error).
+     */
     public FormFieldBuilder<T> validationStyle(Behavior behavior) {
         this.validationStyleBehavior = behavior;
         return this;

@@ -1,7 +1,6 @@
 package com.desafio.estagio.wicket.model;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoResponse;
-import com.desafio.estagio.validation.ValidationConstants;
 import lombok.Getter;
 import lombok.Setter;
 

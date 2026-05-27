@@ -9,7 +9,7 @@ scope: project
 
 ## Action
 Pause and check: does the user's request clearly identify an exact file, class, or function? If not, use the explorer-selector. Direct search without scoping risks context waste and irrelevant results.
-
-## Evidence
-- Common anti-pattern in AI-assisted development: agents jump to search without clarifying scope
-- The selector adds <30 seconds but prevents wasted exploration
+  
+  ## Evidence
+  - Common anti-pattern in AI-assisted development: agents jump to search without clarifying scope
+  - The selector adds <30 seconds but prevents wasted exploration

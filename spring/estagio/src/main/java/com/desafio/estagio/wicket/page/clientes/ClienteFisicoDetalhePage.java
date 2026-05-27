@@ -5,10 +5,10 @@ import com.desafio.estagio.model.formatter.CPFFormatter;
 import com.desafio.estagio.model.formatter.RGFormatter;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
-import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.shared.EnderecoListViewPanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
 import com.desafio.estagio.wicket.page.home.HomePage;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -56,8 +56,8 @@ public class ClienteFisicoDetalhePage extends BasePage {
             }
         };
         add(ComponentAttributeBuilder.of(excluirBtn)
-            .setVisible(Boolean.FALSE.equals(cliente.estaAtivo()))
-            .build());
+                .setVisible(Boolean.FALSE.equals(cliente.estaAtivo()))
+                .build());
 
         add(new EnderecoListViewPanel("enderecoPanel", clienteId));
     }

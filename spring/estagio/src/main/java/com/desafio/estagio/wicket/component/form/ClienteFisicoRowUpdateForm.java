@@ -8,9 +8,9 @@ import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.builder.FormFieldBundle;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
+import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
-import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -195,8 +195,8 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteFisicoRowUpdateForm.this);
-JavaScriptUtils.createIconsSafe(target);
-                        }
+                JavaScriptUtils.createIconsSafe(target);
+            }
         };
     }
 }

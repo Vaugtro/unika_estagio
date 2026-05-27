@@ -31,7 +31,7 @@ public final class EnderecoFileOperations implements Serializable {
     }
 
     public static Link<Void> buildExportLink(String id, String filename, String mimeType, boolean pdf,
-                                              FileService fileService, Long clienteId) {
+                                             FileService fileService, Long clienteId) {
         return new Link<>(id) {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -50,7 +50,7 @@ public final class EnderecoFileOperations implements Serializable {
     }
 
     public static Form<Void> buildImportForm(WebMarkupContainer enderecosContainer,
-                                              FileService fileService, Long clienteId) {
+                                             FileService fileService, Long clienteId) {
         Form<Void> importForm = new Form<>("importEnderecoForm");
         importForm.setMultiPart(true);
         importForm.setOutputMarkupId(true);

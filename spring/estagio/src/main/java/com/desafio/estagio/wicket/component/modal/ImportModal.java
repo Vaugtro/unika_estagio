@@ -1,8 +1,8 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.FileService.ImportResult;
 import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
 import com.desafio.estagio.wicket.util.ErrorHandler;
@@ -82,7 +82,7 @@ public abstract class ImportModal extends Panel {
                         StringBuilder msg = new StringBuilder();
                         msg.append(result.successCount()).append(" ").append(getSuccessMessage());
                         if (!result.errors().isEmpty()) {
-                            msg.append(" | Linhas com erro: ").append(result.errors().size());
+                            msg.append(" | Linhas com erro: ").append(result.errors().get(0));
                         }
                         ValidationFeedback.showToast(target,
                                 result.errors().isEmpty() ? "success" : "warning",

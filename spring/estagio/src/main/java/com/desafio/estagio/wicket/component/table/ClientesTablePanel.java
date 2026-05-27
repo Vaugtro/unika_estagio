@@ -172,7 +172,7 @@ public abstract class ClientesTablePanel<T> extends DevUtilsPanel {
                 JavaScriptUtils.createIcons(target);
             }
         });
-        
+
         return searchForm;
     }
 

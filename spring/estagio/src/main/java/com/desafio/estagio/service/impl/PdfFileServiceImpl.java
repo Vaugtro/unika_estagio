@@ -9,15 +9,14 @@ import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.ClienteJuridico;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.service.*;
-import com.desafio.estagio.service.FileService.ImportResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

@@ -1,11 +1,5 @@
 package com.desafio.estagio.wicket.component.modal;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.Field;
-
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.wicket.WicketTestBase;
@@ -14,6 +8,13 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 class ClienteJuridicoCreateModalTest extends WicketTestBase {
 

@@ -21,17 +21,25 @@ public final class JavaScriptUtils implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+    /**
+     * Shared reference for jquery.mask.min.js — declares Wicket's jQuery as a dependency.
+     */
+    private static JavaScriptResourceReference maskLibraryRef;
+    /**
+     * Shared reference for mask-init.js — declares jquery.mask.min.js as a dependency.
+     */
+    private static JavaScriptResourceReference maskInitRef;
 
     private JavaScriptUtils() {
         // utility class — no instances
     }
 
-    /** Shared reference for jquery.mask.min.js — declares Wicket's jQuery as a dependency. */
-    private static JavaScriptResourceReference maskLibraryRef;
     public static JavaScriptResourceReference getMaskLibraryReference() {
         if (maskLibraryRef == null) {
             maskLibraryRef = new JavaScriptResourceReference(JavaScriptUtils.class, "js/jquery.mask.min.js") {
-                @Serial private static final long serialVersionUID = 1L;
+                @Serial
+                private static final long serialVersionUID = 1L;
+
                 @Override
                 public List<HeaderItem> getDependencies() {
                     ResourceReference jq = Application.get().getJavaScriptLibrarySettings().getJQueryReference();
@@ -42,12 +50,12 @@ public final class JavaScriptUtils implements Serializable {
         return maskLibraryRef;
     }
 
-    /** Shared reference for mask-init.js — declares jquery.mask.min.js as a dependency. */
-    private static JavaScriptResourceReference maskInitRef;
     public static JavaScriptResourceReference getMaskInitReference() {
         if (maskInitRef == null) {
             maskInitRef = new JavaScriptResourceReference(JavaScriptUtils.class, "js/mask-init.js") {
-                @Serial private static final long serialVersionUID = 1L;
+                @Serial
+                private static final long serialVersionUID = 1L;
+
                 @Override
                 public List<HeaderItem> getDependencies() {
                     return java.util.Collections.singletonList(JavaScriptHeaderItem.forReference(getMaskLibraryReference()));

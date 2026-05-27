@@ -24,12 +24,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
+
 import java.io.Serial;
 import java.time.format.DateTimeParseException;
 
 public class ClienteFisicoCreateModal extends Panel {
-    @Serial private static final long serialVersionUID = 1L;
-    @SpringBean private ClienteFisicoService clienteFisicoService;
+    @Serial
+    private static final long serialVersionUID = 1L;
+    @SpringBean
+    private ClienteFisicoService clienteFisicoService;
 
     public ClienteFisicoCreateModal(String id) {
         super(id);
@@ -62,12 +65,16 @@ public class ClienteFisicoCreateModal extends Panel {
                 .minLength(ValidationConstants.RG_LENGTH_MIN)
                 .maxLength(ValidationConstants.RG_LENGTH_MAX)
                 .validator(new IValidator<String>() {
-                    @Serial private static final long serialVersionUID = 1L;
-                    @Override public void validate(IValidatable<String> validatable) {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void validate(IValidatable<String> validatable) {
                         String value = validatable.getValue();
                         if (value != null) {
                             long digitCount = value.chars().filter(Character::isDigit).count();
-                            if (digitCount < ValidationConstants.RG_LENGTH_MIN || digitCount > ValidationConstants.RG_LENGTH_MAX) validatable.error(new ValidationError("RG deve ter entre " + ValidationConstants.RG_LENGTH_MIN + " e " + ValidationConstants.RG_LENGTH_MAX + " dígitos."));
+                            if (digitCount < ValidationConstants.RG_LENGTH_MIN || digitCount > ValidationConstants.RG_LENGTH_MAX)
+                                validatable.error(new ValidationError("RG deve ter entre " + ValidationConstants.RG_LENGTH_MIN + " e " + ValidationConstants.RG_LENGTH_MAX + " dígitos."));
                         }
                     }
                 }).feedbackLabel("rgFeedback").realTimeValidation().build();
@@ -89,8 +96,11 @@ public class ClienteFisicoCreateModal extends Panel {
         form.add(new EnderecoCreateTablePanel("enderecosContainer", formModel.getEnderecos()));
 
         form.add(new AjaxButton("submit", form) {
-            @Serial private static final long serialVersionUID = 1L;
-            @Override protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ClienteFisicoCreateFormModel model = (ClienteFisicoCreateFormModel) form.getModelObject();
                 ClienteFisicoCreateRequest dto;
                 try {
@@ -105,7 +115,9 @@ public class ClienteFisicoCreateModal extends Panel {
                 }, target);
                 if (Boolean.TRUE.equals(success)) setResponsePage(getPage());
             }
-            @Override protected void onError(AjaxRequestTarget target, Form<?> form) {
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
                 ValidationFeedback.handleFormError(target, form);
             }
         });

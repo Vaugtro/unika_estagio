@@ -111,20 +111,34 @@ public class XlsxFileServiceImpl {
         String[] headers = {"CPF", "Nome", "RG", "Email", "Data de Nascimento",
                 "Logradouro", "Número", "CEP", "Bairro", "Telefone", "Estado", "Cidade",
                 "Principal", "Complemento"};
-        return generateTemplate(headers, "Import Clientes Fisicos");
+        String[][] examples = {
+                {"123.456.789-01", "João Silva Santos", "12.345.678-9", "joao.silva@email.com", "01/01/1990",
+                        "Rua das Flores", "123", "01001-000", "Centro", "11999999999", "SP", "São Paulo",
+                        "Sim", "Apto 1"}
+        };
+        return generateTemplate(headers, "Import Clientes Fisicos", examples);
     }
 
     public byte[] templateJuridicosImport() {
         String[] headers = {"CNPJ", "Razão Social", "Inscrição Estadual", "Email", "Data de Criação",
                 "Logradouro", "Número", "CEP", "Bairro", "Telefone", "Estado", "Cidade",
                 "Principal", "Complemento"};
-        return generateTemplate(headers, "Import Clientes Juridicos");
+        String[][] examples = {
+                {"12.345.678/0001-90", "Empresa Exemplo LTDA", "123456789", "contato@empresa.com", "01/01/2020",
+                        "Rua das Flores", "456", "02002-000", "Centro", "11333333333", "SP", "São Paulo",
+                        "Sim", "Sala 1"}
+        };
+        return generateTemplate(headers, "Import Clientes Juridicos", examples);
     }
 
     public byte[] templateEnderecosImport() {
         String[] headers = {"Logradouro", "Número", "CEP", "Bairro", "Telefone", "Estado", "Cidade",
                 "Principal", "Complemento"};
-        return generateTemplate(headers, "Import Enderecos");
+        String[][] examples = {
+                {"Rua das Flores", "123", "01001-000", "Centro", "11999999999", "SP", "São Paulo",
+                        "Sim", ""}
+        };
+        return generateTemplate(headers, "Import Enderecos", examples);
     }
 
     // =====================================================================
@@ -184,9 +198,9 @@ public class XlsxFileServiceImpl {
                     clienteFisicoService.create(request);
                     count++;
                 } catch (Exception e) {
-                    String msg = translateError(rowNum, e);
+                    String msg = translateError(rowNum - 1, e);
                     errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
+                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -253,9 +267,9 @@ public class XlsxFileServiceImpl {
                     clienteJuridicoService.create(request);
                     count++;
                 } catch (Exception e) {
-                    String msg = translateError(rowNum, e);
+                    String msg = translateError(rowNum - 1, e);
                     errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
+                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -307,10 +321,13 @@ public class XlsxFileServiceImpl {
 
                     enderecoService.create(request);
                     count++;
-                } catch (Exception e) {
-                    String msg = translateError(rowNum, e);
+                } catch (DataIntegrityViolationException ex) {
+                    String msg = translateError(rowNum - 1, ex);
                     errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum, e.getMessage());
+                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, ex.getMessage()); // Desconsidera o header do template
+                    return new ImportResult(count, errors); // Se erro de integridade, retorna o unico que ocorrer
+                } catch (Exception ex) {
+                    log.warn("Erro desconhecido importar linha {}: {}", rowNum, ex.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -367,18 +384,29 @@ public class XlsxFileServiceImpl {
         }
     }
 
-    private byte[] generateTemplate(String[] headers, String sheetName) {
+    private byte[] generateTemplate(String[] headers, String sheetName, String[]... exampleRows) {
         try (XSSFWorkbook wb = new XSSFWorkbook()) {
             String safeName = sheetName.length() > 31 ? sheetName.substring(0, 31) : sheetName;
             Sheet sheet = wb.createSheet(safeName);
 
             CellStyle headerStyle = buildHeaderStyle(wb);
+            CellStyle dataStyle = buildDataStyle(wb);
 
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
                 cell.setCellStyle(headerStyle);
+            }
+
+            int rowIdx = 1;
+            for (String[] example : exampleRows) {
+                Row row = sheet.createRow(rowIdx++);
+                for (int i = 0; i < Math.min(example.length, headers.length); i++) {
+                    Cell cell = row.createCell(i);
+                    cell.setCellValue(example[i] != null ? example[i] : "");
+                    cell.setCellStyle(dataStyle);
+                }
             }
 
             for (int i = 0; i < headers.length; i++) {
@@ -448,12 +476,14 @@ public class XlsxFileServiceImpl {
     // =====================================================================
 
     private String translateError(int rowNum, Exception e) {
-        Throwable cause = e;
+        Throwable cause = e.getCause();
         while (cause != null) {
             if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
                 String constraintName = cve.getConstraintName();
                 if (constraintName != null) {
                     return switch (constraintName) {
+                        case "uk_cliente_endereco_principal_unico" ->
+                                "Linha " + rowNum + ": Este cliente já possui um endereço principal";
                         case "che_cep_length" ->
                                 "Linha " + rowNum + ": O CEP informado é inválido. Deve conter exatamente 8 dígitos numéricos.";
                         case "che_cep_digits" ->

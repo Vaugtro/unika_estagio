@@ -4,10 +4,10 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoResponse;
 import com.desafio.estagio.model.formatter.CNPJFormatter;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
-import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.shared.EnderecoListViewPanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
 import com.desafio.estagio.wicket.page.home.HomePage;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -43,19 +43,19 @@ public class ClienteJuridicoDetalhePage extends BasePage {
         add(ComponentAttributeBuilder.of(new Label("clienteStatus", cliente.estaAtivo() != null && cliente.estaAtivo() ? "Ativo" : "Inativo")).build());
 
         AjaxLink<Void> excluirBtn = ComponentAttributeBuilder.of(new AjaxLink<Void>("excluirBtn") {
-            @Serial
-            private static final long serialVersionUID = 1L;
+                    @Serial
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                ErrorHandler.handleServiceCall(() -> {
-                    clienteJuridicoService.hardDelete(clienteId);
-                    setResponsePage(HomePage.class);
-                }, target);
-            }
-        })
-            .setVisible(Boolean.FALSE.equals(cliente.estaAtivo()))
-            .build();
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        ErrorHandler.handleServiceCall(() -> {
+                            clienteJuridicoService.hardDelete(clienteId);
+                            setResponsePage(HomePage.class);
+                        }, target);
+                    }
+                })
+                .setVisible(Boolean.FALSE.equals(cliente.estaAtivo()))
+                .build();
         add(excluirBtn);
 
         add(new EnderecoListViewPanel("enderecoPanel", clienteId));

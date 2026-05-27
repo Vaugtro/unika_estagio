@@ -165,6 +165,14 @@ public class EnderecoCreateTablePanel extends Panel {
         add(addEnderecoBtn);
     }
 
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(JavaScriptUtils.class, "js/viacep.js")
+        ));
+    }
+
     /**
      * Behavior that adds {@code is-invalid} CSS class during render
      * when the component has feedback messages (validation errors).
@@ -180,13 +188,5 @@ public class EnderecoCreateTablePanel extends Panel {
                 tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
             }
         }
-    }
-
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-        response.render(JavaScriptHeaderItem.forReference(
-                new JavaScriptResourceReference(JavaScriptUtils.class, "js/viacep.js")
-        ));
     }
 }

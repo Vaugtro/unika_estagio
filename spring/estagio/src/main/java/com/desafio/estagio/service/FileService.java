@@ -1,6 +1,5 @@
 package com.desafio.estagio.service;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -9,16 +8,14 @@ import java.util.List;
  */
 public interface FileService {
 
-    record ImportResult(int successCount, List<String> errors) {}
-
-    // =====================================================================
-    // PDF
-    // =====================================================================
-
     /**
      * PDF of all ClienteFisico records.
      */
     byte[] pdfFisicos();
+
+    // =====================================================================
+    // PDF
+    // =====================================================================
 
     /**
      * PDF of ClienteFisico records filtered by search query.
@@ -40,14 +37,14 @@ public interface FileService {
      */
     byte[] pdfEnderecos(Long clienteId);
 
-    // =====================================================================
-    // XLSX REPORT
-    // =====================================================================
-
     /**
      * XLSX of all ClienteFisico records.
      */
     byte[] xlsxFisicos();
+
+    // =====================================================================
+    // XLSX REPORT
+    // =====================================================================
 
     /**
      * XLSX of ClienteFisico records filtered by search query.
@@ -69,14 +66,14 @@ public interface FileService {
      */
     byte[] xlsxEnderecos(Long clienteId);
 
-    // =====================================================================
-    // IMPORT TEMPLATES (blank XLSX with headers only)
-    // =====================================================================
-
     /**
      * Blank XLSX template for importing ClienteFisico + Endereco (same row).
      */
     byte[] templateFisicosImport();
+
+    // =====================================================================
+    // IMPORT TEMPLATES (blank XLSX with headers only)
+    // =====================================================================
 
     /**
      * Blank XLSX template for importing ClienteJuridico + Endereco (same row).
@@ -88,10 +85,6 @@ public interface FileService {
      */
     byte[] templateEnderecosImport();
 
-    // =====================================================================
-    // XLSX IMPORT
-    // =====================================================================
-
     /**
      * Imports ClienteFisico records from an XLSX file.
      * Each row contains ClienteFisico fields + Endereco fields.
@@ -99,6 +92,10 @@ public interface FileService {
      * @return ImportResult with success count and list of error messages (with row number and field info)
      */
     ImportResult importFisicos(java.io.InputStream xlsx);
+
+    // =====================================================================
+    // XLSX IMPORT
+    // =====================================================================
 
     /**
      * Imports ClienteJuridico records from an XLSX file.
@@ -114,4 +111,7 @@ public interface FileService {
      * @return ImportResult with success count and list of error messages (with row number and field info)
      */
     ImportResult importEnderecos(Long clienteId, java.io.InputStream xlsx);
+
+    record ImportResult(int successCount, List<String> errors) {
+    }
 }

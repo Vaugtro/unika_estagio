@@ -1,10 +1,5 @@
 package com.desafio.estagio.wicket;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.desafio.estagio.wicket.page.home.HomePage;
 import org.apache.wicket.Page;
 import org.apache.wicket.devutils.debugbar.DebugBar;
@@ -13,25 +8,30 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
 /**
  * Base class for Wicket tests.
- *
+ * <p>
  * Creates a WicketTester backed by a minimal WebApplication that does NOT use
  * Spring injection. Instead, a ComponentInstantiationListener injects
  * Mockito mocks into any field annotated with @SpringBean. This avoids the
  * complexity of mocking the full Spring bean resolution chain.
- *
+ * <p>
  * Subclasses can configure specific mocks via {@link #configureMock(Class, Object)}
  * before calling {@code super.setUp()} to have custom mock behavior injected
  * into {@code @SpringBean} fields.
  */
 public class WicketTestBase {
 
-    protected WicketTester tester;
     private final Map<Class<?>, Object> configuredMocks = new HashMap<>();
+    protected WicketTester tester;
 
     /**
      * Registers a pre-configured mock to be injected into any {@code @SpringBean}

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Smoke test for HomePage.
- *
+ * <p>
  * Verifies that the page renders without errors using a mocked
  * Spring context. Any @SpringBean dependencies are satisfied by
  * Mockito mocks returned from the mocked ApplicationContext.
