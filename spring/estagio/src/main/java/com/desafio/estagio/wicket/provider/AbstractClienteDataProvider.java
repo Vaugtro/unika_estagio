@@ -16,6 +16,16 @@ public abstract class AbstractClienteDataProvider<T> implements IDataProvider<T>
     @Serial
     private static final long serialVersionUID = 1L;
 
+    protected String searchQuery;
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
     @Override
     public Iterator<? extends T> iterator(long first, long count) {
         Pageable pageable = PageRequest.of(

@@ -1,22 +1,26 @@
 package com.desafio.estagio.wicket.component.form;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
-import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
+import com.desafio.estagio.wicket.mapper.ClienteFisicoDtoMapper;
 import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
 import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -35,6 +39,7 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
     @Getter
     private final Item<ClienteFisicoListResponse> parentItem;
     @SpringBean
@@ -58,42 +63,24 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
         add(new Label("id"));
         add(new Label("cpf"));
 
-        TextField<String> nomeField = new TextField<String>("nome") {
-            @Serial
-            private static final long serialVersionUID = 1L;
+        var nomeBundle = FormFieldBuilder.create(String.class)
+            .id("nome")
+            .required()
+            .validator(StringValidator.lengthBetween(ValidationConstants.NOME_MIN, ValidationConstants.NOME_MAX))
+            .validator(new PatternValidator("[^\\d]+"))
+            .build();
+        nomeBundle.field().add(VALIDATION_STYLE_INSTANCE);
+        nomeBundle.field().setOutputMarkupId(true);
+        add(nomeBundle.field());
 
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                if (!isValid()) {
-                    String existing = tag.getAttribute("class");
-                    tag.put("class", (existing != null ? existing : "") + " is-invalid");
-                }
-            }
-        };
-        nomeField.setRequired(true);
-        nomeField.add(StringValidator.lengthBetween(ValidationConstants.NOME_MIN, ValidationConstants.NOME_MAX));
-        nomeField.add(new PatternValidator("[^\\d]+"));
-        nomeField.setOutputMarkupId(true);
-        add(nomeField);
-
-        TextField<String> emailField = new TextField<String>("email") {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                if (!isValid()) {
-                    String existing = tag.getAttribute("class");
-                    tag.put("class", (existing != null ? existing : "") + " is-invalid");
-                }
-            }
-        };
-        emailField.add(EmailAddressValidator.getInstance());
-        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
-        emailField.setOutputMarkupId(true);
-        add(emailField);
+        var emailBundle = FormFieldBuilder.create(String.class)
+            .id("email")
+            .validator(EmailAddressValidator.getInstance())
+            .validator(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX))
+            .build();
+        emailBundle.field().add(VALIDATION_STYLE_INSTANCE);
+        emailBundle.field().setOutputMarkupId(true);
+        add(emailBundle.field());
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
             @Override
@@ -153,29 +140,21 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                try {
-                    ClienteFisicoUpdateFormModel model = (ClienteFisicoUpdateFormModel) form.getModelObject();
-                    if (model == null) {
-                        ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
-                        return;
-                    }
-                    ClienteFisicoUpdateRequest updateRequest = new ClienteFisicoUpdateRequest(
-                            model.getNome(), model.getEmail(), model.getEstaAtivo()
-                    );
-                    clienteFisicoService.update(model.getId(), updateRequest);
+                ClienteFisicoUpdateFormModel model = (ClienteFisicoUpdateFormModel) form.getModelObject();
+                if (model == null) {
+                    ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
+                    return;
+                }
+                ErrorHandler.handleServiceCall(target, form, () -> {
+                    clienteFisicoService.update(model.getId(), ClienteFisicoDtoMapper.toUpdateRequest(model));
 
                     form.setDefaultModelObject(new ClienteFisicoUpdateFormModel(
                             clienteFisicoService.findById(model.getId())));
 
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
                     target.add(form);
-                    target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
-                }
+                    JavaScriptUtils.reloadLucideIconsSafe(target);
+                });
             }
 
             @Override
@@ -202,8 +181,25 @@ public class ClienteFisicoRowUpdateForm extends Form<ClienteFisicoUpdateFormMode
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteFisicoRowUpdateForm.this);
-                target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.reloadLucideIconsSafe(target);
             }
         };
+    }
+
+    /**
+     * Behavior that adds {@code is-invalid} CSS class during render
+     * when the component has feedback messages (validation errors).
+     */
+    private static final class ValidationStyleBehavior extends Behavior {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onComponentTag(Component component, ComponentTag tag) {
+            if (!component.getFeedbackMessages().isEmpty()) {
+                String cls = tag.getAttribute("class");
+                tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
+            }
+        }
     }
 }

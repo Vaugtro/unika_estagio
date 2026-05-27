@@ -13,18 +13,8 @@ public class ClienteJuridicoDataProvider extends AbstractClienteDataProvider<Cli
 
     private final ClienteJuridicoService service;
 
-    private String searchQuery;
-
     public ClienteJuridicoDataProvider(ClienteJuridicoService service) {
         this.service = service;
-    }
-
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
     }
 
     @Override

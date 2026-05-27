@@ -215,7 +215,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ## TODOs
 
-- [ ] 1. Add WicketTester dependency + base test class
+- [x] 1. Add WicketTester dependency + base test class
 
   **What to do**:
   - Add `wicket-tester` to `build.gradle` (or verify it's already a transitive dependency through `wicket-spring`)
@@ -265,7 +265,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 2. FormFieldBuilder API + prototype on EnderecoCreateTablePanel
+- [x] 2. FormFieldBuilder API + prototype on EnderecoCreateTablePanel
 
   **What to do**:
   - Create `wicket/builder/FormFieldBuilder.java` with fluent API: `.id(String)`, `.required()`, `.placeholder(String)`, `.validator(IValidator)`, `.attribute(String, String)`, `.feedbackLabel(String)`, `.realTimeValidation()`, `.build()`
@@ -316,7 +316,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 3. AttributeModifierBuilder + ComponentAttributeBuilder
+- [x] 3. AttributeModifierBuilder + ComponentAttributeBuilder
 
   **What to do**:
   - Create `wicket/builder/AttributeModifierBuilder.java` for chaining multiple `AttributeModifier`s
@@ -365,7 +365,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 4. JavaScriptUtils centralized utility
+- [x] 4. JavaScriptUtils centralized utility
 
   **What to do**:
   - Create `wicket/util/JavaScriptUtils.java` with static methods for common JS snippets
@@ -402,7 +402,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 5. ErrorHandler centralized utility
+- [x] 5. ErrorHandler centralized utility
 
   **What to do**:
   - Create `wicket/util/ErrorHandler.java` wrapping repeated try/catch patterns
@@ -439,7 +439,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 6. DtoMapper foundation
+- [x] 6. DtoMapper foundation
 
   **What to do**:
   - Create `EnderecoDtoMapper`, `ClienteFisicoDtoMapper`, `ClienteJuridicoDtoMapper`
@@ -476,7 +476,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 7. Refactor EnderecoCreateTablePanel with FormFieldBuilder
+- [x] 7. Refactor EnderecoCreateTablePanel with FormFieldBuilder
 
   **What to do**:
   - Apply the `FormFieldBuilder` from Task 2 to fully refactor `EnderecoCreateTablePanel`
@@ -516,7 +516,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 8. Refactor ClienteFisicoCreateModal with builders + DtoMapper
+- [x] 8. Refactor ClienteFisicoCreateModal with builders + DtoMapper
 
   **What to do**:
   - Replace all inline `TextField` + `AttributeModifier` + `ValidationFeedback` chains with `FormFieldBuilder`
@@ -557,7 +557,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 9. Refactor ClienteJuridicoCreateModal with builders + DtoMapper
+- [x] 9. Refactor ClienteJuridicoCreateModal with builders + DtoMapper
 
   **What to do**:
   - Same pattern as Task 8 but for `ClienteJuridicoCreateModal`
@@ -596,7 +596,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 10. Refactor ClienteFisicoDetalhePage
+- [x] 10. Refactor ClienteFisicoDetalhePage
 
   **What to do**:
   - Refactor `ClienteFisicoDetalhePage` using `ComponentAttributeBuilder` for label formatting and visibility
@@ -632,7 +632,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 11. Refactor ClienteJuridicoDetalhePage
+- [x] 11. Refactor ClienteJuridicoDetalhePage
 
   **What to do**:
   - Same pattern as Task 10 for `ClienteJuridicoDetalhePage`
@@ -664,7 +664,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 12. Refactor ClienteFisicoRowUpdateForm with builders
+- [x] 12. Refactor ClienteFisicoRowUpdateForm with builders
 
   **What to do**:
   - Refactor `ClienteFisicoRowUpdateForm` using `FormFieldBuilder`
@@ -699,7 +699,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 13. Refactor ClienteJuridicoRowUpdateForm with builders
+- [x] 13. Refactor ClienteJuridicoRowUpdateForm with builders
 
   **What to do**:
   - Same pattern as Task 12 for `ClienteJuridicoRowUpdateForm`
@@ -731,7 +731,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 14. Refactor ClienteFisicoDataView with builders
+- [x] 14. Refactor ClienteFisicoDataView with builders
 
   **What to do**:
   - Refactor `ClienteFisicoDataView` using `ComponentAttributeBuilder` for row styling and action buttons
@@ -762,7 +762,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 15. Refactor ClienteJuridicoDataView with builders
+- [x] 15. Refactor ClienteJuridicoDataView with builders
 
   **What to do**:
   - Same pattern as Task 14 for `ClienteJuridicoDataView`
@@ -793,7 +793,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 16. Create unified generic ClientesTablePanel<T>
+- [x] 16. Create unified generic ClientesTablePanel<T>
 
   **What to do**:
   - Analyze `ClientesFisicosTablePanel` and `ClientesJuridicosTablePanel` — they are ~90% identical
@@ -836,7 +836,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 17. Refactor ClientesFisicosTablePanel to use unified panel
+- [x] 17. Refactor ClientesFisicosTablePanel to use unified panel
 
   **What to do**:
   - Replace `ClientesFisicosTablePanel extends DevUtilsPanel` with `extends ClientesTablePanel<ClienteFisicoListResponse>`
@@ -876,7 +876,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 18. Refactor ClientesJuridicosTablePanel to use unified panel
+- [x] 18. Refactor ClientesJuridicosTablePanel to use unified panel
 
   **What to do**:
   - Same pattern as Task 17 for `ClientesJuridicosTablePanel`
@@ -910,7 +910,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 19. Split EnderecoListViewPanel SRP
+- [x] 19. Split EnderecoListViewPanel SRP
 
   **What to do**:
   - `EnderecoListViewPanel` (379 lines) violates SRP by mixing:
@@ -959,7 +959,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 20. Extract inline JS from Java components to JavaScriptUtils
+- [x] 20. Extract inline JS from Java components to JavaScriptUtils
 
   **What to do**:
   - After Tasks 7-19 have refactored all components, sweep through all `wicket/` Java files
@@ -995,7 +995,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 21. Extract inline JS from HTML templates to external resource files
+- [x] 21. Extract inline JS from HTML templates to external resource files
 
   **What to do**:
   - Identify inline `<script>` blocks in HTML templates:
@@ -1040,7 +1040,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 22. Extract error handling in all modals to ErrorHandler
+- [x] 22. Extract error handling in all modals to ErrorHandler
 
   **What to do**:
   - After Tasks 8-9 have refactored the modals, sweep through all modal and page files
@@ -1076,7 +1076,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 23. Extract DTO construction in all modals to DtoMappers
+- [x] 23. Extract DTO construction in all modals to DtoMappers
 
   **What to do**:
   - After Tasks 8-9, sweep through all components with inline DTO construction
@@ -1112,7 +1112,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 
 ---
 
-- [ ] 24. Refactor ImportModal + ExportModal with builders
+- [x] 24. Refactor ImportModal + ExportModal with builders
 
   **What to do**:
   - Refactor `ImportModal` and `ExportModal` using `ComponentAttributeBuilder` and `FormFieldBuilder`

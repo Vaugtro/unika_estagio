@@ -1,0 +1,8 @@
+=== Wave 1 Verification ===
+compileJava: BUILD SUCCESSFUL
+compileTestJava: BUILD SUCCESSFUL
+
+=== Files Created ===
+estagio/src/main/java/com/desafio/estagio/wicket/builder/FormFieldBuilder.java
+estagio/src/main/java/com/desafio/estagio/wicket/builder/FormFieldBundle.java
+estagio/src/main/java/com/desafio/estagio/wicket/component/shared/EnderecoCreateTablePanel.java

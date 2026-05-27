@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "active_work_id": "estagio-fixes-dee85ef6",
+  "active_work_id": "wicket-fluent-builder-refactor-63d5de90",
   "works": {
     "estagio-fixes-dee85ef6": {
       "work_id": "estagio-fixes-dee85ef6",
@@ -92,94 +92,157 @@
       },
       "ended_at": "2026-05-26T21:00:28.712Z",
       "elapsed_ms": 5741519
+    },
+    "wicket-fluent-builder-refactor-63d5de90": {
+      "work_id": "wicket-fluent-builder-refactor-63d5de90",
+      "active_plan": "/data/Workspace/unika_estagio/spring/.omo/plans/wicket-fluent-builder-refactor.md",
+      "plan_name": "wicket-fluent-builder-refactor",
+      "status": "active",
+      "started_at": "2026-05-27T02:17:41.000Z",
+      "updated_at": "2026-05-27T03:33:04.882Z",
+      "session_ids": [
+        "ses_198d1bd00ffeIgBPBMn4CViXb1",
+        "ses_198c5a98affem6KZC54M6cK71C",
+        "ses_198c59107ffeODXWxc72RRUCmO",
+        "ses_198c57b9fffexp6oLjjzoJuLC8",
+        "ses_198c560d9ffePJQg32pLGSiXoX",
+        "ses_198c53957ffe93kD0FJjPLlOQn"
+      ],
+      "session_origins": {
+        "ses_198d1bd00ffeIgBPBMn4CViXb1": "direct",
+        "ses_198c5a98affem6KZC54M6cK71C": "appended",
+        "ses_198c59107ffeODXWxc72RRUCmO": "appended",
+        "ses_198c57b9fffexp6oLjjzoJuLC8": "appended",
+        "ses_198c560d9ffePJQg32pLGSiXoX": "appended",
+        "ses_198c53957ffe93kD0FJjPLlOQn": "appended"
+      },
+      "agent": "atlas",
+      "task_sessions": {
+        "todo:1": {
+          "task_key": "todo:1",
+          "task_label": "1",
+          "task_title": "Add WicketTester dependency + base test class",
+          "session_id": "ses_198bce5e8ffeyxFBnUsKZVVPKX",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "started_at": "2026-05-27T02:26:29.001Z",
+          "status": "completed",
+          "updated_at": "2026-05-27T02:30:42.715Z",
+          "ended_at": "2026-05-27T02:30:42.715Z",
+          "elapsed_ms": 253714
+        },
+        "todo:8": {
+          "task_key": "todo:8",
+          "task_label": "8",
+          "task_title": "Refactor ClienteFisicoCreateModal with builders + DtoMapper",
+          "session_id": "ses_198a26babffe701WB1vyYcufW5",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "started_at": "2026-05-27T02:39:21.378Z",
+          "status": "completed",
+          "updated_at": "2026-05-27T03:09:22.563Z",
+          "ended_at": "2026-05-27T03:09:22.562Z",
+          "elapsed_ms": 1801184
+        },
+        "todo:20": {
+          "task_key": "todo:20",
+          "task_label": "20",
+          "task_title": "Extract inline JS from Java components to JavaScriptUtils",
+          "session_id": "ses_19896fb38ffe0rboBnBpKCvlJn",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-05-27T03:30:30.040Z",
+          "started_at": "2026-05-27T03:14:35.535Z",
+          "status": "completed",
+          "ended_at": "2026-05-27T03:30:30.040Z",
+          "elapsed_ms": 954505
+        },
+        "todo:25": {
+          "task_key": "todo:25",
+          "task_label": "25",
+          "task_title": "WicketTester tests for EnderecoCreateTablePanel",
+          "session_id": "ses_198840457ffe22purUZrut3GcZ",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-05-27T03:33:04.920Z",
+          "started_at": "2026-05-27T03:33:04.920Z",
+          "status": "running"
+        }
+      }
     }
   },
-  "active_plan": "/home/vaugtro/Documentos/Workspace/unika_estagio/spring/.omo/plans/estagio-fixes.md",
-  "started_at": "2026-05-26T19:24:47.193Z",
-  "status": "completed",
-  "updated_at": "2026-05-26T21:00:28.712Z",
+  "active_plan": "/data/Workspace/unika_estagio/spring/.omo/plans/wicket-fluent-builder-refactor.md",
+  "started_at": "2026-05-27T02:17:41.000Z",
+  "status": "active",
+  "updated_at": "2026-05-27T03:33:04.882Z",
   "session_ids": [
-    "ses_19a600c4bffekE0KQcxweDWPVL",
-    "ses_19a2a5bafffeM6GZfQC59c1RS1",
-    "ses_199f045e5ffeCkImVJALac88za",
-    "ses_199f02f7effe5FDusO7azL8dlW",
-    "ses_199f0192fffeTPwsvzIlsCKUkX"
+    "ses_198d1bd00ffeIgBPBMn4CViXb1",
+    "ses_198c5a98affem6KZC54M6cK71C",
+    "ses_198c59107ffeODXWxc72RRUCmO",
+    "ses_198c57b9fffexp6oLjjzoJuLC8",
+    "ses_198c560d9ffePJQg32pLGSiXoX",
+    "ses_198c53957ffe93kD0FJjPLlOQn"
   ],
   "session_origins": {
-    "ses_19a600c4bffekE0KQcxweDWPVL": "direct",
-    "ses_19a2a5bafffeM6GZfQC59c1RS1": "appended",
-    "ses_199f045e5ffeCkImVJALac88za": "appended",
-    "ses_199f02f7effe5FDusO7azL8dlW": "appended",
-    "ses_199f0192fffeTPwsvzIlsCKUkX": "appended"
+    "ses_198d1bd00ffeIgBPBMn4CViXb1": "direct",
+    "ses_198c5a98affem6KZC54M6cK71C": "appended",
+    "ses_198c59107ffeODXWxc72RRUCmO": "appended",
+    "ses_198c57b9fffexp6oLjjzoJuLC8": "appended",
+    "ses_198c560d9ffePJQg32pLGSiXoX": "appended",
+    "ses_198c53957ffe93kD0FJjPLlOQn": "appended"
   },
-  "plan_name": "estagio-fixes",
+  "plan_name": "wicket-fluent-builder-refactor",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "Creating `ClienteFisicoEditModal.java` + `ClienteFisicoEditModal.html` in `wicket/component/modal/`",
-      "session_id": "ses_19a251a3dffeCq4Ji0FwxeOz8i",
-      "agent": "Sisyphus-Junior",
-      "category": "visual-engineering",
-      "started_at": "2026-05-26T19:29:11.650Z",
-      "ended_at": "2026-05-26T19:55:18.579Z",
-      "elapsed_ms": 1566929,
-      "status": "completed",
-      "updated_at": "2026-05-26T19:55:18.579Z"
-    },
-    "todo:4": {
-      "task_key": "todo:4",
-      "task_label": "4",
-      "task_title": "**Fix Endereco creation from Wicket create modal**",
-      "session_id": "ses_19a2a5bafffeM6GZfQC59c1RS1",
-      "agent": "explore",
-      "started_at": "2026-05-26T19:45:49.473Z",
-      "status": "completed",
-      "updated_at": "2026-05-26T19:54:21.136Z",
-      "ended_at": "2026-05-26T19:54:21.136Z",
-      "elapsed_ms": 511663
-    },
-    "todo:5": {
-      "task_key": "todo:5",
-      "task_label": "5",
-      "task_title": "**Map database errors to user-friendly toast messages**",
-      "session_id": "ses_19a0192d2ffeOT22m73wxVwG0S",
+      "task_title": "Add WicketTester dependency + base test class",
+      "session_id": "ses_198bce5e8ffeyxFBnUsKZVVPKX",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "started_at": "2026-05-26T19:54:50.058Z",
+      "started_at": "2026-05-27T02:26:29.001Z",
       "status": "completed",
-      "updated_at": "2026-05-26T20:35:06.423Z",
-      "ended_at": "2026-05-26T20:35:06.422Z",
-      "elapsed_ms": 2416364
+      "updated_at": "2026-05-27T02:30:42.715Z",
+      "ended_at": "2026-05-27T02:30:42.715Z",
+      "elapsed_ms": 253714
     },
-    "todo:12": {
-      "task_key": "todo:12",
-      "task_label": "12",
-      "task_title": "**Add tests for behavioral fixes**",
-      "session_id": "ses_199ffee01ffeZOB93mfvPYGk64",
+    "todo:8": {
+      "task_key": "todo:8",
+      "task_label": "8",
+      "task_title": "Refactor ClienteFisicoCreateModal with builders + DtoMapper",
+      "session_id": "ses_198a26babffe701WB1vyYcufW5",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "updated_at": "2026-05-26T20:42:53.455Z",
-      "started_at": "2026-05-26T20:42:49.853Z",
+      "started_at": "2026-05-27T02:39:21.378Z",
       "status": "completed",
-      "ended_at": "2026-05-26T20:42:53.454Z",
-      "elapsed_ms": 3601
+      "updated_at": "2026-05-27T03:09:22.563Z",
+      "ended_at": "2026-05-27T03:09:22.562Z",
+      "elapsed_ms": 1801184
     },
-    "final-wave:f1": {
-      "task_key": "final-wave:f1",
-      "task_label": "F1",
-      "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "ses_199f02f7effe5FDusO7azL8dlW",
+    "todo:20": {
+      "task_key": "todo:20",
+      "task_label": "20",
+      "task_title": "Extract inline JS from Java components to JavaScriptUtils",
+      "session_id": "ses_19896fb38ffe0rboBnBpKCvlJn",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "started_at": "2026-05-26T20:45:05.351Z",
+      "updated_at": "2026-05-27T03:30:30.040Z",
+      "started_at": "2026-05-27T03:14:35.535Z",
       "status": "completed",
-      "updated_at": "2026-05-26T21:00:09.293Z",
-      "ended_at": "2026-05-26T21:00:09.293Z",
-      "elapsed_ms": 903942
+      "ended_at": "2026-05-27T03:30:30.040Z",
+      "elapsed_ms": 954505
+    },
+    "todo:25": {
+      "task_key": "todo:25",
+      "task_label": "25",
+      "task_title": "WicketTester tests for EnderecoCreateTablePanel",
+      "session_id": "ses_198840457ffe22purUZrut3GcZ",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-27T03:33:04.920Z",
+      "started_at": "2026-05-27T03:33:04.920Z",
+      "status": "running"
     }
   },
-  "agent": "atlas",
-  "ended_at": "2026-05-26T21:00:28.712Z",
-  "elapsed_ms": 5741519
+  "agent": "atlas"
 }

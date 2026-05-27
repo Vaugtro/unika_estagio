@@ -11,23 +11,7 @@
              style="border-bottom: 3px solid #6f42c1;">
             <h5 class="mb-0 fw-semibold"><i data-lucide="map-pin" style="width: 20px; height: 20px;"></i> Endereços</h5>
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportEnderecosPdfBtn">
-                    <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
-                </a>
-                <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportEnderecosXlsxBtn">
-                    <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
-                </a>
-                <a class="btn btn-outline-info btn-sm rounded-pill px-3" wicket:id="downloadEnderecoTemplateBtn">
-                    <i data-lucide="download" style="width: 14px; height: 14px;"></i> Template
-                </a>
-                <form class="d-flex align-items-center gap-1" wicket:id="importEnderecoForm">
-                    <input accept=".xlsx" class="form-control form-control-sm" style="width: 160px;"
-                           type="file" wicket:id="enderecoFileUpload"/>
-                    <button class="btn btn-outline-warning btn-sm rounded-pill px-3" type="submit"
-                            wicket:id="importEnderecoBtn">
-                        <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Importar
-                    </button>
-                </form>
+                <wicket:container wicket:id="filePanel"/>
                 <a class="btn btn-primary btn-sm rounded-pill px-3" wicket:id="adicionarEnderecoBtn">
                     <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Adicionar
                 </a>
@@ -58,25 +42,7 @@
                         <td wicket:id="cidade"></td>
                         <td wicket:id="estado"></td>
                         <td wicket:id="telefone"></td>
-                        <td>
-                            <a class="btn btn-sm" style="min-width: 70px;" wicket:id="setAsPrincipalBtn">
-                                <span wicket:id="principalLabel"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <a class="btn btn-sm btn-outline-primary rounded-circle p-1"
-                                   style="width: 32px; height: 32px;"
-                                   wicket:id="editarBtn">
-                                    <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-danger rounded-circle p-1"
-                                   style="width: 32px; height: 32px;"
-                                   wicket:id="excluirBtn">
-                                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
-                                </a>
-                            </div>
-                        </td>
+                        <wicket:container wicket:id="rowActions"/>
                     </tr>
                     </tbody>
                 </table>
@@ -107,10 +73,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
+        // aplicarMascaras() loaded from masks.js via JavaScriptResourceReference in renderHead()
+
         $(document).ready(function () {
-            $('[data-mask]').each(function () {
-                $(this).mask($(this).data('mask'));
-            });
+            aplicarMascaras();
         });
 
         function abrirModalEndereco() {
@@ -118,9 +84,7 @@
             modal.show();
 
             setTimeout(function () {
-                $('#enderecoModal [data-mask]').each(function () {
-                    $(this).mask($(this).data('mask'));
-                });
+                aplicarMascaras();
                 lucide.createIcons();
             }, 100);
         }

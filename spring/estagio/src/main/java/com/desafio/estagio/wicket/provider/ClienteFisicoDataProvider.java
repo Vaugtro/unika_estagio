@@ -13,18 +13,8 @@ public class ClienteFisicoDataProvider extends AbstractClienteDataProvider<Clien
 
     private final ClienteFisicoService service;
 
-    private String searchQuery;
-
     public ClienteFisicoDataProvider(ClienteFisicoService service) {
         this.service = service;
-    }
-
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
     }
 
     @Override

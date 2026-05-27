@@ -1,14 +1,18 @@
 package com.desafio.estagio.wicket.component.shared;
 
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
@@ -16,8 +20,12 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+
+import wicket.js.WicketJsAnchor;
 
 import java.io.Serial;
 import java.util.List;
@@ -27,6 +35,7 @@ public class EnderecoCreateTablePanel extends Panel {
     @Serial
     private static final long serialVersionUID = 1L;
     private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
+    private static final ResourceReference VIA_CEP_JS = new JavaScriptResourceReference(WicketJsAnchor.class, "viacep.js");
     private final ListView<EnderecoCreateFormModel> enderecosView;
     private final List<EnderecoCreateFormModel> enderecos;
 
@@ -43,93 +52,108 @@ public class EnderecoCreateTablePanel extends Panel {
             protected void populateItem(ListItem<EnderecoCreateFormModel> item) {
                 item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
 
-                TextField<String> logradouroField = new TextField<>("logradouro", String.class);
-                logradouroField.setRequired(true);
-                logradouroField.add(StringValidator.lengthBetween(ValidationConstants.LOGRADOURO_MIN, ValidationConstants.LOGRADOURO_MAX));
-                logradouroField.add(new AttributeModifier("placeholder", "Logradouro"));
-                logradouroField.add(new AttributeModifier("data-field", "logradouro"));
-                Label logradouroFeedback = ValidationFeedback.createFeedbackLabel("logradouroFeedback", logradouroField);
-                ValidationFeedback.attachRealTimeValidation(logradouroField, logradouroFeedback);
-                logradouroField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(logradouroField);
-                item.add(logradouroFeedback);
+                var logradouroBundle = FormFieldBuilder.create(String.class)
+                    .id("logradouro")
+                    .required()
+                    .validator(StringValidator.lengthBetween(ValidationConstants.LOGRADOURO_MIN, ValidationConstants.LOGRADOURO_MAX))
+                    .placeholder("Logradouro")
+                    .attribute("data-field", "logradouro")
+                    .feedbackLabel("logradouroFeedback")
+                    .realTimeValidation()
+                    .build();
+                logradouroBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(logradouroBundle.field());
+                item.add(logradouroBundle.feedbackLabel());
 
-                TextField<Long> numeroField = new TextField<>("numero", Long.class);
-                numeroField.setRequired(true);
-                numeroField.add(new AttributeModifier("placeholder", "Nº"));
-                Label numeroFeedback = ValidationFeedback.createFeedbackLabel("numeroFeedback", numeroField);
-                ValidationFeedback.attachRealTimeValidation(numeroField, numeroFeedback);
-                numeroField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(numeroField);
-                item.add(numeroFeedback);
+                var numeroBundle = FormFieldBuilder.create(Long.class)
+                    .id("numero")
+                    .required()
+                    .placeholder("Nº")
+                    .feedbackLabel("numeroFeedback")
+                    .realTimeValidation()
+                    .build();
+                numeroBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(numeroBundle.field());
+                item.add(numeroBundle.feedbackLabel());
 
-                TextField<String> bairroField = new TextField<>("bairro", String.class);
-                bairroField.setRequired(true);
-                bairroField.add(StringValidator.lengthBetween(ValidationConstants.BAIRRO_MIN, ValidationConstants.BAIRRO_MAX));
-                bairroField.add(new AttributeModifier("placeholder", "Bairro"));
-                bairroField.add(new AttributeModifier("data-field", "bairro"));
-                Label bairroFeedback = ValidationFeedback.createFeedbackLabel("bairroFeedback", bairroField);
-                ValidationFeedback.attachRealTimeValidation(bairroField, bairroFeedback);
-                bairroField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(bairroField);
-                item.add(bairroFeedback);
+                var bairroBundle = FormFieldBuilder.create(String.class)
+                    .id("bairro")
+                    .required()
+                    .validator(StringValidator.lengthBetween(ValidationConstants.BAIRRO_MIN, ValidationConstants.BAIRRO_MAX))
+                    .placeholder("Bairro")
+                    .attribute("data-field", "bairro")
+                    .feedbackLabel("bairroFeedback")
+                    .realTimeValidation()
+                    .build();
+                bairroBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(bairroBundle.field());
+                item.add(bairroBundle.feedbackLabel());
 
-                TextField<String> cepField = new TextField<>("cep", String.class);
-                cepField.setRequired(true);
-                cepField.add(new PatternValidator("^\\d{5}-?\\d{3}$"));
-                cepField.add(StringValidator.maximumLength(ValidationConstants.CEP_MAX));
-                cepField.add(new AttributeModifier("placeholder", "CEP"));
-                cepField.add(new AttributeModifier("data-mask", "00000-000"));
-                cepField.add(new AttributeModifier("onblur", "pesquisacep(this)"));
-                cepField.add(new AttributeModifier("data-field", "cep"));
-                Label cepFeedback = ValidationFeedback.createFeedbackLabel("cepFeedback", cepField);
-                ValidationFeedback.attachRealTimeValidation(cepField, cepFeedback);
-                cepField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(cepField);
-                item.add(cepFeedback);
+                var cepBundle = FormFieldBuilder.create(String.class)
+                    .id("cep")
+                    .required()
+                    .validator(new PatternValidator("^\\d{5}-?\\d{3}$"))
+                    .validator(StringValidator.maximumLength(ValidationConstants.CEP_MAX))
+                    .placeholder("CEP")
+                    .attribute("data-mask", "00000-000")
+                    .attribute("onblur", "pesquisacep(this)")
+                    .attribute("data-field", "cep")
+                    .feedbackLabel("cepFeedback")
+                    .realTimeValidation()
+                    .build();
+                cepBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(cepBundle.field());
+                item.add(cepBundle.feedbackLabel());
 
-                TextField<String> cidadeField = new TextField<>("cidade", String.class);
-                cidadeField.setRequired(true);
-                cidadeField.add(StringValidator.lengthBetween(ValidationConstants.CIDADE_MIN, ValidationConstants.CIDADE_MAX));
-                cidadeField.add(new AttributeModifier("placeholder", "Cidade"));
-                cidadeField.add(new AttributeModifier("data-field", "cidade"));
-                Label cidadeFeedback = ValidationFeedback.createFeedbackLabel("cidadeFeedback", cidadeField);
-                ValidationFeedback.attachRealTimeValidation(cidadeField, cidadeFeedback);
-                cidadeField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(cidadeField);
-                item.add(cidadeFeedback);
+                var cidadeBundle = FormFieldBuilder.create(String.class)
+                    .id("cidade")
+                    .required()
+                    .validator(StringValidator.lengthBetween(ValidationConstants.CIDADE_MIN, ValidationConstants.CIDADE_MAX))
+                    .placeholder("Cidade")
+                    .attribute("data-field", "cidade")
+                    .feedbackLabel("cidadeFeedback")
+                    .realTimeValidation()
+                    .build();
+                cidadeBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(cidadeBundle.field());
+                item.add(cidadeBundle.feedbackLabel());
 
-                TextField<String> estadoField = new TextField<>("estado", String.class);
-                estadoField.setRequired(true);
-                estadoField.add(StringValidator.exactLength(ValidationConstants.ESTADO_LENGTH));
-                estadoField.add(new AttributeModifier("placeholder", "UF"));
-                estadoField.add(new AttributeModifier("data-field", "estado"));
-                Label estadoFeedback = ValidationFeedback.createFeedbackLabel("estadoFeedback", estadoField);
-                ValidationFeedback.attachRealTimeValidation(estadoField, estadoFeedback);
-                estadoField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(estadoField);
-                item.add(estadoFeedback);
+                var estadoBundle = FormFieldBuilder.create(String.class)
+                    .id("estado")
+                    .required()
+                    .validator(StringValidator.exactLength(ValidationConstants.ESTADO_LENGTH))
+                    .placeholder("UF")
+                    .attribute("data-field", "estado")
+                    .feedbackLabel("estadoFeedback")
+                    .realTimeValidation()
+                    .build();
+                estadoBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(estadoBundle.field());
+                item.add(estadoBundle.feedbackLabel());
 
-                TextField<String> telefoneField = new TextField<>("telefone", String.class);
-                telefoneField.setRequired(false);
-                telefoneField.add(StringValidator.maximumLength(ValidationConstants.TELEFONE_MAX));
-                telefoneField.add(new AttributeModifier("placeholder", "Telefone"));
-                telefoneField.add(new AttributeModifier("data-mask", "(00) 00000-0000"));
-                telefoneField.add(new PatternValidator("^\\(\\d{2}\\)\\s?\\d{4,5}-?\\d{4}$"));
-                Label telefoneFeedback = ValidationFeedback.createFeedbackLabel("telefoneFeedback", telefoneField);
-                ValidationFeedback.attachRealTimeValidation(telefoneField, telefoneFeedback);
-                telefoneField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(telefoneField);
-                item.add(telefoneFeedback);
+                var telefoneBundle = FormFieldBuilder.create(String.class)
+                    .id("telefone")
+                    .validator(StringValidator.maximumLength(ValidationConstants.TELEFONE_MAX))
+                    .placeholder("Telefone")
+                    .attribute("data-mask", "(00) 00000-0000")
+                    .validator(new PatternValidator("^\\(\\d{2}\\)\\s?\\d{4,5}-?\\d{4}$"))
+                    .feedbackLabel("telefoneFeedback")
+                    .realTimeValidation()
+                    .build();
+                telefoneBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(telefoneBundle.field());
+                item.add(telefoneBundle.feedbackLabel());
 
-                TextField<String> complementoField = new TextField<>("complemento", String.class);
-                complementoField.add(StringValidator.maximumLength(ValidationConstants.COMPLEMENTO_MAX));
-                complementoField.add(new AttributeModifier("placeholder", "Complemento"));
-                Label complementoFeedback = ValidationFeedback.createFeedbackLabel("complementoFeedback", complementoField);
-                ValidationFeedback.attachRealTimeValidation(complementoField, complementoFeedback);
-                complementoField.add(VALIDATION_STYLE_INSTANCE);
-                item.add(complementoField);
-                item.add(complementoFeedback);
+                var complementoBundle = FormFieldBuilder.create(String.class)
+                    .id("complemento")
+                    .validator(StringValidator.maximumLength(ValidationConstants.COMPLEMENTO_MAX))
+                    .placeholder("Complemento")
+                    .feedbackLabel("complementoFeedback")
+                    .realTimeValidation()
+                    .build();
+                complementoBundle.field().add(VALIDATION_STYLE_INSTANCE);
+                item.add(complementoBundle.field());
+                item.add(complementoBundle.feedbackLabel());
 
                 CheckBox principalField = new CheckBox("principal");
                 item.add(principalField);
@@ -143,7 +167,7 @@ public class EnderecoCreateTablePanel extends Panel {
                         if (enderecos.size() > 1) {
                             enderecos.remove(item.getIndex());
                             target.add(EnderecoCreateTablePanel.this);
-                            target.appendJavaScript("lucide.createIcons();");
+                            JavaScriptUtils.reloadLucideIcons(target);
                         }
                     }
                 };
@@ -160,11 +184,17 @@ public class EnderecoCreateTablePanel extends Panel {
             public void onClick(AjaxRequestTarget target) {
                 enderecos.add(new EnderecoCreateFormModel());
                 target.add(EnderecoCreateTablePanel.this);
-                target.appendJavaScript("lucide.createIcons();");
-                target.appendJavaScript("$('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});");
+                JavaScriptUtils.reloadLucideIcons(target);
+                JavaScriptUtils.reinitializeMasks(target);
             }
         };
         add(addEnderecoBtn);
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(VIA_CEP_JS));
     }
 
     /**

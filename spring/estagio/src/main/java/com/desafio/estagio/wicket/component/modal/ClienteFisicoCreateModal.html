@@ -27,11 +27,7 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
-        function aplicarMascaras() {
-            $('[data-mask]').each(function () {
-                $(this).mask($(this).data('mask'));
-            });
-        }
+        // aplicarMascaras() loaded from masks.js via JavaScriptResourceReference in renderHead()
 
         $(document).ready(function () {
             aplicarMascaras();

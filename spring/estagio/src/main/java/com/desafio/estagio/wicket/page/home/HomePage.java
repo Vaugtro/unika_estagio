@@ -4,6 +4,7 @@ import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -54,7 +55,7 @@ public class HomePage extends BasePage {
 
         if (target != null) {
             target.add(panelContainer);
-            target.appendJavaScript("lucide.createIcons();");
+            JavaScriptUtils.reloadLucideIcons(target);
         }
     }
 
@@ -65,7 +66,7 @@ public class HomePage extends BasePage {
 
         if (target != null) {
             target.add(panelContainer);
-            target.appendJavaScript("lucide.createIcons();");
+            JavaScriptUtils.reloadLucideIcons(target);
         }
     }
 }

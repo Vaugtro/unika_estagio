@@ -1,10 +1,10 @@
 package com.desafio.estagio.dto.clientejuridico;
 
+import com.desafio.estagio.dto.AbstractClienteListResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Minimal DTO for list responses
@@ -27,7 +27,7 @@ public record ClienteJuridicoListResponse(
 
         @Schema(description = "Status do cliente", example = "true")
         Boolean estaAtivo
-) implements Serializable {
+) implements AbstractClienteListResponse {
     @Serial
     private static final long serialVersionUID = 1L;
 }

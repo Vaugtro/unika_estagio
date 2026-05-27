@@ -1,0 +1,19 @@
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
+    <a class="btn btn-outline-danger btn-sm rounded-pill px-3" wicket:id="exportEnderecosPdfBtn">
+        <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> PDF
+    </a>
+    <a class="btn btn-outline-success btn-sm rounded-pill px-3" wicket:id="exportEnderecosXlsxBtn">
+        <i data-lucide="table" style="width: 14px; height: 14px;"></i> XLSX
+    </a>
+    <a class="btn btn-outline-info btn-sm rounded-pill px-3" wicket:id="downloadEnderecoTemplateBtn">
+        <i data-lucide="download" style="width: 14px; height: 14px;"></i> Template
+    </a>
+    <form class="d-flex align-items-center gap-1" wicket:id="importEnderecoForm">
+        <input accept=".xlsx" class="form-control form-control-sm" style="width: 160px;"
+               type="file" wicket:id="enderecoFileUpload"/>
+        <button class="btn btn-outline-warning btn-sm rounded-pill px-3" type="submit"
+                wicket:id="importEnderecoBtn">
+            <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Importar
+        </button>
+    </form>
+</wicket:panel>

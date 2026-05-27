@@ -1,5 +1,6 @@
 package com.desafio.estagio.wicket.component;
 
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -77,10 +78,8 @@ public final class ValidationFeedback implements Serializable {
             }
         });
         target.add(form);
-        target.appendJavaScript("lucide.createIcons();");
-        target.appendJavaScript(
-                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
-        );
+        JavaScriptUtils.reloadLucideIcons(target);
+        JavaScriptUtils.reinitializeMasksSafe(target);
         boolean hasErrors = false;
         StringBuilder highlightJS = new StringBuilder();
         for (FeedbackMessage msg : new FeedbackCollector(form).collect()) {
@@ -105,18 +104,11 @@ public final class ValidationFeedback implements Serializable {
             target.appendJavaScript(highlightJS.toString());
         }
         if (hasErrors) {
-            showToast(target, "error", "Corrija os campos destacados.");
+            JavaScriptUtils.showToast(target, "error", "Corrija os campos destacados.");
         }
     }
 
     public static void showToast(AjaxRequestTarget target, String type, String message) {
-        String escapedMessage = message
-                .replace("\\", "\\\\").replace("'", "\\'")
-                .replace("\"", "\\\"").replace("\n", "\\n")
-                .replace("\r", "\\r");
-        target.appendJavaScript(String.format(
-                "if (typeof window.showToast === 'function') { window.showToast('%s', '%s'); }" +
-                        " else { console.error('showToast function not found'); alert('%s'); }",
-                type, escapedMessage, escapedMessage));
+        JavaScriptUtils.showToast(target, type, message);
     }
 }

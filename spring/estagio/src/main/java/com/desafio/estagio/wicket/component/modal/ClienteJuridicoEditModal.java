@@ -1,11 +1,12 @@
 package com.desafio.estagio.wicket.component.modal;
 
-import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.wicket.mapper.ClienteJuridicoDtoMapper;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -66,21 +67,11 @@ public class ClienteJuridicoEditModal extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
-                try {
-                    ClienteJuridicoUpdateRequest updateRequest = ClienteJuridicoUpdateRequest.builder()
-                            .razaoSocial(model.getRazaoSocial())
-                            .email(model.getEmail())
-                            .estaAtivo(model.getEstaAtivo())
-                            .build();
-                    clienteJuridicoService.update(model.getId(), updateRequest);
+                ErrorHandler.handleServiceCall(target, form, () -> {
+                    clienteJuridicoService.update(model.getId(), ClienteJuridicoDtoMapper.toUpdateRequest(model));
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
-                    target.appendJavaScript("$('#editClienteJuridicoModal').modal('hide');" +
-                            "setTimeout(function(){ $('#editClienteJuridicoModal').remove(); }, 500);");
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
-                }
+                    JavaScriptUtils.hideAndRemoveBootstrapModal(target, "editClienteJuridicoModal");
+                });
             }
 
             @Override
@@ -96,8 +87,7 @@ public class ClienteJuridicoEditModal extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                target.appendJavaScript("$('#editClienteJuridicoModal').modal('hide');" +
-                        "setTimeout(function(){ $('#editClienteJuridicoModal').remove(); }, 500);");
+                JavaScriptUtils.hideAndRemoveBootstrapModal(target, "editClienteJuridicoModal");
             }
         };
         form.add(cancelarBtn);

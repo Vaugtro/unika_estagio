@@ -1,12 +1,15 @@
 package com.desafio.estagio.wicket.component.dataview;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteJuridicoService;
+import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.modal.ClienteJuridicoEditModal;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
+import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
+import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -38,7 +41,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
         ClienteJuridicoListResponse cliente = item.getModelObject();
 
         WebMarkupContainer row = new WebMarkupContainer("editarForm");
-        row.setOutputMarkupId(true);
+        ComponentAttributeBuilder.of(row).setOutputMarkupId(true).build();
 
         row.add(new Label("id", new AbstractReadOnlyModel<String>() {
             @Serial
@@ -83,8 +86,8 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
-                    Long id = cliente.id();
+                Long id = cliente.id();
+                ErrorHandler.handleServiceCall(target, null, () -> {
                     if (Boolean.TRUE.equals(cliente.estaAtivo())) {
                         clienteJuridicoService.inactivate(id);
                         ValidationFeedback.showToast(target, "success", "Cliente inativado com sucesso!");
@@ -92,9 +95,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
                         clienteJuridicoService.activate(id);
                         ValidationFeedback.showToast(target, "success", "Cliente ativado com sucesso!");
                     }
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                }
+                });
                 findParent(ClientesJuridicosTablePanel.class).refreshTable(target);
             }
         };
@@ -130,7 +131,7 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
         BookmarkablePageLink<Void> detalhesBtn = new BookmarkablePageLink<>("detalhesBtn",
                 ClienteJuridicoDetalhePage.class,
                 new PageParameters().set("clienteId", cliente.id()));
-        detalhesBtn.add(new AttributeModifier("class", "btn btn-sm btn-outline-info rounded-circle p-1"));
+        AttributeModifierBuilder.on(detalhesBtn).custom("class", "btn btn-sm btn-outline-info rounded-circle p-1").build();
         row.add(detalhesBtn);
 
         AjaxLink<Void> editarBtn = new AjaxLink<>("editarBtn") {
@@ -145,11 +146,11 @@ public class ClienteJuridicoDataView extends AbstractClienteDataView<ClienteJuri
                 ClienteJuridicoEditModal editModal = new ClienteJuridicoEditModal("editModal", cliente.id());
                 container.addOrReplace(editModal);
                 target.add(container);
-                target.appendJavaScript("$('#editClienteJuridicoModal').modal('show');" +
-                        "if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.showBootstrapModal(target, "editClienteJuridicoModal");
+                JavaScriptUtils.reloadLucideIconsSafe(target);
             }
         };
-        editarBtn.setOutputMarkupId(true);
+        ComponentAttributeBuilder.of(editarBtn).setOutputMarkupId(true).build();
         row.add(editarBtn);
 
         item.add(row);

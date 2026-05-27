@@ -1,7 +1,7 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -19,7 +19,7 @@ public abstract class ExportModal extends Panel {
     public ExportModal(String id, String modalHtmlId) {
         super(id);
         WebMarkupContainer modalRoot = new WebMarkupContainer("modalRoot");
-        modalRoot.add(new AttributeModifier("id", modalHtmlId));
+        AttributeModifierBuilder.on(modalRoot).custom("id", modalHtmlId).build();
         add(modalRoot);
     }
 

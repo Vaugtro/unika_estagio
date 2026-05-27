@@ -1,20 +1,23 @@
 package com.desafio.estagio.wicket.component.form;
 
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoListResponse;
-import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
+import com.desafio.estagio.wicket.mapper.ClienteJuridicoDtoMapper;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.validation.ValidationConstants;
+import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteJuridicoUpdateFormModel;
 import com.desafio.estagio.wicket.page.clientes.ClienteJuridicoDetalhePage;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import lombok.Getter;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -35,6 +38,7 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
     @Getter
     private final Item<ClienteJuridicoListResponse> parentItem;
     @SpringBean
@@ -58,34 +62,24 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
         add(new Label("id"));
         add(new Label("cnpj"));
 
-        TextField<String> razaoSocialField = new TextField<>("razaoSocial");
-        razaoSocialField.setRequired(true);
-        razaoSocialField.add(StringValidator.lengthBetween(ValidationConstants.RAZAO_SOCIAL_MIN, ValidationConstants.RAZAO_SOCIAL_MAX));
+        var razaoSocialBundle = FormFieldBuilder.create(String.class)
+            .id("razaoSocial")
+            .required()
+            .validator(StringValidator.lengthBetween(ValidationConstants.RAZAO_SOCIAL_MIN, ValidationConstants.RAZAO_SOCIAL_MAX))
+            .build();
+        var razaoSocialField = razaoSocialBundle.field();
         razaoSocialField.setOutputMarkupId(true);
-        razaoSocialField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getObject() {
-                return !razaoSocialField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
-            }
-        }));
+        razaoSocialField.add(VALIDATION_STYLE_INSTANCE);
         add(razaoSocialField);
 
-        TextField<String> emailField = new TextField<>("email");
-        emailField.add(EmailAddressValidator.getInstance());
-        emailField.add(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX));
+        var emailBundle = FormFieldBuilder.create(String.class)
+            .id("email")
+            .validator(EmailAddressValidator.getInstance())
+            .validator(StringValidator.maximumLength(ValidationConstants.EMAIL_MAX))
+            .build();
+        var emailField = emailBundle.field();
         emailField.setOutputMarkupId(true);
-        emailField.add(new AttributeAppender("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public String getObject() {
-                return !emailField.getFeedbackMessages().isEmpty() ? " is-invalid" : "";
-            }
-        }));
+        emailField.add(VALIDATION_STYLE_INSTANCE);
         add(emailField);
 
         IModel<String> statusTextModel = new AbstractReadOnlyModel<String>() {
@@ -146,31 +140,21 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                try {
-                    ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
-                    if (model == null) {
-                        ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
-                        return;
-                    }
-                    ClienteJuridicoUpdateRequest updateRequest = new ClienteJuridicoUpdateRequest(
-                            model.getRazaoSocial(), model.getInscricaoEstadual(),
-                            model.getEmail(), model.getDataCriacaoEmpresa(),
-                            model.getEstaAtivo(), null
-                    );
-                    clienteJuridicoService.update(model.getId(), updateRequest);
+                ClienteJuridicoUpdateFormModel model = (ClienteJuridicoUpdateFormModel) form.getModelObject();
+                if (model == null) {
+                    ValidationFeedback.showToast(target, "error", "Modelo de dados não encontrado");
+                    return;
+                }
+                ErrorHandler.handleServiceCall(target, form, () -> {
+                    clienteJuridicoService.update(model.getId(), ClienteJuridicoDtoMapper.toUpdateRequest(model));
 
                     form.setDefaultModelObject(new ClienteJuridicoUpdateFormModel(
                             clienteJuridicoService.findById(model.getId())));
 
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
                     target.add(form);
-                    target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
-
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
-                }
+                    JavaScriptUtils.reloadLucideIconsSafe(target);
+                });
             }
 
             @Override
@@ -197,8 +181,25 @@ public class ClienteJuridicoRowUpdateForm extends Form<ClienteJuridicoUpdateForm
                 }
                 model.setEstaAtivo(newStatus);
                 target.add(ClienteJuridicoRowUpdateForm.this);
-                target.appendJavaScript("if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.reloadLucideIconsSafe(target);
             }
         };
+    }
+
+    /**
+     * Behavior that adds {@code is-invalid} CSS class during render
+     * when the component has feedback messages (validation errors).
+     */
+    private static final class ValidationStyleBehavior extends Behavior {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onComponentTag(Component component, ComponentTag tag) {
+            if (!component.getFeedbackMessages().isEmpty()) {
+                String cls = tag.getAttribute("class");
+                tag.put("class", cls != null ? cls + " is-invalid" : "is-invalid");
+            }
+        }
     }
 }
