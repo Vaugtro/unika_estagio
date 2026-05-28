@@ -1,0 +1,11 @@
+[2026-05-27T19:34:14.069Z] [@Detection] Running with: {
+  "prompt": "",
+  "currentCursor": 0,
+  "promptLength": 0
+}
+[2026-05-27T19:34:14.069Z] [@Detection] No @ found before cursor 
+[2026-05-27T19:34:16.830Z] [shouldAllowCancel] {
+  "isFileListActive": false,
+  "hasPrompt": false
+}
+[2026-05-27T19:34:16.830Z] [shouldAllowCancel] Allowing cancel 
