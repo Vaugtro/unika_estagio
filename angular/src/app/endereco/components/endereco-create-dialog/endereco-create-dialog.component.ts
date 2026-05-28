@@ -7,12 +7,14 @@ import {ToastService} from '../../../shared/services/toast.service';
 import {cepValidator} from '../../../shared/validators/cep.validator';
 import {telefoneValidator} from '../../../shared/validators/telefone.validator';
 import {VALIDATION} from '../../../shared/validators/validation-constants';
+import {EnderecoListResponse} from '../../../api/model/enderecoListResponse';
 import {EnderecosService} from '../../../api';
 import {ViaCepService} from '../../../shared/services/via-cep.service';
 
 export interface EnderecoCreateDialogData {
   clienteId?: number;
   clienteType?: 'fisico' | 'juridico';
+  endereco?: EnderecoListResponse;
 }
 
 @Component({
@@ -24,6 +26,7 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   submitting = false;
   hasClienteContext = false;
+  isEditing = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -34,20 +37,22 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<EnderecoCreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EnderecoCreateDialogData,
   ) {
-    this.hasClienteContext = !!data?.clienteId;
+    this.hasClienteContext = !!data?.clienteId && !data?.endereco;
+    this.isEditing = !!data?.endereco;
   }
 
   ngOnInit(): void {
+    const e = this.data.endereco;
     const group: Record<string, unknown> = {
-      logradouro: ['', [Validators.required, Validators.minLength(VALIDATION.LOGRADOURO_MIN), Validators.maxLength(VALIDATION.LOGRADOURO_MAX)]],
-      numero: [null, [Validators.required, Validators.min(1)]],
-      bairro: ['', [Validators.required, Validators.minLength(VALIDATION.BAIRRO_MIN), Validators.maxLength(VALIDATION.BAIRRO_MAX)]],
-      cep: ['', [Validators.required, cepValidator()]],
-      cidade: ['', [Validators.required, Validators.minLength(VALIDATION.CIDADE_MIN), Validators.maxLength(VALIDATION.CIDADE_MAX)]],
-      estado: ['', [Validators.required, Validators.minLength(VALIDATION.ESTADO_LENGTH), Validators.maxLength(VALIDATION.ESTADO_LENGTH)]],
+      logradouro: [e?.logradouro || '', [Validators.required, Validators.minLength(VALIDATION.LOGRADOURO_MIN), Validators.maxLength(VALIDATION.LOGRADOURO_MAX)]],
+      numero: [e?.numero || null, [Validators.required, Validators.min(1)]],
+      bairro: [e?.bairro || '', [Validators.required, Validators.minLength(VALIDATION.BAIRRO_MIN), Validators.maxLength(VALIDATION.BAIRRO_MAX)]],
+      cep: [e?.cep || '', [Validators.required, cepValidator()]],
+      cidade: [e?.cidade || '', [Validators.required, Validators.minLength(VALIDATION.CIDADE_MIN), Validators.maxLength(VALIDATION.CIDADE_MAX)]],
+      estado: [e?.estado || '', [Validators.required, Validators.minLength(VALIDATION.ESTADO_LENGTH), Validators.maxLength(VALIDATION.ESTADO_LENGTH)]],
       telefone: ['', telefoneValidator()],
       complemento: ['', Validators.maxLength(VALIDATION.COMPLEMENTO_MAX)],
-      principal: [false],
+      principal: [e?.principal || false],
     };
 
     if (!this.hasClienteContext) {
@@ -105,22 +110,26 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
     };
 
     let obs$;
-    if (this.hasClienteContext) {
+    if (this.isEditing) {
+      obs$ = this.enderecosService.enderecosUpdate(this.data.endereco!.id!, addressDto);
+    } else if (this.hasClienteContext) {
       obs$ = this.enderecosService.enderecosCreateForCliente(this.data.clienteId!, addressDto);
     } else {
       obs$ = this.enderecosService.enderecosCreate({...addressDto, clienteId: v.clienteId});
     }
 
+    const successMsg = this.isEditing ? 'Endereço atualizado com sucesso' : 'Endereço criado com sucesso';
+
     this.subscriptions.push(
       obs$.pipe(
         catchError((err) => {
-          const msg = err.error?.message || err.statusText || 'Erro ao criar endereço';
+          const msg = err.error?.message || err.statusText || 'Erro ao salvar endereço';
           this.toastService.show('error', msg);
           this.submitting = false;
           return EMPTY;
         })
       ).subscribe(() => {
-        this.toastService.show('success', 'Endereço criado com sucesso');
+        this.toastService.show('success', successMsg);
         this.dialogRef.close(true);
       })
     );

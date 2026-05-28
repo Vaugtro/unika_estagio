@@ -65,6 +65,10 @@
     <ng-container matColumnDef="actions">
       <th *matHeaderCellDef mat-header-cell></th>
       <td *matCellDef="let row" class="actions-cell" mat-cell>
+        <button (click)="edit(row)" mat-button>
+          <lucide-icon name="pencil"></lucide-icon>
+          Editar
+        </button>
         <button (click)="delete(row)" color="warn" mat-button>
           <lucide-icon name="trash-2"></lucide-icon>
           Excluir

@@ -97,6 +97,23 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
     );
   }
 
+  edit(row: EnderecoListResponse): void {
+    const dialogRef = this.dialog.open(EnderecoCreateDialogComponent, {
+      width: '600px',
+      data: {
+        clienteId: this.clienteId,
+        clienteType: this.clienteType,
+        endereco: row,
+      },
+    });
+
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) this.loadData();
+      })
+    );
+  }
+
   delete(row: EnderecoListResponse): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -142,13 +159,13 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
 
   openExport(): void {
     this.dialog.open(ExportDialogComponent, {
-      data: {clienteType: this.clienteType, searchQuery: undefined},
+      data: {clienteType: this.clienteType, clienteId: this.clienteId, searchQuery: undefined},
     });
   }
 
   openImport(): void {
     this.dialog.open(ImportDialogComponent, {
-      data: {clienteType: this.clienteType},
+      data: {clienteType: this.clienteType, clienteId: this.clienteId},
     });
   }
 

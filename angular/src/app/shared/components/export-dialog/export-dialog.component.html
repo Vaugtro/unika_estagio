@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>Exportar Clientes {{ data.clienteType === 'fisico' ? 'Físicos' : 'Jurídicos' }}</h2>
+<h2 mat-dialog-title>
+  Exportar {{ data.clienteType === 'fisico' ? 'Clientes Físicos' : data.clienteType === 'juridico' ? 'Clientes Jurídicos' : 'Endereços' }}
+</h2>
 
 <mat-dialog-content>
   <p>Selecione o formato para exportação:</p>

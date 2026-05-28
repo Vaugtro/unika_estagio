@@ -33,6 +33,9 @@ import {FisicoTableComponent} from '../cliente-fisico/components/fisico-table/fi
 import {
   FisicoCreateDialogComponent
 } from '../cliente-fisico/components/fisico-create-dialog/fisico-create-dialog.component';
+import {
+  FisicoEditDialogComponent
+} from '../cliente-fisico/components/fisico-edit-dialog/fisico-edit-dialog.component';
 import {FisicoRowFormComponent} from '../cliente-fisico/components/fisico-row-form/fisico-row-form.component';
 import {FisicoInfoCardComponent} from '../cliente-fisico/components/fisico-info-card/fisico-info-card.component';
 import {FisicoDetailComponent} from '../cliente-fisico/pages/fisico-detail.component';
@@ -42,6 +45,9 @@ import {JuridicoTableComponent} from '../cliente-juridico/components/juridico-ta
 import {
   JuridicoCreateDialogComponent
 } from '../cliente-juridico/components/juridico-create-dialog/juridico-create-dialog.component';
+import {
+  JuridicoEditDialogComponent
+} from '../cliente-juridico/components/juridico-edit-dialog/juridico-edit-dialog.component';
 import {JuridicoRowFormComponent} from '../cliente-juridico/components/juridico-row-form/juridico-row-form.component';
 import {
   JuridicoInfoCardComponent
@@ -69,12 +75,14 @@ import {HomeComponent} from '../home/home.component';
     // Fisico components
     FisicoTableComponent,
     FisicoCreateDialogComponent,
+    FisicoEditDialogComponent,
     FisicoRowFormComponent,
     FisicoInfoCardComponent,
     FisicoDetailComponent,
     // Juridico components
     JuridicoTableComponent,
     JuridicoCreateDialogComponent,
+    JuridicoEditDialogComponent,
     JuridicoRowFormComponent,
     JuridicoInfoCardComponent,
     JuridicoDetailComponent,

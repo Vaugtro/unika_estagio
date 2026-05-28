@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Novo Endereço</h2>
+<h2 mat-dialog-title>{{ isEditing ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="form">
