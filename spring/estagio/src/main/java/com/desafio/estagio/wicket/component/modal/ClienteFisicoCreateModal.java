@@ -44,6 +44,7 @@ public class ClienteFisicoCreateModal extends Panel {
         form.setOutputMarkupId(true);
 
         FormFieldBundle cpfBundle = FormFieldBuilder.create(String.class)
+                .label("CPF")
                 .id("cpf").required().placeholder("000.000.000-00").dataMask("000.000.000-00")
                 .minLength(ValidationConstants.CPF_LENGTH_FORMATTED_MIN)
                 .maxLength(ValidationConstants.CPF_LENGTH_FORMATTED_MAX)
@@ -52,6 +53,7 @@ public class ClienteFisicoCreateModal extends Panel {
 
         // Nome field
         FormFieldBundle nomeBundle = FormFieldBuilder.create(String.class)
+                .label("Nome Completo")
                 .id("nome").required().placeholder("Nome completo")
                 .minLength(ValidationConstants.NOME_MIN).maxLength(ValidationConstants.NOME_MAX)
                 .feedbackLabel("nomeFeedback").realTimeValidation().build();
@@ -59,6 +61,7 @@ public class ClienteFisicoCreateModal extends Panel {
 
         // RG field — custom digit-count validator
         FormFieldBundle rgBundle = FormFieldBuilder.create(String.class)
+                .label("RG")
                 .id("rg").required()
                 .placeholder("RG").dataMask("99.999.999-9")
                 .pattern("^\\d{1,2}\\.?\\d{1,3}\\.?\\d{1,3}-?\\d$")
@@ -82,6 +85,7 @@ public class ClienteFisicoCreateModal extends Panel {
 
         // Email field
         FormFieldBundle emailBundle = FormFieldBuilder.create(String.class)
+                .label("E-mail")
                 .id("email").placeholder("E-mail")
                 .maxLength(ValidationConstants.EMAIL_MAX)
                 .feedbackLabel("emailFeedback").realTimeValidation().build();
@@ -89,6 +93,7 @@ public class ClienteFisicoCreateModal extends Panel {
 
         // Data de Nascimento field
         FormFieldBundle dataNascimentoBundle = FormFieldBuilder.create(String.class)
+                .label("Data de Nascimento")
                 .id("dataNascimento").required().placeholder("DD/MM/YYYY").dataMask("99/99/9999")
                 .feedbackLabel("dataNascimentoFeedback").realTimeValidation().build();
         form.add(dataNascimentoBundle.field(), dataNascimentoBundle.feedbackLabel());

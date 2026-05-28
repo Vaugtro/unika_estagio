@@ -74,8 +74,7 @@ class EnderecoControllerTest {
                 "01001-000",
                 "Centro",
                 "(11) 91234-5678",
-                "SP",
-                "São Paulo",
+                3550308L,
                 true,
                 null,
                 1L
@@ -87,8 +86,7 @@ class EnderecoControllerTest {
                 "01002-000",
                 "Bairro Novo",
                 "(11) 98765-4321",
-                "RJ",
-                "Rio de Janeiro",
+                3550308L,
                 false,
                 "Casa"
         );
@@ -120,8 +118,7 @@ class EnderecoControllerTest {
                 "01001-000",
                 "Centro",
                 "(11) 91234-5678",
-                "SP",
-                "São Paulo",
+                3550308L,
                 true,
                 null
         );

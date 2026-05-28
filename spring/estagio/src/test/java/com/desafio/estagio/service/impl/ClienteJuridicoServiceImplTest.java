@@ -79,8 +79,7 @@ class ClienteJuridicoServiceImplTest {
                 .cep("02001-000")
                 .bairro("Vila Mariana")
                 .telefone("(11) 98765-4321")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(true)
                 .complemento("Sala 100")
                 .build();
@@ -169,8 +168,7 @@ class ClienteJuridicoServiceImplTest {
                 .cep("02001-000")
                 .bairro("Vila Mariana")
                 .telefone("(11) 98765-4321")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Sala 100")
                 .build();

@@ -14,9 +14,15 @@ public interface EnderecoMapper {
     // ========== Response Mappings ==========
 
     @Mapping(target = "clienteId", source = "cliente.id")
+    @Mapping(target = "cidade", source = "municipio.nome")
+    @Mapping(target = "estado", source = "municipio.unidadeFederativa.sigla")
+    @Mapping(target = "municipioId", source = "municipio.id")
     EnderecoResponse toResponse(Endereco entity);
 
     @Mapping(target = "clienteId", source = "cliente.id")
+    @Mapping(target = "cidade", source = "municipio.nome")
+    @Mapping(target = "estado", source = "municipio.unidadeFederativa.sigla")
+    @Mapping(target = "municipioId", source = "municipio.id")
     EnderecoListResponse toListResponse(Endereco entity);
 
     // ========== Create Mappings ==========
@@ -25,11 +31,13 @@ public interface EnderecoMapper {
     @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "municipio", ignore = true)
     @Mapping(target = "principal", defaultValue = "false")
     Endereco toEntity(EnderecoCreateRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cliente", ignore = true)
+    @Mapping(target = "municipio", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "principal", defaultValue = "false")
@@ -40,6 +48,7 @@ public interface EnderecoMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cliente", ignore = true)
+    @Mapping(target = "municipio", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateEntity(EnderecoUpdateRequest request, @MappingTarget Endereco entity);

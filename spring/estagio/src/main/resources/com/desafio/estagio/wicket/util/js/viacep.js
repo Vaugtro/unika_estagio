@@ -28,6 +28,8 @@ function pesquisacep(input) {
             $row.find('input[data-field="bairro"]').val(data.bairro);
             $row.find('input[data-field="cidade"]').val(data.localidade);
             $row.find('[data-field="estado"]').val(data.uf);
+            $row.attr('data-viacep-municipio-id', data.ibge || '');
+            $row.find('[data-field="estado"]').trigger('change');
         } else {
             var msg = 'CEP n\u00e3o encontrado.';
             if (typeof window.showToast === 'function') {

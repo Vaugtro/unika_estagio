@@ -35,8 +35,7 @@ class ClienteModelTest {
                 .cep("12345678")
                 .bairro("Centro")
                 .telefone("11999999999")
-                .cidade("São Paulo")
-                .estado("SP")
+                .municipio(createMunicipio())
                 .principal(false)
                 .build();
 
@@ -47,8 +46,7 @@ class ClienteModelTest {
                 .cep("87654321")
                 .bairro("Vila")
                 .telefone("11888888888")
-                .cidade("Rio de Janeiro")
-                .estado("RJ")
+                .municipio(createMunicipio())
                 .principal(false)
                 .build();
 
@@ -59,10 +57,14 @@ class ClienteModelTest {
                 .cep("11111111")
                 .bairro("Bairro")
                 .telefone("11777777777")
-                .cidade("Belo Horizonte")
-                .estado("MG")
+                .municipio(createMunicipio())
                 .principal(false)
                 .build();
+    }
+
+    private Municipio createMunicipio() {
+        UnidadeFederativa uf = new UnidadeFederativa(1L, "SP", "São Paulo");
+        return new Municipio(3550308L, "São Paulo", uf);
     }
 
     // Concrete test implementation of abstract Cliente

@@ -7,8 +7,10 @@ import com.desafio.estagio.mapper.EnderecoMapper;
 import com.desafio.estagio.model.Cliente;
 import com.desafio.estagio.model.ClienteFisico;
 import com.desafio.estagio.model.Endereco;
+import com.desafio.estagio.model.Municipio;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
+import com.desafio.estagio.repository.MunicipioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,12 @@ class EnderecoServiceImplTest {
     @Mock
     private EnderecoMapper enderecoMapper;
 
+    @Mock
+    private MunicipioRepository municipioRepository;
+
+    @Mock
+    private Municipio mockMunicipio;
+
     @InjectMocks
     private EnderecoServiceImpl service;
 
@@ -53,6 +61,8 @@ class EnderecoServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(municipioRepository.findById(3550308L)).thenReturn(Optional.of(mockMunicipio));
+
         mockCliente = ClienteFisico.builder()
                 .id(1L)
                 .build();
@@ -64,8 +74,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipio(mockMunicipio)
                 .principal(false)
                 .complemento("Apt 101")
                 .cliente(mockCliente)
@@ -78,8 +87,7 @@ class EnderecoServiceImplTest {
                 .cep("54321-876")
                 .bairro("Comercial")
                 .telefone("1188888888")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipio(mockMunicipio)
                 .principal(true)
                 .complemento("Sala 200")
                 .cliente(mockCliente)
@@ -123,8 +131,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(true)
                 .clienteId(null)
                 .build();
@@ -144,8 +151,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apt 101")
                 .clienteId(1L)
@@ -178,8 +184,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipio(mockMunicipio)
                 .principal(false)
                 .complemento("Apt 101")
                 .cliente(mockCliente)
@@ -204,8 +209,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apt 101")
                 .clienteId(1L)
@@ -238,8 +242,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipio(mockMunicipio)
                 .principal(false)
                 .complemento("Apt 101")
                 .cliente(mockCliente)
@@ -251,8 +254,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apt 101")
                 .clienteId(1L)
@@ -281,8 +283,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(true)
                 .clienteId(999L)
                 .build();
@@ -305,8 +306,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .clienteId(1L)
                 .build();
@@ -338,8 +338,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apt 101")
                 .build();
@@ -370,8 +369,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-678")
                 .bairro("Centro")
                 .telefone("1199999999")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(true)
                 .build();
 
@@ -590,8 +588,7 @@ class EnderecoServiceImplTest {
                 .cep("12345-679")
                 .bairro("Centro")
                 .telefone("1199999998")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apt 102")
                 .build();

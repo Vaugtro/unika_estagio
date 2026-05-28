@@ -149,7 +149,7 @@ public class EnderecoListViewPanel extends Panel {
                         formModel.setNumero(end.numero());
                         formModel.setBairro(end.bairro());
                         formModel.setCep(end.cep());
-                        formModel.setCidade(end.cidade());
+                        formModel.setMunicipioId(end.municipioId());
                         formModel.setEstado(end.estado());
                         formModel.setTelefone(end.telefone());
                         formModel.setPrincipal(Boolean.TRUE.equals(end.principal()));

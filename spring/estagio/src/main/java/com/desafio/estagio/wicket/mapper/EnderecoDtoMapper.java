@@ -24,8 +24,7 @@ public final class EnderecoDtoMapper implements Serializable {
                 cepClean,
                 formModel.getBairro(),
                 telefoneClean,
-                formModel.getEstado(),
-                formModel.getCidade(),
+                formModel.getMunicipioId(),
                 formModel.getPrincipal() != null && formModel.getPrincipal(),
                 formModel.getComplemento(),
                 null
@@ -41,8 +40,7 @@ public final class EnderecoDtoMapper implements Serializable {
                 cepClean,
                 formModel.getBairro(),
                 telefoneClean,
-                formModel.getEstado(),
-                formModel.getCidade(),
+                formModel.getMunicipioId(),
                 formModel.getPrincipal() != null && formModel.getPrincipal(),
                 formModel.getComplemento()
         );
@@ -57,8 +55,7 @@ public final class EnderecoDtoMapper implements Serializable {
                 cepClean,
                 formModel.getBairro(),
                 telefoneClean,
-                formModel.getEstado(),
-                formModel.getCidade(),
+                formModel.getMunicipioId(),
                 formModel.getPrincipal() != null && formModel.getPrincipal(),
                 formModel.getComplemento()
         );

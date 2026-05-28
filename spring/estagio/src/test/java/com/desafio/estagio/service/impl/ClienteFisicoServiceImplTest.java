@@ -79,8 +79,7 @@ class ClienteFisicoServiceImplTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("(11) 91234-5678")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(true)
                 .complemento("Apto 42")
                 .build();
@@ -168,8 +167,7 @@ class ClienteFisicoServiceImplTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("(11) 91234-5678")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .complemento("Apto 42")
                 .build();

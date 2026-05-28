@@ -36,6 +36,9 @@ public record EnderecoReportResponse(
         @Schema(description = "Estado", example = "SP")
         String estado,
 
+        @Schema(description = "ID do município (IBGE)", example = "3550308")
+        Long municipioId,
+
         @Schema(description = "Telefone", example = "(11) 91234-5678")
         String telefone,
 

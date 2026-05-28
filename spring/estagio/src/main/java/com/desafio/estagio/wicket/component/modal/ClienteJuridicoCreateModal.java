@@ -23,6 +23,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
+import java.util.Date;
 
 public class ClienteJuridicoCreateModal extends Panel {
 
@@ -44,6 +45,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.setOutputMarkupId(true);
 
         FormFieldBundle cnpjBundle = FormFieldBuilder.create(String.class)
+                .label("CNPJ")
                 .id("cnpj").required()
                 .minLength(ValidationConstants.CNPJ_LENGTH_FORMATTED_MIN)
                 .maxLength(ValidationConstants.CNPJ_LENGTH_FORMATTED_MAX)
@@ -56,6 +58,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(cnpjBundle.field(), cnpjBundle.feedbackLabel());
 
         FormFieldBundle razaoSocialBundle = FormFieldBuilder.create(String.class)
+                .label("Razão Social")
                 .id("razaoSocial").required()
                 .minLength(ValidationConstants.RAZAO_SOCIAL_MIN)
                 .maxLength(ValidationConstants.RAZAO_SOCIAL_MAX)
@@ -66,6 +69,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(razaoSocialBundle.field(), razaoSocialBundle.feedbackLabel());
 
         FormFieldBundle ieBundle = FormFieldBuilder.create(String.class)
+                .label("Inscrição Estadual")
                 .id("inscricaoEstadual").required()
                 .maxLength(ValidationConstants.INSCRICAO_ESTADUAL_MAX)
                 .placeholder("Inscrição Estadual")
@@ -75,6 +79,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(ieBundle.field(), ieBundle.feedbackLabel());
 
         FormFieldBundle emailBundle = FormFieldBuilder.create(String.class)
+                .label("E-mail")
                 .id("email")
                 .maxLength(ValidationConstants.EMAIL_MAX)
                 .placeholder("E-mail")
@@ -84,6 +89,7 @@ public class ClienteJuridicoCreateModal extends Panel {
         form.add(emailBundle.field(), emailBundle.feedbackLabel());
 
         FormFieldBundle dataCriacaoBundle = FormFieldBuilder.create(String.class)
+                .label("Data de Criação da Empresa")
                 .id("dataCriacaoEmpresa").required()
                 .dataMask("99/99/9999")
                 .placeholder("DD/MM/YYYY")

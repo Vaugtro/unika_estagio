@@ -6,8 +6,10 @@ import com.desafio.estagio.exceptions.ResourceNotFoundException;
 import com.desafio.estagio.mapper.EnderecoMapper;
 import com.desafio.estagio.model.Cliente;
 import com.desafio.estagio.model.Endereco;
+import com.desafio.estagio.model.Municipio;
 import com.desafio.estagio.repository.ClienteRepository;
 import com.desafio.estagio.repository.EnderecoRepository;
+import com.desafio.estagio.repository.MunicipioRepository;
 import com.desafio.estagio.service.EnderecoService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     private final EnderecoRepository enderecoRepository;
     private final ClienteRepository<Cliente> clienteRepository;
     private final EnderecoMapper enderecoMapper;
+    private final MunicipioRepository municipioRepository;
 
     // =====================================================
     // CREATE OPERATIONS
@@ -46,12 +49,10 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = enderecoMapper.toEntity(request);
         Cliente cliente = findClienteById(request.clienteId());
         entity.setCliente(cliente);
-
+        entity.setMunicipio(findMunicipioById(request.municipioId()));
         handlePrincipalLogic(entity, cliente.getId());
-
         Endereco saved = enderecoRepository.save(entity);
         log.info("Created endereco with ID: {}", saved.getId());
-
         return enderecoMapper.toResponse(saved);
     }
 
@@ -63,12 +64,10 @@ public class EnderecoServiceImpl implements EnderecoService {
         Cliente cliente = findClienteById(clienteId);
         Endereco entity = enderecoMapper.toEntity(request);
         entity.setCliente(cliente);
-
+        entity.setMunicipio(findMunicipioById(request.municipioId()));
         handlePrincipalLogic(entity, clienteId);
-
         Endereco saved = enderecoRepository.save(entity);
         log.info("Created endereco with ID: {} for cliente ID: {}", saved.getId(), clienteId);
-
         return enderecoMapper.toResponse(saved);
     }
 
@@ -158,9 +157,10 @@ public class EnderecoServiceImpl implements EnderecoService {
 
         Endereco existing = findEntityById(id);
         Long clienteId = existing.getCliente().getId();
-
-        // Update fields
         enderecoMapper.updateEntity(request, existing);
+        if (request.municipioId() != null) {
+            existing.setMunicipio(findMunicipioById(request.municipioId()));
+        }
 
         // Handle principal flag — delegate to model
         if (Boolean.TRUE.equals(request.principal())) {
@@ -287,8 +287,13 @@ public class EnderecoServiceImpl implements EnderecoService {
     private Cliente findClienteById(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Cliente não encontrado com o ID: %d", id)
-                ));
+                        String.format("Cliente não encontrado com o ID: %d", id)));
+    }
+
+    private Municipio findMunicipioById(Long id) {
+        return municipioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Município não encontrado com o ID: %d", id)));
     }
 
     /**

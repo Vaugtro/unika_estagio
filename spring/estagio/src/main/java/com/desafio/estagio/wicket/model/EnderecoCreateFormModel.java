@@ -19,7 +19,7 @@ public class EnderecoCreateFormModel implements Serializable {
     private String bairro;
     private String telefone;
     private String estado;
-    private String cidade;
+    private Long municipioId;
     private Boolean principal;
     private String complemento;
 }

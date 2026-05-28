@@ -7,6 +7,19 @@ import random, json, subprocess, sys, time
 
 random.seed()
 
+BASE = "http://localhost:8080/v1"
+
+def fetch_json(url):
+    resp = subprocess.run(["curl", "-s", url], capture_output=True, text=True)
+    return json.loads(resp.stdout.strip())
+
+# Bootstrap real UF + Municipio data from the API
+ufs = fetch_json(f"{BASE}/unidades-federativas")
+all_municipios = fetch_json(f"{BASE}/municipios")
+municipios_por_uf = {}
+for m in all_municipios:
+    municipios_por_uf.setdefault(m["ufSigla"], []).append(m)
+
 def gen_cpf():
     cpf = [random.randint(0, 9) for _ in range(9)]
     s = sum((10-i)*cpf[i] for i in range(9))
@@ -37,21 +50,21 @@ first_names = ["Joao", "Maria", "Pedro", "Ana", "Carlos", "Lucas", "Mariana", "R
                "Beatriz", "Eduardo", "Larissa", "Thiago", "Camila", "Bruno", "Amanda", "Felipe", "Vanessa", "Roberto"]
 last_names = ["Silva", "Santos", "Oliveira", "Souza", "Lima", "Pereira", "Costa", "Ferreira", "Rodrigues", "Almeida",
               "Nascimento", "Araujo", "Ribeiro", "Carvalho", "Gomes", "Martins", "Barbosa", "Rocha", "Dias", "Moreira"]
-cities = ["Sao Paulo", "Rio de Janeiro", "Belo Horizonte", "Porto Alegre", "Curitiba", "Salvador", "Fortaleza", "Brasilia", "Recife", "Manaus"]
-states = ["SP", "RJ", "MG", "RS", "PR", "BA", "CE", "DF", "PE", "AM"]
 streets = ["Rua das Flores", "Avenida Paulista", "Rua Augusta", "Avenida Atlantica", "Rua XV de Novembro",
            "Rua da Praia", "Avenida Brasil", "Rua do Comercio", "Praca da Se", "Rua Direita"]
 bairros = ["Centro", "Jardins", "Bela Vista", "Copacabana", "Boa Viagem", "Barra da Tijuca", "Savassi", "Moinhos de Vento", "Batel", "Aldeota"]
 
-def gen_endereco(i, ddd=None):
+def gen_endereco(i):
+    uf = random.choice(ufs)
+    sigla = uf["sigla"]
+    m = random.choice(municipios_por_uf[sigla])
     return {
         "logradouro": random.choice(streets),
         "numero": random.randint(1, 9999),
         "cep": f"{random.randint(10000, 99999)}-{random.randint(100, 999)}",
         "bairro": random.choice(bairros),
         "telefone": gen_telefone(),
-        "estado": random.choice(states),
-        "cidade": random.choice(cities),
+        "municipioId": m["id"],
         "principal": i == 0,
         "complemento": random.choice(["", "Apto " + str(random.randint(1, 100)), "Sala " + str(random.randint(1, 100))])
     }
@@ -86,12 +99,9 @@ for idx in range(25):
         rg = ''.join(str(random.randint(0,9)) for _ in range(random.randint(8,9)))
         data = f"{random.randint(1970,2002)}-{random.randint(1,12):02d}-{random.randint(1,28):02d}"
         enderecos = [gen_endereco(i) for i in range(qtd)]
-        # remove clienteId if present (EnderecoWithinClienteCreateRequest has none)
-        for e in enderecos:
-            e.pop("clienteId", None)
         body = {"cpf": cpf, "nome": nome, "rg": rg, "email": email,
                 "dataNascimento": data, "enderecos": enderecos}
-        code, err = post("http://localhost:8080/v1/clientes/fisicos", body)
+        code, err = post(f"{BASE}/clientes/fisicos", body)
         status = "OK" if code == "201" else f"FAIL({code})"
         results["success" if code == "201" else "fail"] += 1
         if code != "201":
@@ -105,11 +115,9 @@ for idx in range(25):
         ie = f"{random.randint(100000000, 999999999)}"
         data = f"{random.randint(2000,2022)}-{random.randint(1,12):02d}-{random.randint(1,28):02d}"
         enderecos = [gen_endereco(i) for i in range(qtd)]
-        for e in enderecos:
-            e["clienteId"] = 0  # service replaces with real ID
         body = {"cnpj": cnpj, "razaoSocial": razao, "inscricaoEstadual": ie,
                 "email": email, "dataCriacaoEmpresa": data, "enderecos": enderecos}
-        code, err = post("http://localhost:8080/v1/clientes/juridicos", body)
+        code, err = post(f"{BASE}/clientes/juridicos", body)
         status = "OK" if code == "201" else f"FAIL({code})"
         results["success" if code == "201" else "fail"] += 1
         if code != "201":

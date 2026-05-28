@@ -50,8 +50,8 @@
                 <th>Logradouro</th>
                 <th>Nº</th>
                 <th>Bairro</th>
-                <th>Cidade</th>
                 <th>UF</th>
+                <th>Cidade</th>
                 <th>Telefone</th>
                 <th>Complemento</th>
                 <th>Principal</th>
@@ -77,12 +77,12 @@
                     <span class="invalid-feedback" wicket:id="bairroFeedback"></span>
                 </td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" wicket:id="cidade"/>
-                    <span class="invalid-feedback" wicket:id="cidadeFeedback"></span>
-                </td>
-                <td>
                     <select class="form-select form-select-sm" style="width:90px" wicket:id="estado"></select>
                     <span class="invalid-feedback" wicket:id="estadoFeedback"></span>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm" style="min-width:180px" wicket:id="municipioId"></select>
+                    <span class="invalid-feedback" wicket:id="municipioIdFeedback"></span>
                 </td>
                 <td>
                     <input class="form-control form-control-sm" style="width:140px" type="text" wicket:id="telefone"/>

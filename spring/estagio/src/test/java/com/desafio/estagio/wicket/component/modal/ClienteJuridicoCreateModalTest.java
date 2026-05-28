@@ -1,6 +1,8 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.model.Municipio;
 import com.desafio.estagio.model.UnidadeFederativa;
+import com.desafio.estagio.repository.MunicipioRepository;
 import com.desafio.estagio.repository.UnidadeFederativaRepository;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.service.ClienteJuridicoService;
@@ -27,26 +29,32 @@ class ClienteJuridicoCreateModalTest extends WicketTestBase {
 
     private static final String MODAL = "modal";
 
+    private static final List<UnidadeFederativa> ALL_UFS = List.of(
+            new UnidadeFederativa(12L, "AC", "Acre"), new UnidadeFederativa(27L, "AL", "Alagoas"),
+            new UnidadeFederativa(16L, "AP", "Amapá"), new UnidadeFederativa(13L, "AM", "Amazonas"),
+            new UnidadeFederativa(29L, "BA", "Bahia"), new UnidadeFederativa(23L, "CE", "Ceará"),
+            new UnidadeFederativa(53L, "DF", "Distrito Federal"), new UnidadeFederativa(32L, "ES", "Espírito Santo"),
+            new UnidadeFederativa(52L, "GO", "Goiás"), new UnidadeFederativa(21L, "MA", "Maranhão"),
+            new UnidadeFederativa(51L, "MT", "Mato Grosso"), new UnidadeFederativa(50L, "MS", "Mato Grosso do Sul"),
+            new UnidadeFederativa(31L, "MG", "Minas Gerais"), new UnidadeFederativa(15L, "PA", "Pará"),
+            new UnidadeFederativa(25L, "PB", "Paraíba"), new UnidadeFederativa(41L, "PR", "Paraná"),
+            new UnidadeFederativa(26L, "PE", "Pernambuco"), new UnidadeFederativa(22L, "PI", "Piauí"),
+            new UnidadeFederativa(33L, "RJ", "Rio de Janeiro"), new UnidadeFederativa(24L, "RN", "Rio Grande do Norte"),
+            new UnidadeFederativa(43L, "RS", "Rio Grande do Sul"), new UnidadeFederativa(11L, "RO", "Rondônia"),
+            new UnidadeFederativa(14L, "RR", "Roraima"), new UnidadeFederativa(42L, "SC", "Santa Catarina"),
+            new UnidadeFederativa(35L, "SP", "São Paulo"), new UnidadeFederativa(28L, "SE", "Sergipe"),
+            new UnidadeFederativa(17L, "TO", "Tocantins")
+    );
+
     @BeforeEach
     void configureMocks() {
-        var repo = mock(UnidadeFederativaRepository.class);
-        when(repo.findAll()).thenReturn(List.of(
-                new UnidadeFederativa("AC", "Acre"), new UnidadeFederativa("AL", "Alagoas"),
-                new UnidadeFederativa("AP", "Amapá"), new UnidadeFederativa("AM", "Amazonas"),
-                new UnidadeFederativa("BA", "Bahia"), new UnidadeFederativa("CE", "Ceará"),
-                new UnidadeFederativa("DF", "Distrito Federal"), new UnidadeFederativa("ES", "Espírito Santo"),
-                new UnidadeFederativa("GO", "Goiás"), new UnidadeFederativa("MA", "Maranhão"),
-                new UnidadeFederativa("MT", "Mato Grosso"), new UnidadeFederativa("MS", "Mato Grosso do Sul"),
-                new UnidadeFederativa("MG", "Minas Gerais"), new UnidadeFederativa("PA", "Pará"),
-                new UnidadeFederativa("PB", "Paraíba"), new UnidadeFederativa("PR", "Paraná"),
-                new UnidadeFederativa("PE", "Pernambuco"), new UnidadeFederativa("PI", "Piauí"),
-                new UnidadeFederativa("RJ", "Rio de Janeiro"), new UnidadeFederativa("RN", "Rio Grande do Norte"),
-                new UnidadeFederativa("RS", "Rio Grande do Sul"), new UnidadeFederativa("RO", "Rondônia"),
-                new UnidadeFederativa("RR", "Roraima"), new UnidadeFederativa("SC", "Santa Catarina"),
-                new UnidadeFederativa("SP", "São Paulo"), new UnidadeFederativa("SE", "Sergipe"),
-                new UnidadeFederativa("TO", "Tocantins")
-        ));
-        configureMock(UnidadeFederativaRepository.class, repo);
+        var ufRepo = mock(UnidadeFederativaRepository.class);
+        when(ufRepo.findAll()).thenReturn(ALL_UFS);
+        configureMock(UnidadeFederativaRepository.class, ufRepo);
+
+        var municipioRepo = mock(MunicipioRepository.class);
+        when(municipioRepo.findByUnidadeFederativaSiglaOrderByNome(any())).thenReturn(List.of());
+        configureMock(MunicipioRepository.class, municipioRepo);
     }
 
     @Test
@@ -80,8 +88,8 @@ class ClienteJuridicoCreateModalTest extends WicketTestBase {
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:numero", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:bairro", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:cep", TextField.class);
-        tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:cidade", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:estado", DropDownChoice.class);
+        tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:municipioId", DropDownChoice.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:telefone", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:complemento", TextField.class);
 
@@ -109,7 +117,6 @@ class ClienteJuridicoCreateModalTest extends WicketTestBase {
         formTester.setValue("enderecosContainer:enderecosRow:0:numero", "1000");
         formTester.setValue("enderecosContainer:enderecosRow:0:bairro", "Bela Vista");
         formTester.setValue("enderecosContainer:enderecosRow:0:cep", "01310-100");
-        formTester.setValue("enderecosContainer:enderecosRow:0:cidade", "São Paulo");
         formTester.setValue("enderecosContainer:enderecosRow:0:estado", "SP");
 
         tester.executeAjaxEvent(MODAL + ":form:submit", "click");

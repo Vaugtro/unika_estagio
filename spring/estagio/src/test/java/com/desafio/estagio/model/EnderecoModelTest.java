@@ -22,14 +22,18 @@ class EnderecoModelTest {
                 .cep("12345678")
                 .bairro("Centro")
                 .telefone("11999999999")
-                .cidade("São Paulo")
-                .estado("SP")
+                .municipio(createMunicipio())
                 .principal(false)
                 .build();
 
         cliente = new TestCliente();
         cliente.setId(1L);
         cliente.setEmail("test@example.com");
+    }
+
+    private Municipio createMunicipio() {
+        UnidadeFederativa uf = new UnidadeFederativa(1L, "SP", "São Paulo");
+        return new Municipio(3550308L, "São Paulo", uf);
     }
 
     // Concrete test implementation of abstract Cliente
@@ -191,8 +195,7 @@ class EnderecoModelTest {
                     .cep("87654321")
                     .bairro("Vila")
                     .telefone("11888888888")
-                    .cidade("Rio de Janeiro")
-                    .estado("RJ")
+                    .municipio(createMunicipio())
                     .complemento("Apto 101")
                     .principal(true)
                     .build();
@@ -203,8 +206,8 @@ class EnderecoModelTest {
             assertThat(built.getCep()).isEqualTo("87654321");
             assertThat(built.getBairro()).isEqualTo("Vila");
             assertThat(built.getTelefone()).isEqualTo("11888888888");
-            assertThat(built.getCidade()).isEqualTo("Rio de Janeiro");
-            assertThat(built.getEstado()).isEqualTo("RJ");
+            assertThat(built.getMunicipio().getNome()).isEqualTo("São Paulo");
+            assertThat(built.getMunicipio().getUnidadeFederativa().getSigla()).isEqualTo("SP");
             assertThat(built.getComplemento()).isEqualTo("Apto 101");
             assertThat(built.isPrincipal()).isTrue();
         }
@@ -218,8 +221,7 @@ class EnderecoModelTest {
                     .cep("11111111")
                     .bairro("Bairro")
                     .telefone("11777777777")
-                    .cidade("Belo Horizonte")
-                    .estado("MG")
+                    .municipio(createMunicipio())
                     .build();
 
             assertThat(built.isPrincipal()).isFalse();
@@ -246,16 +248,14 @@ class EnderecoModelTest {
             endereco.setCep("01311100");
             endereco.setBairro("Bela Vista");
             endereco.setTelefone("1133334444");
-            endereco.setCidade("São Paulo");
-            endereco.setEstado("SP");
 
             assertThat(endereco.getLogradouro()).isEqualTo("Avenida Paulista");
             assertThat(endereco.getNumero()).isEqualTo(1000L);
             assertThat(endereco.getCep()).isEqualTo("01311100");
             assertThat(endereco.getBairro()).isEqualTo("Bela Vista");
             assertThat(endereco.getTelefone()).isEqualTo("1133334444");
-            assertThat(endereco.getCidade()).isEqualTo("São Paulo");
-            assertThat(endereco.getEstado()).isEqualTo("SP");
+            assertThat(endereco.getMunicipio().getNome()).isEqualTo("São Paulo");
+            assertThat(endereco.getMunicipio().getUnidadeFederativa().getSigla()).isEqualTo("SP");
         }
     }
 

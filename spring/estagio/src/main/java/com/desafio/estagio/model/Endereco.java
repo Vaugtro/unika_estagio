@@ -37,11 +37,9 @@ public class Endereco {
     @Column(name = "telefone", nullable = true, length = 11)
     private String telefone;
 
-    @Column(name = "cidade", nullable = false)
-    private String cidade;
-
-    @Column(name = "estado", nullable = false)
-    private String estado;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "municipio_id", nullable = false)
+    private Municipio municipio;
 
     @Builder.Default
     @Column(name = "endereco_principal", nullable = false)

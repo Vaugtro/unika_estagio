@@ -90,8 +90,7 @@ class ClienteFisicoControllerTest {
                         "12345-678",
                         "Centro",
                         "(11) 99999-9999",
-                        "SP",
-                        "São Paulo",
+                        3550308L,
                         true,
                         null
                 ))

@@ -33,11 +33,8 @@ public record EnderecoUpdateRequest(
         @ValidTelefone
         String telefone,
 
-        @Schema(description = "Estado", example = "SP")
-        String estado,
-
-        @Schema(description = "Cidade", example = "São Paulo")
-        String cidade,
+        @Schema(description = "ID do município (IBGE)", example = "3550308")
+        Long municipioId,
 
         @Schema(description = "Endereço principal", example = "true")
         Boolean principal,

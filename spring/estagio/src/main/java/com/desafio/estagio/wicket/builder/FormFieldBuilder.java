@@ -4,6 +4,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -52,6 +53,7 @@ public class FormFieldBuilder<T> implements Serializable {
     private Integer minLength;
     private Integer exactLength;
     private String feedbackLabelId;
+    private String label;
     private boolean realTimeValidation;
     private Behavior validationStyleBehavior;
 
@@ -174,6 +176,14 @@ public class FormFieldBuilder<T> implements Serializable {
     }
 
     /**
+     * Sets the display label used in validation messages.
+     */
+    public FormFieldBuilder<T> label(String label) {
+        this.label = label;
+        return this;
+    }
+
+    /**
      * Sets the feedback label id. Creates a feedback label via
      * {@link com.desafio.estagio.wicket.component.ValidationFeedback#createFeedbackLabel}.
      */
@@ -211,6 +221,9 @@ public class FormFieldBuilder<T> implements Serializable {
         TextField<T> field = new TextField<>(id, fieldType);
         if (required) {
             field.setRequired(true);
+        }
+        if (label != null) {
+            field.setLabel(Model.of(label));
         }
 
         // String-based validators (maxLength, minLength, exactLength, pattern)

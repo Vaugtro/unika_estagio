@@ -34,6 +34,9 @@ public record EnderecoListResponse(
         @Schema(description = "Estado", example = "SP")
         String estado,
 
+        @Schema(description = "ID do município (IBGE)", example = "3550308")
+        Long municipioId,
+
         @Schema(description = "ID do cliente dono do endereço", example = "1")
         Long clienteId,
 

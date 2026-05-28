@@ -50,8 +50,8 @@ class EnderecoCreateTablePanelTest extends WicketTestBase {
         tester.assertComponent("panel:enderecosRow:0:numero", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:bairro", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:cep", TextField.class);
-        tester.assertComponent("panel:enderecosRow:0:cidade", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:estado", DropDownChoice.class);
+        tester.assertComponent("panel:enderecosRow:0:municipioId", DropDownChoice.class);
         tester.assertComponent("panel:enderecosRow:0:telefone", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:complemento", TextField.class);
 
@@ -60,8 +60,8 @@ class EnderecoCreateTablePanelTest extends WicketTestBase {
         tester.assertComponent("panel:enderecosRow:0:numeroFeedback", Label.class);
         tester.assertComponent("panel:enderecosRow:0:bairroFeedback", Label.class);
         tester.assertComponent("panel:enderecosRow:0:cepFeedback", Label.class);
-        tester.assertComponent("panel:enderecosRow:0:cidadeFeedback", Label.class);
         tester.assertComponent("panel:enderecosRow:0:estadoFeedback", Label.class);
+        tester.assertComponent("panel:enderecosRow:0:municipioIdFeedback", Label.class);
         tester.assertComponent("panel:enderecosRow:0:telefoneFeedback", Label.class);
         tester.assertComponent("panel:enderecosRow:0:complementoFeedback", Label.class);
 

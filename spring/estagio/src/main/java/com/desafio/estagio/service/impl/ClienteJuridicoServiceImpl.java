@@ -78,8 +78,7 @@ public class ClienteJuridicoServiceImpl extends AbstractClienteService<ClienteJu
                         enderecoRequest.cep(),
                         enderecoRequest.bairro(),
                         enderecoRequest.telefone(),
-                        enderecoRequest.estado(),
-                        enderecoRequest.cidade(),
+                        enderecoRequest.municipioId(),
                         enderecoRequest.principal(),
                         enderecoRequest.complemento(),
                         savedModel.getId()

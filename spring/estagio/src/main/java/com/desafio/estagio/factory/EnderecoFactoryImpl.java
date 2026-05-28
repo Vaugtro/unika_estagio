@@ -23,8 +23,7 @@ public class EnderecoFactoryImpl implements EnderecoFactory {
         clone.setComplemento(source.getComplemento());
         clone.setCep(source.getCep());
         clone.setBairro(source.getBairro());
-        clone.setCidade(source.getCidade());
-        clone.setEstado(source.getEstado());
+        clone.setMunicipio(source.getMunicipio());
         clone.setTelefone(source.getTelefone());
         clone.setPrincipal(source.getPrincipal());
 

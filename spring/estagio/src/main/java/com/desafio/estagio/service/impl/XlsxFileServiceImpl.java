@@ -7,6 +7,10 @@ import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoReportResponse;
 import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
 import com.desafio.estagio.dto.endereco.EnderecoResponse;
 import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
+import com.desafio.estagio.model.Municipio;
+import com.desafio.estagio.model.UnidadeFederativa;
+import com.desafio.estagio.repository.MunicipioRepository;
+import com.desafio.estagio.repository.UnidadeFederativaRepository;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
@@ -28,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,6 +42,8 @@ public class XlsxFileServiceImpl {
     private final ClienteFisicoService clienteFisicoService;
     private final ClienteJuridicoService clienteJuridicoService;
     private final EnderecoService enderecoService;
+    private final MunicipioRepository municipioRepository;
+    private final UnidadeFederativaRepository unidadeFederativaRepository;
 
     // =====================================================================
     // XLSX REPORT
@@ -174,14 +181,14 @@ public class XlsxFileServiceImpl {
                     Boolean principal = getCellBoolean(row, 12);
                     String complemento = getCellString(row, 13);
 
+                    Long municipioId = resolveMunicipioId(estado, cidade);
                     var endereco = EnderecoWithinClienteCreateRequest.builder()
                             .logradouro(logradouro)
                             .numero(numero)
                             .cep(cep)
                             .bairro(bairro)
                             .telefone(telefone)
-                            .estado(estado)
-                            .cidade(cidade)
+                            .municipioId(municipioId)
                             .principal(principal)
                             .complemento(complemento)
                             .build();
@@ -243,14 +250,14 @@ public class XlsxFileServiceImpl {
                     Boolean principal = getCellBoolean(row, 12);
                     String complemento = getCellString(row, 13);
 
+                    Long municipioId = resolveMunicipioId(estado, cidade);
                     var endereco = EnderecoWithinClienteCreateRequest.builder()
                             .logradouro(logradouro)
                             .numero(numero)
                             .cep(cep)
                             .bairro(bairro)
                             .telefone(telefone)
-                            .estado(estado)
-                            .cidade(cidade)
+                            .municipioId(municipioId)
                             .principal(principal)
                             .complemento(complemento)
                             .build();
@@ -306,14 +313,14 @@ public class XlsxFileServiceImpl {
                     Boolean principal = getCellBoolean(row, 7);
                     String complemento = getCellString(row, 8);
 
+                    Long municipioId = resolveMunicipioId(estado, cidade);
                     var request = EnderecoCreateRequest.builder()
                             .logradouro(logradouro)
                             .numero(numero)
                             .cep(cep)
                             .bairro(bairro)
                             .telefone(telefone)
-                            .estado(estado)
-                            .cidade(cidade)
+                            .municipioId(municipioId)
                             .principal(principal)
                             .complemento(complemento)
                             .clienteId(clienteId)
@@ -564,6 +571,19 @@ public class XlsxFileServiceImpl {
             case NUMERIC -> cell.getNumericCellValue() == 1;
             default -> null;
         };
+    }
+
+    private Long resolveMunicipioId(String estado, String cidade) {
+        if (estado == null || cidade == null || estado.isBlank() || cidade.isBlank()) return null;
+        UnidadeFederativa uf = unidadeFederativaRepository.findBySigla(estado.toUpperCase().trim()).orElse(null);
+        if (uf == null) return null;
+        String sigla = uf.getSigla();
+        String nome = cidade.trim();
+        Optional<Municipio> exact = municipioRepository.findByNomeAndUnidadeFederativaSigla(nome, sigla);
+        if (exact.isPresent()) return exact.get().getId();
+        List<Municipio> fuzzy = municipioRepository.fuzzyFindByNomeAndSigla(nome, sigla);
+        if (fuzzy.size() == 1) return fuzzy.get(0).getId();
+        return null;
     }
 
     private LocalDate parseDate(String value) {

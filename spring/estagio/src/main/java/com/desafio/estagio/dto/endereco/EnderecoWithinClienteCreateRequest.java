@@ -39,13 +39,9 @@ public record EnderecoWithinClienteCreateRequest(
         @ValidTelefone
         String telefone,
 
-        @Schema(description = "Estado (SP)", example = "SP", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "Estado é obrigatório")
-        String estado,
-
-        @Schema(description = "Cidade", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "Cidade é obrigatório")
-        String cidade,
+        @Schema(description = "ID do município (IBGE)", example = "3550308", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "Município é obrigatório")
+        Long municipioId,
 
         @Schema(description = "Indica se é o endereço principal", example = "true")
         Boolean principal,

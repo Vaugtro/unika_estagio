@@ -1,6 +1,8 @@
 package com.desafio.estagio.wicket.component.shared;
 
+import com.desafio.estagio.model.Municipio;
 import com.desafio.estagio.model.UnidadeFederativa;
+import com.desafio.estagio.repository.MunicipioRepository;
 import com.desafio.estagio.repository.UnidadeFederativaRepository;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.builder.FormFieldBuilder;
@@ -11,8 +13,10 @@ import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.extensions.markup.html.form.select.SelectOption;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -45,6 +49,9 @@ public class EnderecoCreateTablePanel extends Panel {
     @SpringBean
     private UnidadeFederativaRepository unidadeFederativaRepository;
 
+    @SpringBean
+    private MunicipioRepository municipioRepository;
+
     public EnderecoCreateTablePanel(String id, List<EnderecoCreateFormModel> enderecos) {
         super(id);
         this.enderecos = enderecos;
@@ -61,6 +68,7 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 FormFieldBundle cep = FormFieldBuilder.create(String.class)
                         .id("cep").required()
+                        .label("CEP")
                         .placeholder("CEP").dataField("cep")
                         .dataMask("00000-000").onblur("pesquisacep(this)")
                         .maxLength(ValidationConstants.CEP_MAX)
@@ -73,6 +81,7 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 FormFieldBundle logradouro = FormFieldBuilder.create(String.class)
                         .id("logradouro").required()
+                        .label("Logradouro")
                         .placeholder("Logradouro").dataField("logradouro")
                         .maxLength(ValidationConstants.LOGRADOURO_MAX)
                         .minLength(ValidationConstants.LOGRADOURO_MIN)
@@ -84,6 +93,7 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 FormFieldBundle numero = FormFieldBuilder.create(Long.class)
                         .id("numero").required()
+                        .label("Número")
                         .placeholder("Nº")
                         .feedbackLabel("numeroFeedback")
                         .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
@@ -93,6 +103,7 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 FormFieldBundle bairro = FormFieldBuilder.create(String.class)
                         .id("bairro").required()
+                        .label("Bairro")
                         .placeholder("Bairro").dataField("bairro")
                         .maxLength(ValidationConstants.BAIRRO_MAX)
                         .minLength(ValidationConstants.BAIRRO_MIN)
@@ -101,17 +112,6 @@ public class EnderecoCreateTablePanel extends Panel {
                         .build();
                 item.add(bairro.field());
                 item.add(bairro.feedbackLabel());
-
-                FormFieldBundle cidade = FormFieldBuilder.create(String.class)
-                        .id("cidade").required()
-                        .placeholder("Cidade").dataField("cidade")
-                        .maxLength(ValidationConstants.CIDADE_MAX)
-                        .minLength(ValidationConstants.CIDADE_MIN)
-                        .feedbackLabel("cidadeFeedback")
-                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
-                        .build();
-                item.add(cidade.field());
-                item.add(cidade.feedbackLabel());
 
                 var ufs = unidadeFederativaRepository.findAll();
                 var ufNomePorSigla = new HashMap<String, String>();
@@ -143,17 +143,100 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 DropDownChoice<String> estado = new DropDownChoice<>("estado", siglasOrdenadas, ufRenderer);
                 estado.setRequired(true);
+                estado.setLabel(org.apache.wicket.model.Model.of("UF"));
                 estado.add(new AttributeModifier("data-field", "estado"));
                 estado.add(VALIDATION_STYLE_INSTANCE);
                 estado.setOutputMarkupId(true);
+                estado.add(new AjaxFormComponentUpdatingBehavior("change") {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        var municipio = item.get("municipioId");
+                        target.add(municipio);
+                        var rowData = "document.querySelector('[data-field=\"estado\"]').closest('tr').getAttribute('data-viacep-municipio-id')";
+                        target.appendJavaScript(
+                                "var row=document.querySelector('[data-field=\"estado\"]')" +
+                                        "?.closest('tr');" +
+                                        "if(row){var ibge=row.getAttribute('data-viacep-municipio-id');" +
+                                        "if(ibge){var sel=row.querySelector('[data-field=\"municipio\"]');" +
+                                        "if(sel)sel.value=ibge;}}"
+                        );
+                    }
+                });
                 item.add(estado);
 
                 Label estadoFeedback = ValidationFeedback.createFeedbackLabel("estadoFeedback", estado);
                 ValidationFeedback.attachRealTimeValidation(estado, estadoFeedback);
                 item.add(estadoFeedback);
 
+                var municipioNomePorId = new HashMap<Long, String>();
+
+                IModel<List<Long>> municipioChoices = new IModel<>() {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public List<Long> getObject() {
+                        EnderecoCreateFormModel model = (EnderecoCreateFormModel) item.getModelObject();
+                        String ufSigla = model.getEstado();
+                        municipioNomePorId.clear();
+                        if (ufSigla == null || ufSigla.isEmpty()) return List.of();
+                        List<Municipio> municipios = municipioRepository
+                                .findByUnidadeFederativaSiglaOrderByNome(ufSigla);
+                        return municipios.stream()
+                                .peek(m -> municipioNomePorId.put(m.getId(), m.getNome()))
+                                .map(Municipio::getId)
+                                .toList();
+                    }
+
+                    @Override
+                    public void setObject(List<Long> object) {
+                        // read-only model
+                    }
+
+                    @Override
+                    public void detach() {
+                    }
+                };
+
+                IChoiceRenderer<Long> municipioRenderer = new IChoiceRenderer<>() {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public String getIdValue(Long id, int index) {
+                        return id.toString();
+                    }
+
+                    @Override
+                    public Object getDisplayValue(Long id) {
+                        return municipioNomePorId.getOrDefault(id, id.toString());
+                    }
+
+                    @Override
+                    public Long getObject(String id, IModel<? extends List<? extends Long>> choices) {
+                        if (id == null || id.isEmpty()) return null;
+                        return Long.parseLong(id);
+                    }
+                };
+
+                DropDownChoice<Long> municipio = new DropDownChoice<>("municipioId", municipioChoices, municipioRenderer);
+                municipio.setRequired(true);
+                municipio.setLabel(org.apache.wicket.model.Model.of("Cidade"));
+                municipio.setOutputMarkupId(true);
+                municipio.add(new AttributeModifier("data-field", "municipio"));
+                municipio.add(VALIDATION_STYLE_INSTANCE);
+                item.add(municipio);
+
+                Label municipioFeedback = ValidationFeedback.createFeedbackLabel("municipioIdFeedback", municipio);
+                ValidationFeedback.attachRealTimeValidation(municipio, municipioFeedback);
+                item.add(municipioFeedback);
+
                 FormFieldBundle telefone = FormFieldBuilder.create(String.class)
                         .id("telefone")
+                        .label("Telefone")
                         .placeholder("Telefone").dataMask("(00) 00000-0000")
                         .maxLength(ValidationConstants.TELEFONE_MAX)
                         .pattern("^\\(\\d{2}\\)\\s?\\d{4,5}-?\\d{4}$")
@@ -165,6 +248,7 @@ public class EnderecoCreateTablePanel extends Panel {
 
                 FormFieldBundle complemento = FormFieldBuilder.create(String.class)
                         .id("complemento")
+                        .label("Complemento")
                         .placeholder("Complemento")
                         .maxLength(ValidationConstants.COMPLEMENTO_MAX)
                         .feedbackLabel("complementoFeedback")

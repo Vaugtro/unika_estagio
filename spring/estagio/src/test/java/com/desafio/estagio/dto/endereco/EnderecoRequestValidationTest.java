@@ -46,8 +46,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .clienteId(1L)
                 .build();
@@ -65,8 +64,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .clienteId(1L)
                 .build();
@@ -84,8 +82,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("(11) 91234-5678")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .clienteId(1L)
                 .build();
@@ -103,8 +100,7 @@ class EnderecoRequestValidationTest {
                 .cep(null)
                 .bairro(null)
                 .telefone(null)
-                .estado(null)
-                .cidade(null)
+                .municipioId(null)
                 .clienteId(null)
                 .build();
 
@@ -117,8 +113,7 @@ class EnderecoRequestValidationTest {
         assertThat(messages).anyMatch(m -> m.contains("Número"));
         assertThat(messages).anyMatch(m -> m.contains("CEP"));
         assertThat(messages).anyMatch(m -> m.contains("Bairro"));
-        assertThat(messages).anyMatch(m -> m.contains("Estado"));
-        assertThat(messages).anyMatch(m -> m.contains("Cidade"));
+        assertThat(messages).anyMatch(m -> m.contains("Município"));
         assertThat(messages).anyMatch(m -> m.contains("cliente"));
     }
 
@@ -135,8 +130,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .build();
 
@@ -153,8 +147,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .build();
 
@@ -175,8 +168,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone(null)
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .build();
 
@@ -193,8 +185,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .build();
 
@@ -211,8 +202,7 @@ class EnderecoRequestValidationTest {
                 .cep("01001-000")
                 .bairro("Centro")
                 .telefone("(11) 91234-5678")
-                .estado("SP")
-                .cidade("São Paulo")
+                .municipioId(3550308L)
                 .principal(false)
                 .build();
 

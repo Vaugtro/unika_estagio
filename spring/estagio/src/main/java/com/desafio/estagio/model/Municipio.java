@@ -3,6 +3,8 @@ package com.desafio.estagio.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,17 +15,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "UnidadeFederativa")
-@Table(name = "unidade_federativa")
-public class UnidadeFederativa {
+@Entity(name = "Municipio")
+@Table(name = "municipio")
+public class Municipio {
 
     @Id
     @Column(name = "id", columnDefinition = "INT UNSIGNED", nullable = false)
     private Long id;
 
-    @Column(name = "sigla", nullable = false, unique = true, length = 2)
-    private String sigla;
-
-    @Column(name = "nome", nullable = false, length = 50)
+    @Column(name = "nome", nullable = false, length = 100)
     private String nome;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "uf_id", nullable = false)
+    private UnidadeFederativa unidadeFederativa;
 }
