@@ -12,6 +12,7 @@ import {
 } from '../endereco-create-dialog/endereco-create-dialog.component';
 import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
 import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
+import {EnderecoResponse} from '../../../api/model/enderecoResponse';
 import {EnderecosService} from "../../../api";
 
 @Component({
@@ -98,18 +99,27 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   }
 
   edit(row: EnderecoListResponse): void {
-    const dialogRef = this.dialog.open(EnderecoCreateDialogComponent, {
-      width: '600px',
-      data: {
-        clienteId: this.clienteId,
-        clienteType: this.clienteType,
-        endereco: row,
-      },
-    });
-
     this.subscriptions.push(
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) this.loadData();
+      this.enderecosService.enderecosFindById(row.id!).pipe(
+        catchError(() => {
+          this.toastService.show('error', 'Erro ao carregar endereço');
+          return EMPTY;
+        })
+      ).subscribe((endereco: EnderecoResponse) => {
+        const dialogRef = this.dialog.open(EnderecoCreateDialogComponent, {
+          width: '600px',
+          data: {
+            clienteId: this.clienteId,
+            clienteType: this.clienteType,
+            endereco: endereco,
+          },
+        });
+
+        this.subscriptions.push(
+          dialogRef.afterClosed().subscribe((result) => {
+            if (result) this.loadData();
+          })
+        );
       })
     );
   }
@@ -164,9 +174,15 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   }
 
   openImport(): void {
-    this.dialog.open(ImportDialogComponent, {
+    const dialogRef = this.dialog.open(ImportDialogComponent, {
       data: {clienteType: this.clienteType, clienteId: this.clienteId},
     });
+
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) this.loadData();
+      })
+    );
   }
 
   private makePageable(): Pageable {

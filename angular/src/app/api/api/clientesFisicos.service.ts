@@ -19,8 +19,6 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { ClienteFisicoCreateRequest } from '../model/clienteFisicoCreateRequest';
 // @ts-ignore
-import { ClienteFisicoResponse } from '../model/clienteFisicoResponse';
-// @ts-ignore
 import { ClienteFisicoUpdateRequest } from '../model/clienteFisicoUpdateRequest';
 // @ts-ignore
 import { OrgSpringdocCoreConvertersModelsPageable } from '../model/orgSpringdocCoreConvertersModelsPageable';
@@ -104,10 +102,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosCreate(clienteFisicoCreateRequest: ClienteFisicoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (clienteFisicoCreateRequest === null || clienteFisicoCreateRequest === undefined) {
             throw new Error('Required parameter clienteFisicoCreateRequest was null or undefined when calling clientesFisicosCreate.');
         }
@@ -115,7 +113,6 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -147,7 +144,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ClienteFisicoResponse>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: clienteFisicoCreateRequest,
@@ -355,10 +352,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosGetByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosGetByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosGetByCpf(cpf: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosGetByCpf(cpf: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (cpf === null || cpf === undefined) {
             throw new Error('Required parameter cpf was null or undefined when calling clientesFisicosGetByCpf.');
         }
@@ -366,7 +363,6 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -389,7 +385,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/cpf/${this.configuration.encodeParam({name: "cpf", value: cpf, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ClienteFisicoResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -410,10 +406,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public clientesFisicosGetById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosGetById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosGetById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosGetById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosGetById.');
         }
@@ -421,7 +417,6 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -444,7 +439,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ClienteFisicoResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -773,10 +768,10 @@ export class ClientesFisicosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<ClienteFisicoResponse>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<ClienteFisicoResponse>>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<ClienteFisicoResponse>>;
-    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public clientesFisicosUpdate(id: number, clienteFisicoUpdateRequest: ClienteFisicoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling clientesFisicosUpdate.');
         }
@@ -787,7 +782,6 @@ export class ClientesFisicosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -819,7 +813,7 @@ export class ClientesFisicosService extends BaseService {
 
         let localVarPath = `/v1/clientes/fisicos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ClienteFisicoResponse>('put', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: clienteFisicoUpdateRequest,

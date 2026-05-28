@@ -26,8 +26,6 @@ import { EnderecoUpdateRequest } from '../model/enderecoUpdateRequest';
 import { EnderecoWithinClienteCreateRequest } from '../model/enderecoWithinClienteCreateRequest';
 // @ts-ignore
 import { OrgSpringdocCoreConvertersModelsPageable } from '../model/orgSpringdocCoreConvertersModelsPageable';
-// @ts-ignore
-import { OrgSpringframeworkDataDomainPageEnderecoListResponse } from '../model/orgSpringframeworkDataDomainPageEnderecoListResponse';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -108,10 +106,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<EnderecoResponse>;
-    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<EnderecoResponse>>;
-    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<EnderecoResponse>>;
-    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosCreate(enderecoCreateRequest: EnderecoCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (enderecoCreateRequest === null || enderecoCreateRequest === undefined) {
             throw new Error('Required parameter enderecoCreateRequest was null or undefined when calling enderecosCreate.');
         }
@@ -119,7 +117,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -151,7 +148,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<EnderecoResponse>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: enderecoCreateRequest,
@@ -174,10 +171,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<EnderecoResponse>;
-    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<EnderecoResponse>>;
-    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<EnderecoResponse>>;
-    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosCreateForCliente(clienteId: number, enderecoWithinClienteCreateRequest: EnderecoWithinClienteCreateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (clienteId === null || clienteId === undefined) {
             throw new Error('Required parameter clienteId was null or undefined when calling enderecosCreateForCliente.');
         }
@@ -188,7 +185,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -220,7 +216,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos/clientes/${this.configuration.encodeParam({name: "clienteId", value: clienteId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<EnderecoResponse>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: enderecoWithinClienteCreateRequest,
@@ -351,10 +347,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<OrgSpringframeworkDataDomainPageEnderecoListResponse>;
-    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<OrgSpringframeworkDataDomainPageEnderecoListResponse>>;
-    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<OrgSpringframeworkDataDomainPageEnderecoListResponse>>;
-    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosFindAllByClienteId(clienteId: number, pageable: OrgSpringdocCoreConvertersModelsPageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (clienteId === null || clienteId === undefined) {
             throw new Error('Required parameter clienteId was null or undefined when calling enderecosFindAllByClienteId.');
         }
@@ -376,7 +372,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -399,7 +394,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos/clientes/${this.configuration.encodeParam({name: "clienteId", value: clienteId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<OrgSpringframeworkDataDomainPageEnderecoListResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
@@ -421,10 +416,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosFindById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<EnderecoResponse>;
-    public enderecosFindById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<EnderecoResponse>>;
-    public enderecosFindById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<EnderecoResponse>>;
-    public enderecosFindById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosFindById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosFindById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosFindById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosFindById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling enderecosFindById.');
         }
@@ -432,7 +427,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -455,7 +449,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<EnderecoResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -801,10 +795,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosSetAsPrincipal(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<EnderecoResponse>;
-    public enderecosSetAsPrincipal(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<EnderecoResponse>>;
-    public enderecosSetAsPrincipal(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<EnderecoResponse>>;
-    public enderecosSetAsPrincipal(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosSetAsPrincipal(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosSetAsPrincipal(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosSetAsPrincipal(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosSetAsPrincipal(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling enderecosSetAsPrincipal.');
         }
@@ -812,7 +806,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -835,7 +828,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}/principal`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<EnderecoResponse>('patch', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -857,10 +850,10 @@ export class EnderecosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<EnderecoResponse>;
-    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpResponse<EnderecoResponse>>;
-    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<HttpEvent<EnderecoResponse>>;
-    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext}): Observable<any> {
+    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public enderecosUpdate(id: number, enderecoUpdateRequest: EnderecoUpdateRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling enderecosUpdate.');
         }
@@ -871,7 +864,6 @@ export class EnderecosService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*',
             'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -903,7 +895,7 @@ export class EnderecosService extends BaseService {
 
         let localVarPath = `/v1/enderecos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<EnderecoResponse>('put', `${basePath}${localVarPath}`,
+        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: enderecoUpdateRequest,

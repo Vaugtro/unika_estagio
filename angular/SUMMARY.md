@@ -1,176 +1,80 @@
-# Wicket vs Angular — Feature Gap Analysis
+# Wicket UI Changes — Endereço UF/Municipio Dependent Dropdowns
 
-**Generated:** 2026-05-28
-**Scope:** Wicket backend (`spring/estagio/`) vs Angular SPA (`angular/`)
-**Goal:** Identify all Wicket UI features not yet implemented in the Angular frontend, ordered by priority.
+## What Changed
 
----
-
-## 1. Feature Comparison Matrix
-
-| Feature | Wicket | Angular | Gap |
-|---------|--------|---------|-----|
-| Client listing (paginated) | ✅ | ✅ | — |
-| Debounced search (300ms) | ✅ | ✅ | — |
-| Inline row editing | ✅ | ✅ | — |
-| Status toggle (activate/inactivate) | ✅ | ✅ | — |
-| Client detail page | ✅ | ✅ | — |
-| Client create (modal form) | ✅ | ✅ | — |
-| Client export (PDF + XLSX) | ✅ | ✅ | — |
-| Client import template download | ✅ | ✅ | — |
-| ViaCEP auto-fill | ✅ | ✅ | — |
-| Set address as principal | ✅ | ✅ | — |
-| Delete address | ✅ | ✅ | — |
-| Real-time validation | ✅ | ✅ | — |
-| Toast notifications | ✅ | ✅ | — |
-| **Client hard-delete** | ✅ | ❌ | Endpoint exists, no UI |
-| **Edit client via modal** | ✅ | ❌ | Inline editing only |
-| **Address edit** | ✅ | ❌ | Create + delete only |
-| **Address export (PDF + XLSX)** | ✅ | ❌ | "Not available" |
-| **Address import (XLSX + template)** | ✅ | ❌ | "Not available" |
-| **Client import execution** | ✅ | ⚠️ | Stub: `// TODO` |
-
-✅ = implemented | ❌ = missing | ⚠️ = partial (UI exists, backend not connected)
+The Endereco form replaced a free-text Cidade input with a **dependent dropdown pair**:
+UF (estado) → Municipio. Both come from the IBGE tables, so values are
+validated against the database instead of free text.
 
 ---
 
-## 2. Detailed Gap Descriptions
+## Key UI Pattern
 
-### P0 — Client Hard-Delete
+### 1. Estado Dropdown (first)
 
-**Wicket:** `ClienteFisicoDetalhePage` / `ClienteJuridicoDetalhePage` show a red "Excluir Cliente" button when the client is inactive (`estaAtivo = false`). Calls `hardDelete()` on the service layer and redirects to `HomePage`. Handles `BusinessException`.
+- **Source**: `GET /v1/unidades-federativas` → list of `{ sigla, nome }`
+- **Sorted by**: `nome`
+- **Required**: yes — `setRequired(true)`
+- **Label**: `"Estado"`
+- **Null option**: `"Selecione..."` (the `null` key in `WicketApplication.properties`)
+- **On change**: triggers re-population of the Municipio dropdown choices
 
-**Angular:** Detail pages (`FisicoDetailComponent`, `JuridicoDetailComponent`) are read-only. No delete button.
+### 2. Municipio Dropdown (second, depends on Estado)
 
-**API available:** `DELETE /v1/clientes/fisicos/{id}/permanent` and `DELETE /v1/clientes/juridicos/{id}/permanent` — already in generated API client, not consumed.
+- **Source**: `GET /v1/municipios?ufSigla={sigla}` → list of `{ id, nome, ufSigla }`
+- **Filtered by**: the selected UF's sigla
+- **Choices empty** when no UF selected
+- **Required**: yes — `setRequired(true)`
+- **Label**: `"Município"`
+- **Value type**: `number` (IBGE municipio code, not string)
 
-**Files involved:**
-- `angular/src/app/cliente-fisico/pages/fisico-detail.component.*`
-- `angular/src/app/cliente-juridico/pages/juridico-detail.component.*`
+### 3. Form Submission
 
----
+- **Request body** sends `municipioId` (number, IBGE code), **not** `estado` + `cidade`
+- `estado` (sigla) is a transient UI helper — not sent to the API
 
-### P0 — Client Import Execution
+### 4. Edit Pre-population
 
-**Wicket:** `ImportModal` is fully functional — file upload, submit via `AjaxButton`, reads `FileUpload` InputStream, calls `importData()`, shows toast with success count, auto-reloads after 3s.
+- Read `municipioId` from the response DTO
+- Set the Estado dropdown to the matching UF
+- Then set the Municipio dropdown to the matching `municipioId`
+- Display `cidade` + `estado` from response as read-only text
 
-**Angular:** `ImportDialogComponent` has the file picker UI and template download working, but the `import()` method is a stub:
+### 5. Validation Messages (Portuguese)
 
-```typescript
-// TODO: implement when backend endpoint is ready
+```
+null = Selecione...
+Required = ${label} é necessário.
 ```
 
-**API endponts:**
-- `POST /v1/export/clientes/fisicos/template` (template download — working)
-- `POST /v1/export/clientes/juridicos/template` (template download — working)
-- Import endpoints exist in Wicket controllers but need to be verified for REST availability
+### 6. All form fields need explicit labels
 
-**Files involved:**
-- `angular/src/app/shared/components/import-dialog/import-dialog.component.ts`
+Every form field must have a `.setLabel()` call. Validation messages use the
+label as `${label}` placeholder.
 
 ---
 
-### P1 — Edit Client Via Modal
+## Files Changed (for reference)
 
-**Wicket:** `ClienteFisicoEditModal` / `ClienteJuridicoEditModal` open a Bootstrap modal with editable fields (Nome, Email for fisico; Razao Social, Email for juridico). Uses `LoadableDetachableModel` for fresh data. On save, calls `update()` service, shows toast, removes modal from DOM.
-
-**Angular:** Only has inline row editing (`FisicoRowFormComponent`, `JuridicoRowFormComponent`). No dedicated modal for editing all editable client fields.
-
-**API available:** `PUT /v1/clientes/fisicos/{id}` and `PUT /v1/clientes/juridicos/{id}` — already in generated API client.
-
-**Files involved:**
-- `angular/src/app/cliente-fisico/components/fisico-create-dialog/` (reuse as base)
-- `angular/src/app/cliente-juridico/components/juridico-create-dialog/` (reuse as base)
-
----
-
-### P1 — Address Edit
-
-**Wicket:** `EnderecoListViewPanel` has an edit button per row that opens a modal pre-populated with address data via `EnderecoCreateTablePanel`. Calls `enderecoService.update(endId, formModel)`.
-
-**Angular:** `EnderecoTableComponent` has create and delete but no edit button.
-
-**API available:** `PUT /v1/enderecos/{id}` — already in generated API client, not consumed.
-
-**Files involved:**
-- `angular/src/app/endereco/components/endereco-table/`
-- `angular/src/app/endereco/components/endereco-create-dialog/` (reuse as edit dialog)
-- `angular/src/app/shared/components/endereco-form/` (reuse address form)
+| File | Change |
+|------|--------|
+| `wicket/model/EnderecoCreateFormModel.java` | Removed `cidade`, added `municipioId`; kept `estado` as transient |
+| `wicket/component/shared/EnderecoCreateTablePanel.java` | Removed Cidade text field; added Estado + Municipio dropdown pair with dependent refresh |
+| `wicket/component/shared/EnderecoCreateTablePanel.html` | Removed Cidade `<td>` column |
+| `wicket/mapper/EnderecoDtoMapper.java` | Changed `formModel.getCidade()` → `formModel.getMunicipioId()` |
+| `wicket/builder/FormFieldBuilder.java` | Added `label(String)` method → calls `field.setLabel(Model.of(label))` |
+| `wicket/application/WicketApplication.properties` | New file: `null=Selecione...`, `Required=${label} é necessário.` |
 
 ---
 
-### P2 — Address Export (PDF + XLSX)
+## What Angular Should Replicate
 
-**Wicket:** `EnderecoListViewPanel` has PDF and XLSX export buttons in the header. Calls `fileService.pdfEnderecos(clienteId)` and `fileService.xlsxEnderecos(clienteId)`.
-
-**Angular:** `ExportDialogComponent` explicitly skips addresses:
-
-```typescript
-if (this.data.clienteType === 'endereco') {
-  this.toastService.show('info', 'Exportação de PDF não disponível para endereços');
-  return;
-}
-```
-
-**API available:**
-- `GET /v1/export/clientes/{clienteId}/enderecos/pdf`
-- `GET /v1/export/clientes/{clienteId}/enderecos/xlsx`
-
-Both already in generated API client (`ArquivoService`), not consumed.
-
-**Files involved:**
-- `angular/src/app/shared/components/export-dialog/export-dialog.component.ts`
-
----
-
-### P2 — Address Import (XLSX + Template)
-
-**Wicket:** `EnderecoListViewPanel` has a template download button and an import file upload form. Calls `fileService.templateEnderecosImport()` and `fileService.importEnderecos(clienteId, is)`.
-
-**Angular:** No address import UI exists. The `ImportDialogComponent` only supports client types.
-
-**API available:**
-- `GET /v1/export/enderecos/template`
-- Import endpoint exists in Wicket controllers
-
-Already in generated API client (`ArquivoService`), not consumed.
-
-**Files involved:**
-- `angular/src/app/shared/components/import-dialog/import-dialog.component.ts`
-
----
-
-## 3. API Endpoints Available But Not Consumed by Angular
-
-| Endpoint | Service | Gap |
-|----------|---------|-----|
-| `DELETE /v1/clientes/fisicos/{id}` | `clientesFisicosSoftDelete` | No soft-delete UI |
-| `DELETE /v1/clientes/fisicos/{id}/permanent` | `clientesFisicosHardDelete` | No hard-delete UI (P0) |
-| `DELETE /v1/clientes/juridicos/{id}` | `clientesJuridicosHardDelete` | No delete UI |
-| `PUT /v1/clientes/fisicos/{id}` | `clientesFisicosUpdate` | Only used inline (P1) |
-| `PUT /v1/clientes/juridicos/{id}` | `clientesJuridicosUpdate` | Only used inline (P1) |
-| `PUT /v1/enderecos/{id}` | `enderecosUpdate` | No edit UI (P1) |
-| `GET /v1/export/clientes/{clienteId}/enderecos/pdf` | `arquivoExportEnderecosToPdf` | No UI (P2) |
-| `GET /v1/export/clientes/{clienteId}/enderecos/xlsx` | `arquivoExportEnderecosToXlsx` | No UI (P2) |
-| `GET /v1/export/enderecos/template` | `arquivoTemplateEnderecos` | No UI (P2) |
-| `GET /v1/clientes/fisicos/ativos` | `clientesFisicosGetAllActive` | No UI |
-| `GET /v1/clientes/juridicos/ativos` | `clientesJuridicosGetAllActive` | No UI |
-| `GET /v1/clientes/fisicos/relatorio` | `clientesFisicosGetReport` | No UI |
-| `GET /v1/clientes/juridicos/relatorio` | `clientesJuridicosGetReport` | No UI |
-| `GET /v1/enderecos/clientes/{clienteId}/search` | `enderecosSearchByClienteId` | No UI |
-| `GET /v1/enderecos/clientes/{clienteId}/count` | `enderecosCountByClienteId` | No UI |
-| `GET /v1/enderecos/clientes/{clienteId}/has-addresses` | `enderecosHasAtLeastOneAddress` | No UI |
-| `GET /v1/enderecos/clientes/{clienteId}/has-principal` | `enderecosHasPrincipalAddress` | No UI |
-
----
-
-## 4. Implementation Priority Recommendations
-
-| Priority | Task | Effort | Reason |
-|----------|------|--------|--------|
-| **P0** | Client hard-delete on detail page | Small | Reuse existing `ConfirmDialogComponent`, single API call |
-| **P0** | Connect client import to backend | Small | UI exists, just call endpoint + handle response |
-| **P1** | Edit client via modal | Medium | Reuse create dialog patterns, add pre-population |
-| **P1** | Address edit in detail page | Medium | Reuse `EnderecoCreateDialogComponent` with pre-population |
-| **P2** | Address export (PDF + XLSX) | Small | Enable in `ExportDialogComponent`, use existing `ArquivoService` |
-| **P2** | Address import (XLSX + template) | Medium | Add address support to `ImportDialogComponent` |
+1. Replace the free-text Cidade field with a Municipio `<select>` that is:
+   - Disabled/empty until a UF is chosen
+   - Populated via `GET /v1/municipios?ufSigla={sigla}` when UF changes
+2. Keep the UF dropdown (Estado) — populate via `GET /v1/unidades-federativas`
+3. Send `municipioId` (number) in create/update payloads instead of `estado` + `cidade`
+4. On edit: read `municipioId` from response, use it to restore both dropdown selections
+5. Show `"Selecione..."` as the blank option on both dropdowns
+6. Show required-validation messages in Portuguese: `"Campo é necessário."`
+7. Assign explicit labels to every field for validation messages

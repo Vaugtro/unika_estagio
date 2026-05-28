@@ -34,13 +34,9 @@ export interface EnderecoWithinClienteCreateRequest {
      */
     telefone?: string;
     /**
-     * Estado (SP)
+     * ID do município (IBGE)
      */
-    estado: string;
-    /**
-     * Cidade
-     */
-    cidade: string;
+    municipioId: number;
     /**
      * Indica se é o endereço principal
      */

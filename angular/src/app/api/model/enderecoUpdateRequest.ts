@@ -34,13 +34,9 @@ export interface EnderecoUpdateRequest {
      */
     telefone?: string;
     /**
-     * Estado
+     * ID do município (IBGE)
      */
-    estado?: string;
-    /**
-     * Cidade
-     */
-    cidade?: string;
+    municipioId?: number;
     /**
      * Endereço principal
      */

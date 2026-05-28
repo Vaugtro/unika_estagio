@@ -65,19 +65,25 @@
       </div>
 
       <div class="form-row">
-        <mat-form-field appearance="outline" class="full-width-field">
-          <mat-label>Cidade</mat-label>
-          <input formControlName="cidade" matInput/>
-          <mat-error *ngIf="getFieldError('cidade')">
-            {{ getFieldError('cidade') }}
+        <mat-form-field appearance="outline" class="uf-field">
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="ufSigla">
+            <mat-option [value]="">Selecione...</mat-option>
+            <mat-option *ngFor="let uf of ufs" [value]="uf.sigla">{{ uf.nome }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="getFieldError('ufSigla')">
+            {{ getFieldError('ufSigla') }}
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="estado-field">
-          <mat-label>Estado</mat-label>
-          <input formControlName="estado" matInput maxlength="2"/>
-          <mat-error *ngIf="getFieldError('estado')">
-            {{ getFieldError('estado') }}
+        <mat-form-field appearance="outline" class="municipio-field">
+          <mat-label>Município</mat-label>
+          <mat-select formControlName="municipioId">
+            <mat-option [value]="null">Selecione...</mat-option>
+            <mat-option *ngFor="let mun of getMunicipios(form.get('ufSigla')?.value)" [value]="mun.id">{{ mun.nome }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="getFieldError('municipioId')">
+            {{ getFieldError('municipioId') }}
           </mat-error>
         </mat-form-field>
       </div>

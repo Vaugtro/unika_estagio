@@ -54,6 +54,10 @@ export interface EnderecoResponse {
      */
     complemento?: string;
     /**
+     * ID do município (IBGE)
+     */
+    municipioId?: number;
+    /**
      * ID do cliente dono do endereço
      */
     clienteId?: number;

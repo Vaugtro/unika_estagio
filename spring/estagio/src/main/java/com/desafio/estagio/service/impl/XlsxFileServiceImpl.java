@@ -507,8 +507,9 @@ public class XlsxFileServiceImpl {
             if (cause instanceof ConstraintViolationException cve) {
                 StringBuilder sb = new StringBuilder("Linha ").append(rowNum).append(": ");
                 for (var cv : cve.getConstraintViolations()) {
-                    String field = cv.getPropertyPath().toString();
-                    sb.append(field).append(": ").append(cv.getMessage()).append(". ");
+                    // String field = cv.getPropertyPath().toString();
+                    // sb.append(field).append(": ").append(cv.getMessage()).append(". ");
+                    sb.append(cv.getMessage()).append(". ");
                 }
                 return sb.toString();
             }

@@ -1,11 +1,12 @@
 import {Component, Inject, OnDestroy} from '@angular/core';
-import {HttpClient, HttpEventType, HttpResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {catchError, EMPTY, Subscription} from 'rxjs';
 
 import {ArquivoService} from '../../../api/api/arquivo.service';
 import {ToastService} from '../../services/toast.service';
 import {downloadBlob} from '../../services/download.util';
+import {ImportResult} from '../../models/import-result';
 
 export interface ImportDialogData {
   clienteType: 'fisico' | 'juridico' | 'endereco';
@@ -58,8 +59,8 @@ export class ImportDialogComponent implements OnDestroy {
           this.downloadingTemplate = false;
           return EMPTY;
         })
-      ).subscribe((response: HttpResponse<string>) => {
-        const blob = response.body as unknown as Blob;
+      ).subscribe((response: any) => {
+        const blob = response.body as Blob;
         const filename = this.data.clienteType === 'endereco'
           ? 'template-enderecos.xlsx'
           : `template-clientes-${this.data.clienteType}.xlsx`;
@@ -83,21 +84,28 @@ export class ImportDialogComponent implements OnDestroy {
     } else if (this.data.clienteType === 'juridico') {
       url = '/v1/export/clientes/juridicos/import';
     } else {
-      url = `/v1/export/enderecos/${this.data.clienteId}/import`;
+      url = `/v1/export/enderecos/import?clienteId=${this.data.clienteId}`;
     }
 
     this.subscriptions.push(
-      this.httpClient.post(url, formData, {responseType: 'text'}).pipe(
-        catchError((err) => {
-          const msg = err.error?.message || err.statusText || 'Erro ao importar arquivo';
-          this.toastService.show('error', msg);
+      this.httpClient.post<ImportResult>(url, formData).pipe(
+        catchError(() => {
+          this.toastService.show('error', 'Erro inesperado. Tente novamente.');
           this.importing = false;
           return EMPTY;
         })
-      ).subscribe((response) => {
-        this.toastService.show('success', response || 'Importação concluída com sucesso');
+      ).subscribe((result: ImportResult) => {
         this.importing = false;
-        this.dialogRef.close(true);
+
+        if (result.successCount > 0 && result.errors.length === 0) {
+          this.toastService.show('success', `${result.successCount} registros importados com sucesso!`);
+          this.dialogRef.close(true);
+        } else if (result.successCount > 0) {
+          const firstError = result.errors[0];
+          this.toastService.show('warning', `${result.successCount} registros | Linhas com erro: ${firstError}`);
+        } else {
+          this.toastService.show('warning', result.errors[0]);
+        }
       })
     );
   }

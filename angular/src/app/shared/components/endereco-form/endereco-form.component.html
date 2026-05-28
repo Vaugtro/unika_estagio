@@ -35,18 +35,24 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Cidade</mat-label>
-            <input formControlName="cidade" matInput/>
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="ufSigla">
+              <mat-option [value]="">Selecione...</mat-option>
+              <mat-option *ngFor="let uf of ufs" [value]="uf.sigla">{{ uf.nome }}</mat-option>
+            </mat-select>
             <mat-error
-              *ngIf="group.get('cidade')?.invalid && group.get('cidade')?.touched">{{ getFieldError(i, 'cidade') }}
+              *ngIf="group.get('ufSigla')?.invalid && group.get('ufSigla')?.touched">{{ getFieldError(i, 'ufSigla') }}
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Estado</mat-label>
-            <input formControlName="estado" matInput maxlength="2"/>
+            <mat-label>Município</mat-label>
+            <mat-select formControlName="municipioId">
+              <mat-option [value]="null">Selecione...</mat-option>
+              <mat-option *ngFor="let mun of getMunicipios(group.get('ufSigla')?.value)" [value]="mun.id">{{ mun.nome }}</mat-option>
+            </mat-select>
             <mat-error
-              *ngIf="group.get('estado')?.invalid && group.get('estado')?.touched">{{ getFieldError(i, 'estado') }}
+              *ngIf="group.get('municipioId')?.invalid && group.get('municipioId')?.touched">{{ getFieldError(i, 'municipioId') }}
             </mat-error>
           </mat-form-field>
 

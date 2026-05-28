@@ -163,9 +163,15 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
   }
 
   openImport(): void {
-    this.dialog.open(ImportDialogComponent, {
+    const dialogRef = this.dialog.open(ImportDialogComponent, {
       data: {clienteType: 'fisico'},
     });
+
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) this.loadData();
+      })
+    );
   }
 
   private makePageable(): Pageable {
