@@ -3,15 +3,16 @@ package com.desafio.estagio.service.lifecycle;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoResponse;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoUpdateRequest;
+import jakarta.validation.Valid;
 
 /**
  * Write and lifecycle operations for ClienteJuridico.
  */
 public interface ClienteJuridicoLifecycleService {
 
-    ClienteJuridicoResponse create(ClienteJuridicoCreateRequest request);
+    ClienteJuridicoResponse create(@Valid ClienteJuridicoCreateRequest request);
 
-    ClienteJuridicoResponse update(Long id, ClienteJuridicoUpdateRequest request);
+    ClienteJuridicoResponse update(Long id, @Valid ClienteJuridicoUpdateRequest request);
 
     void delete(Long id);
 

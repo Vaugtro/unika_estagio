@@ -33,20 +33,6 @@
         </div>
     </div>
 
-    <script>
-        // Active tab highlight — Wicket AjaxLink doesn't set active class natively
-        document.addEventListener('DOMContentLoaded', function () {
-            var buttons = document.querySelectorAll('[wicket\\:id="btnFisicos"], [wicket\\:id="btnJuridicos"]');
-            buttons.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    buttons.forEach(function (b) {
-                        b.style.background = 'white';
-                        b.style.color = '#495057';
-                    });
-                });
-            });
-        });
-    </script>
 </wicket:extend>
 </body>
 </html>

@@ -25,22 +25,6 @@
             font-size: 0.8rem;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        function aplicarMascaras() {
-            $('[data-mask]').each(function () {
-                $(this).mask($(this).data('mask'));
-            });
-        }
-
-        $(document).ready(function () {
-            aplicarMascaras();
-        });
-
-        $('#createClienteFisicoModal').on('shown.bs.modal', function () {
-            aplicarMascaras();
-        });
-    </script>
     <div aria-hidden="true" class="modal fade" id="createClienteFisicoModal" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content" style="border-radius: 12px; overflow: hidden;">

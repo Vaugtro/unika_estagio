@@ -17,6 +17,7 @@ public class ClienteFisicoUpdateFormModel implements Serializable {
     private String nome;
     private String cpf;
     private String email;
+
     private Boolean estaAtivo;
 
     public ClienteFisicoUpdateFormModel() {
