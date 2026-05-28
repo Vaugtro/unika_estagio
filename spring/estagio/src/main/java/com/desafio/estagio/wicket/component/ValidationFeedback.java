@@ -1,5 +1,6 @@
 package com.desafio.estagio.wicket.component;
 
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -52,6 +53,7 @@ public final class ValidationFeedback implements Serializable {
             protected void onUpdate(AjaxRequestTarget target) {
                 target.add(field);
                 target.add(feedback);
+                JavaScriptUtils.reapplyMasksSafe(target);
             }
         });
     }
@@ -77,10 +79,8 @@ public final class ValidationFeedback implements Serializable {
             }
         });
         target.add(form);
-        target.appendJavaScript("lucide.createIcons();");
-        target.appendJavaScript(
-                "if(typeof $ !== 'undefined' && $.fn.mask) $('[data-mask]').each(function(){$(this).mask($(this).data('mask'));});"
-        );
+        JavaScriptUtils.createIcons(target);
+        JavaScriptUtils.reapplyMasksSafe(target);
         boolean hasErrors = false;
         StringBuilder highlightJS = new StringBuilder();
         for (FeedbackMessage msg : new FeedbackCollector(form).collect()) {

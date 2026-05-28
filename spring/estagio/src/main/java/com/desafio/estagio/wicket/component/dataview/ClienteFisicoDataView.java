@@ -1,12 +1,15 @@
 package com.desafio.estagio.wicket.component.dataview;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoListResponse;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
+import com.desafio.estagio.wicket.builder.AttributeModifierBuilder;
+import com.desafio.estagio.wicket.builder.ComponentAttributeBuilder;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.component.modal.ClienteFisicoEditModal;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
 import com.desafio.estagio.wicket.page.clientes.ClienteFisicoDetalhePage;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -38,7 +41,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
         ClienteFisicoListResponse cliente = item.getModelObject();
 
         WebMarkupContainer row = new WebMarkupContainer("editarForm");
-        row.setOutputMarkupId(true);
+        ComponentAttributeBuilder.of(row).setOutputMarkupId(true).build();
 
         row.add(new Label("id", new AbstractReadOnlyModel<String>() {
             @Serial
@@ -83,7 +86,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                try {
+                ErrorHandler.handleServiceCall(() -> {
                     Long id = cliente.id();
                     if (Boolean.TRUE.equals(cliente.estaAtivo())) {
                         clienteFisicoService.inactivate(id);
@@ -92,9 +95,7 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
                         clienteFisicoService.activate(id);
                         ValidationFeedback.showToast(target, "success", "Cliente ativado com sucesso!");
                     }
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                }
+                }, target);
                 findParent(ClientesFisicosTablePanel.class).refreshTable(target);
             }
         };
@@ -107,30 +108,36 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
                 return Boolean.TRUE.equals(cliente.estaAtivo()) ? "Ativo" : "Inativo";
             }
         }));
-        toggleBtn.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
+        ComponentAttributeBuilder.of(toggleBtn)
+                .add(
+                        new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+                            @Serial
+                            private static final long serialVersionUID = 1L;
 
-            @Override
-            public String getObject() {
-                return Boolean.TRUE.equals(cliente.estaAtivo()) ? "btn btn-sm btn-success" : "btn btn-sm btn-danger";
-            }
-        }));
-        toggleBtn.add(new AttributeModifier("title", new AbstractReadOnlyModel<String>() {
-            @Serial
-            private static final long serialVersionUID = 1L;
+                            @Override
+                            public String getObject() {
+                                return Boolean.TRUE.equals(cliente.estaAtivo()) ? "btn btn-sm btn-success" : "btn btn-sm btn-danger";
+                            }
+                        }),
+                        new AttributeModifier("title", new AbstractReadOnlyModel<String>() {
+                            @Serial
+                            private static final long serialVersionUID = 1L;
 
-            @Override
-            public String getObject() {
-                return Boolean.TRUE.equals(cliente.estaAtivo()) ? "Inativar" : "Ativar";
-            }
-        }));
+                            @Override
+                            public String getObject() {
+                                return Boolean.TRUE.equals(cliente.estaAtivo()) ? "Inativar" : "Ativar";
+                            }
+                        })
+                )
+                .build();
         row.add(toggleBtn);
 
         BookmarkablePageLink<Void> detalhesBtn = new BookmarkablePageLink<>("detalhesBtn",
                 ClienteFisicoDetalhePage.class,
                 new PageParameters().set("clienteId", cliente.id()));
-        detalhesBtn.add(new AttributeModifier("class", "btn btn-sm btn-outline-info rounded-circle p-1"));
+        AttributeModifierBuilder.create()
+                .cssClass("btn btn-sm btn-outline-info rounded-circle p-1")
+                .buildAndAdd(detalhesBtn);
         row.add(detalhesBtn);
 
         AjaxLink<Void> editarBtn = new AjaxLink<>("editarBtn") {
@@ -145,11 +152,10 @@ public class ClienteFisicoDataView extends AbstractClienteDataView<ClienteFisico
                 ClienteFisicoEditModal editModal = new ClienteFisicoEditModal("editModal", cliente.id());
                 container.addOrReplace(editModal);
                 target.add(container);
-                target.appendJavaScript("$('#editClienteFisicoModal').modal('show');" +
-                        "if(typeof lucide !== 'undefined') lucide.createIcons();");
+                JavaScriptUtils.showModalWithIcons(target, "editClienteFisicoModal");
             }
         };
-        editarBtn.setOutputMarkupId(true);
+        ComponentAttributeBuilder.of(editarBtn).setOutputMarkupId(true).build();
         row.add(editarBtn);
 
         item.add(row);

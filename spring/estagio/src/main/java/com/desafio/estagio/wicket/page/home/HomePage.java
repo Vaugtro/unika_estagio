@@ -4,9 +4,13 @@ import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.wicket.component.table.ClientesFisicosTablePanel;
 import com.desafio.estagio.wicket.component.table.ClientesJuridicosTablePanel;
 import com.desafio.estagio.wicket.page.base.BasePage;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class HomePage extends BasePage {
@@ -54,7 +58,7 @@ public class HomePage extends BasePage {
 
         if (target != null) {
             target.add(panelContainer);
-            target.appendJavaScript("lucide.createIcons();");
+            JavaScriptUtils.createIcons(target);
         }
     }
 
@@ -65,7 +69,15 @@ public class HomePage extends BasePage {
 
         if (target != null) {
             target.add(panelContainer);
-            target.appendJavaScript("lucide.createIcons();");
+            JavaScriptUtils.createIcons(target);
         }
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(JavaScriptUtils.class, "js/home-tabs.js")
+        ));
     }
 }

@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -204,20 +205,20 @@ public class PdfFileServiceImpl implements FileService {
     // =====================================================================
 
     @Override
-    @Transactional
-    public int importFisicos(java.io.InputStream xlsx) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ImportResult importFisicos(java.io.InputStream xlsx) {
         return xlsxFileService.importFisicos(xlsx);
     }
 
     @Override
-    @Transactional
-    public int importJuridicos(java.io.InputStream xlsx) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ImportResult importJuridicos(java.io.InputStream xlsx) {
         return xlsxFileService.importJuridicos(xlsx);
     }
 
     @Override
-    @Transactional
-    public int importEnderecos(Long clienteId, java.io.InputStream xlsx) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ImportResult importEnderecos(Long clienteId, java.io.InputStream xlsx) {
         return xlsxFileService.importEnderecos(clienteId, xlsx);
     }
 }

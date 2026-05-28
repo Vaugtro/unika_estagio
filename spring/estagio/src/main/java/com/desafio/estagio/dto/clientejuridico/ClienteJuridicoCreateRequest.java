@@ -1,6 +1,6 @@
 package com.desafio.estagio.dto.clientejuridico;
 
-import com.desafio.estagio.dto.endereco.EnderecoCreateRequest;
+import com.desafio.estagio.dto.endereco.EnderecoWithinClienteCreateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -79,7 +79,7 @@ public record ClienteJuridicoCreateRequest(
         )
         @NotEmpty(message = "O cliente deve ter pelo menos um endereço")
         @Valid
-        List<EnderecoCreateRequest> enderecos
+        List<EnderecoWithinClienteCreateRequest> enderecos
 ) implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

@@ -1,0 +1,15 @@
+---
+id: vague-questions-trigger-explorer
+trigger: "when user asks vague or open-ended questions about the codebase"
+confidence: 0.85
+domain: workflow
+source: git-history-analysis
+scope: project
+---
+
+## Action
+  Invoke the explorer-selector skill to ask the user for an exploration depth (quick/medium/very thorough) instead of guessing what they need.
+
+## Evidence
+- Git history shows consistent pattern: when users ask "how does X work", the most efficient response is to scope via a selector before deep-diving
+- Project has multiple architectural layers (Spring Boot, Wicket, Angular) — guessing wrong wastes context

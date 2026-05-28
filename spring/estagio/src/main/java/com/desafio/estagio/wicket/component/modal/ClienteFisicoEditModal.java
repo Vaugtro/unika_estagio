@@ -1,11 +1,12 @@
 package com.desafio.estagio.wicket.component.modal;
 
 import com.desafio.estagio.dto.clientefisico.ClienteFisicoUpdateRequest;
-import com.desafio.estagio.exceptions.BusinessException;
 import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.ClienteFisicoUpdateFormModel;
+import com.desafio.estagio.wicket.util.ErrorHandler;
+import com.desafio.estagio.wicket.util.JavaScriptUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -66,18 +67,16 @@ public class ClienteFisicoEditModal extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ClienteFisicoUpdateFormModel model = (ClienteFisicoUpdateFormModel) form.getModelObject();
-                try {
+                Boolean success = ErrorHandler.handleServiceCall(() -> {
                     ClienteFisicoUpdateRequest updateRequest = new ClienteFisicoUpdateRequest(
                             model.getNome(), model.getEmail(), model.getEstaAtivo()
                     );
                     clienteFisicoService.update(model.getId(), updateRequest);
+                    return true;
+                }, target);
+                if (Boolean.TRUE.equals(success)) {
                     ValidationFeedback.showToast(target, "success", "Cliente atualizado com sucesso!");
-                    target.appendJavaScript("$('#editClienteFisicoModal').modal('hide');" +
-                            "setTimeout(function(){ $('#editClienteFisicoModal').remove(); }, 500);");
-                } catch (BusinessException e) {
-                    ValidationFeedback.showToast(target, "error", e.getMessage());
-                } catch (Exception e) {
-                    ValidationFeedback.showToast(target, "error", "Erro ao atualizar cliente: " + e.getMessage());
+                    JavaScriptUtils.hideModalAndRemove(target, "editClienteFisicoModal");
                 }
             }
 
@@ -94,8 +93,7 @@ public class ClienteFisicoEditModal extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                target.appendJavaScript("$('#editClienteFisicoModal').modal('hide');" +
-                        "setTimeout(function(){ $('#editClienteFisicoModal').remove(); }, 500);");
+                JavaScriptUtils.hideModalAndRemove(target, "editClienteFisicoModal");
             }
         };
         form.add(cancelarBtn);

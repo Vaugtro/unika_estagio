@@ -16,10 +16,13 @@ public abstract class AbstractClienteDataProvider<T> implements IDataProvider<T>
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private long pageSize;
+
     @Override
     public Iterator<? extends T> iterator(long first, long count) {
+        pageSize = Math.max(pageSize, count);
         Pageable pageable = PageRequest.of(
-                (int) (first / count), (int) count, Sort.by("id").ascending());
+                (int) (first / pageSize), (int) pageSize, Sort.by("id").ascending());
         return findAll(pageable).getContent().iterator();
     }
 
