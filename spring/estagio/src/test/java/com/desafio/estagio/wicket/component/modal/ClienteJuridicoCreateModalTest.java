@@ -1,24 +1,53 @@
 package com.desafio.estagio.wicket.component.modal;
 
+import com.desafio.estagio.model.UnidadeFederativa;
+import com.desafio.estagio.repository.UnidadeFederativaRepository;
 import com.desafio.estagio.dto.clientejuridico.ClienteJuridicoCreateRequest;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.wicket.WicketTestBase;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ClienteJuridicoCreateModalTest extends WicketTestBase {
 
     private static final String MODAL = "modal";
+
+    @BeforeEach
+    void configureMocks() {
+        var repo = mock(UnidadeFederativaRepository.class);
+        when(repo.findAll()).thenReturn(List.of(
+                new UnidadeFederativa("AC", "Acre"), new UnidadeFederativa("AL", "Alagoas"),
+                new UnidadeFederativa("AP", "Amapá"), new UnidadeFederativa("AM", "Amazonas"),
+                new UnidadeFederativa("BA", "Bahia"), new UnidadeFederativa("CE", "Ceará"),
+                new UnidadeFederativa("DF", "Distrito Federal"), new UnidadeFederativa("ES", "Espírito Santo"),
+                new UnidadeFederativa("GO", "Goiás"), new UnidadeFederativa("MA", "Maranhão"),
+                new UnidadeFederativa("MT", "Mato Grosso"), new UnidadeFederativa("MS", "Mato Grosso do Sul"),
+                new UnidadeFederativa("MG", "Minas Gerais"), new UnidadeFederativa("PA", "Pará"),
+                new UnidadeFederativa("PB", "Paraíba"), new UnidadeFederativa("PR", "Paraná"),
+                new UnidadeFederativa("PE", "Pernambuco"), new UnidadeFederativa("PI", "Piauí"),
+                new UnidadeFederativa("RJ", "Rio de Janeiro"), new UnidadeFederativa("RN", "Rio Grande do Norte"),
+                new UnidadeFederativa("RS", "Rio Grande do Sul"), new UnidadeFederativa("RO", "Rondônia"),
+                new UnidadeFederativa("RR", "Roraima"), new UnidadeFederativa("SC", "Santa Catarina"),
+                new UnidadeFederativa("SP", "São Paulo"), new UnidadeFederativa("SE", "Sergipe"),
+                new UnidadeFederativa("TO", "Tocantins")
+        ));
+        configureMock(UnidadeFederativaRepository.class, repo);
+    }
 
     @Test
     void testRender() {
@@ -52,7 +81,7 @@ class ClienteJuridicoCreateModalTest extends WicketTestBase {
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:bairro", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:cep", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:cidade", TextField.class);
-        tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:estado", TextField.class);
+        tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:estado", DropDownChoice.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:telefone", TextField.class);
         tester.assertComponent(MODAL + ":form:enderecosContainer:enderecosRow:0:complemento", TextField.class);
 

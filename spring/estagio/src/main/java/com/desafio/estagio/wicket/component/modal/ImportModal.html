@@ -1,5 +1,29 @@
 <wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
-    <div aria-hidden="true" class="modal fade" role="dialog" tabindex="-1" wicket:id="modalRoot">
+    <style>
+        .import-loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.88);
+            z-index: 1060;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+        }
+
+        .import-loading-overlay.active {
+            display: flex !important;
+        }
+
+        .import-loading-overlay .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    </style>
+    <div aria-hidden="true" class="modal fade" role="dialog" style="position: relative;" tabindex="-1" wicket:id="modalRoot">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" style="border-radius: 12px;">
                 <div class="modal-header border-bottom-0">
@@ -7,6 +31,14 @@
                         <i data-lucide="upload" style="width: 18px; height: 18px;"></i> Importar
                     </h5>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="import-loading-overlay" id="importLoadingOverlay">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary mb-2" role="status">
+                            <span class="visually-hidden">Importando...</span>
+                        </div>
+                        <div class="small text-muted">Importando dados...</div>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="mb-4">

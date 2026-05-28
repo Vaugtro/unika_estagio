@@ -7,6 +7,7 @@ import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.util.ByteArrayResourceStream;
 import com.desafio.estagio.wicket.util.ErrorHandler;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -65,7 +66,7 @@ public abstract class ImportModal extends Panel {
         FileUploadField fileUpload = new FileUploadField("fileUpload");
         importForm.add(fileUpload);
 
-        importForm.add(new AjaxButton("importBtn") {
+        AjaxButton importBtn = new AjaxButton("importBtn") {
             @Serial
             private static final long serialVersionUID = 1L;
 
@@ -74,6 +75,7 @@ public abstract class ImportModal extends Panel {
                 FileUpload upload = fileUpload.getFileUpload();
                 if (upload == null) {
                     ValidationFeedback.showToast(target, "error", "Selecione um arquivo XLSX.");
+                    hideLoading(target);
                     return;
                 }
                 ErrorHandler.handleServiceCall(() -> {
@@ -105,13 +107,24 @@ public abstract class ImportModal extends Panel {
                         throw new BusinessException("Erro na importação: " + causeMsg);
                     }
                 }, target);
+                hideLoading(target);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
+                hideLoading(target);
                 ValidationFeedback.handleFormError(target, form);
             }
-        });
+        };
+        importBtn.add(new AttributeModifier("onclick",
+                "document.getElementById('importLoadingOverlay').classList.add('active');"));
+        importForm.add(importBtn);
+    }
+
+    private static void hideLoading(AjaxRequestTarget target) {
+        target.appendJavaScript(
+                "var el=document.getElementById('importLoadingOverlay');" +
+                "if(el)el.classList.remove('active');");
     }
 
     protected abstract byte[] getTemplateData();

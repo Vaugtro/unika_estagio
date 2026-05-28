@@ -5,6 +5,7 @@ import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListView;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +51,7 @@ class EnderecoCreateTablePanelTest extends WicketTestBase {
         tester.assertComponent("panel:enderecosRow:0:bairro", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:cep", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:cidade", TextField.class);
-        tester.assertComponent("panel:enderecosRow:0:estado", TextField.class);
+        tester.assertComponent("panel:enderecosRow:0:estado", DropDownChoice.class);
         tester.assertComponent("panel:enderecosRow:0:telefone", TextField.class);
         tester.assertComponent("panel:enderecosRow:0:complemento", TextField.class);
 

@@ -1,10 +1,14 @@
 package com.desafio.estagio.wicket.component.shared;
 
+import com.desafio.estagio.model.UnidadeFederativa;
+import com.desafio.estagio.repository.UnidadeFederativaRepository;
 import com.desafio.estagio.validation.ValidationConstants;
 import com.desafio.estagio.wicket.builder.FormFieldBuilder;
 import com.desafio.estagio.wicket.builder.FormFieldBundle;
+import com.desafio.estagio.wicket.component.ValidationFeedback;
 import com.desafio.estagio.wicket.model.EnderecoCreateFormModel;
 import com.desafio.estagio.wicket.util.JavaScriptUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -12,15 +16,23 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.Serial;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class EnderecoCreateTablePanel extends Panel {
 
@@ -29,6 +41,9 @@ public class EnderecoCreateTablePanel extends Panel {
     private static final ValidationStyleBehavior VALIDATION_STYLE_INSTANCE = new ValidationStyleBehavior();
     private final ListView<EnderecoCreateFormModel> enderecosView;
     private final List<EnderecoCreateFormModel> enderecos;
+
+    @SpringBean
+    private UnidadeFederativaRepository unidadeFederativaRepository;
 
     public EnderecoCreateTablePanel(String id, List<EnderecoCreateFormModel> enderecos) {
         super(id);
@@ -98,15 +113,44 @@ public class EnderecoCreateTablePanel extends Panel {
                 item.add(cidade.field());
                 item.add(cidade.feedbackLabel());
 
-                FormFieldBundle estado = FormFieldBuilder.create(String.class)
-                        .id("estado").required()
-                        .placeholder("UF").dataField("estado")
-                        .exactLength(ValidationConstants.ESTADO_LENGTH)
-                        .feedbackLabel("estadoFeedback")
-                        .realTimeValidation().validationStyle(VALIDATION_STYLE_INSTANCE)
-                        .build();
-                item.add(estado.field());
-                item.add(estado.feedbackLabel());
+                var ufs = unidadeFederativaRepository.findAll();
+                var ufNomePorSigla = new HashMap<String, String>();
+                var siglasOrdenadas = ufs.stream()
+                        .sorted(java.util.Comparator.comparing(UnidadeFederativa::getNome))
+                        .peek(uf -> ufNomePorSigla.put(uf.getSigla(), uf.getNome()))
+                        .map(UnidadeFederativa::getSigla)
+                        .collect(Collectors.toList());
+
+                IChoiceRenderer<String> ufRenderer = new IChoiceRenderer<>() {
+                    @Serial
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public String getIdValue(String sigla, int index) {
+                        return sigla;
+                    }
+
+                    @Override
+                    public Object getDisplayValue(String sigla) {
+                        return ufNomePorSigla.getOrDefault(sigla, sigla);
+                    }
+
+                    @Override
+                    public String getObject(String id, IModel<? extends List<? extends String>> choices) {
+                        return id;
+                    }
+                };
+
+                DropDownChoice<String> estado = new DropDownChoice<>("estado", siglasOrdenadas, ufRenderer);
+                estado.setRequired(true);
+                estado.add(new AttributeModifier("data-field", "estado"));
+                estado.add(VALIDATION_STYLE_INSTANCE);
+                estado.setOutputMarkupId(true);
+                item.add(estado);
+
+                Label estadoFeedback = ValidationFeedback.createFeedbackLabel("estadoFeedback", estado);
+                ValidationFeedback.attachRealTimeValidation(estado, estadoFeedback);
+                item.add(estadoFeedback);
 
                 FormFieldBundle telefone = FormFieldBuilder.create(String.class)
                         .id("telefone")

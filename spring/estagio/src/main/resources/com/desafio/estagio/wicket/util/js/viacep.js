@@ -27,7 +27,7 @@ function pesquisacep(input) {
             $row.find('input[data-field="logradouro"]').val(data.logradouro);
             $row.find('input[data-field="bairro"]').val(data.bairro);
             $row.find('input[data-field="cidade"]').val(data.localidade);
-            $row.find('input[data-field="estado"]').val(data.uf);
+            $row.find('[data-field="estado"]').val(data.uf);
         } else {
             var msg = 'CEP n\u00e3o encontrado.';
             if (typeof window.showToast === 'function') {
