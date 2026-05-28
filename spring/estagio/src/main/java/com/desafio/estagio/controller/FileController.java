@@ -1,6 +1,7 @@
 package com.desafio.estagio.controller;
 
 import com.desafio.estagio.service.FileService;
+import com.desafio.estagio.service.FileService.ImportResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,11 +12,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/v1/export")
 @RequiredArgsConstructor
-@Tag(name = "Arquivo", description = "Endpoints para exportação de relatórios (PDF, XLSX) e templates de importação")
+@Tag(name = "Arquivo", description = "Endpoints para exportação de relatórios (PDF, XLSX), templates e importação")
 public class FileController {
 
     private final FileService fileService;
@@ -183,5 +187,41 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template-enderecos.xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(template);
+    }
+
+    // =====================================================================
+    // IMPORT
+    // =====================================================================
+
+    @PostMapping(value = "/clientes/fisicos/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Importar clientes físicos via XLSX")
+    @ApiResponse(responseCode = "200",
+            description = "Resultado da importação",
+            content = @Content(schema = @Schema(implementation = ImportResult.class)))
+    public ResponseEntity<ImportResult> importClientesFisicos(@RequestParam("file") MultipartFile file) throws IOException {
+        ImportResult result = fileService.importFisicos(file.getInputStream());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/clientes/juridicos/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Importar clientes jurídicos via XLSX")
+    @ApiResponse(responseCode = "200",
+            description = "Resultado da importação",
+            content = @Content(schema = @Schema(implementation = ImportResult.class)))
+    public ResponseEntity<ImportResult> importClientesJuridicos(@RequestParam("file") MultipartFile file) throws IOException {
+        ImportResult result = fileService.importJuridicos(file.getInputStream());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/enderecos/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Importar endereços de um cliente via XLSX")
+    @ApiResponse(responseCode = "200",
+            description = "Resultado da importação",
+            content = @Content(schema = @Schema(implementation = ImportResult.class)))
+    public ResponseEntity<ImportResult> importEnderecos(
+            @RequestParam("clienteId") Long clienteId,
+            @RequestParam("file") MultipartFile file) throws IOException {
+        ImportResult result = fileService.importEnderecos(clienteId, file.getInputStream());
+        return ResponseEntity.ok(result);
     }
 }

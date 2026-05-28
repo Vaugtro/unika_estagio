@@ -97,8 +97,9 @@ public abstract class ImportModal extends Panel {
                                 errorsJs.append("console.error('  ").append(escaped).append("');");
                             }
                             target.appendJavaScript(errorsJs.toString());
+                        } else {
+                            JavaScriptUtils.reloadAfterDelay(target, 3000);
                         }
-                        JavaScriptUtils.reloadAfterDelay(target, 3000);
                     } catch (Exception ex) {
                         String causeMsg = ex.getMessage();
                         if (causeMsg != null && causeMsg.contains("rolled back")) {

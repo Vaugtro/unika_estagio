@@ -3,6 +3,8 @@ package com.desafio.estagio.controller;
 import com.desafio.estagio.dto.municipio.MunicipioDTO;
 import com.desafio.estagio.repository.MunicipioRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class MunicipioController {
 
     @GetMapping
     @Operation(summary = "Listar municípios, filtrados por UF (opcional)")
+    @ApiResponse(responseCode = "200", description = "Lista de municípios retornada com sucesso", content = @Content(mediaType = "application/json"))
     public ResponseEntity<List<MunicipioDTO>> findByUf(
             @RequestParam(value = "ufSigla", required = false) String ufSigla) {
         List<MunicipioDTO> dtos;

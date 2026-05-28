@@ -57,7 +57,7 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Buscar cliente físico por ID", description = "Retorna um cliente físico específico pelo seu ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/{id}")
@@ -67,7 +67,7 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Buscar cliente físico por CPF", description = "Retorna um cliente físico pelo número do CPF")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/cpf/{cpf}")
@@ -84,8 +84,8 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Criar um novo cliente físico", description = "Cadastra um novo cliente pessoa física no sistema")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente sem endereço principal"),
+            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente sem endereço principal", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "CPF já cadastrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
@@ -96,8 +96,8 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Atualizar cliente físico", description = "Atualiza os dados de um cliente físico existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json"))
     })
     @PutMapping("/{id}")
@@ -109,8 +109,8 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Ativar cliente físico", description = "Reativa um cliente físico que estava inativo")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Cliente ativado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "204", description = "Cliente ativado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Cliente já está ativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/ativar")
@@ -121,8 +121,8 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Inativar cliente físico", description = "Inativa um cliente físico (soft delete)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Cliente já está inativo", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/inativar")
@@ -133,7 +133,7 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Soft delete cliente físico", description = "Inativa um cliente físico (mesmo que inativar)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Cliente inativado com sucesso", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")
@@ -144,8 +144,8 @@ public class ClienteFisicoController {
 
     @Operation(summary = "Hard delete cliente físico", description = "Remove permanentemente um cliente físico do sistema")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Cliente deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "204", description = "Cliente deletado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Cliente possui endereços associados", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}/permanent")

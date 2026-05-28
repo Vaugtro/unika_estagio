@@ -32,8 +32,8 @@ public class EnderecoController {
 
     @Operation(summary = "Criar um novo endereço", description = "Cadastra um novo endereço no sistema (cliente deve ser informado no request)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente não informado"),
+            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou cliente não informado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
@@ -44,8 +44,8 @@ public class EnderecoController {
 
     @Operation(summary = "Criar endereço para um cliente específico", description = "Cadastra um novo endereço associado a um cliente existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/clientes/{clienteId}")
@@ -62,7 +62,7 @@ public class EnderecoController {
 
     @Operation(summary = "Buscar endereço por ID", description = "Retorna um endereço específico pelo seu ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Endereço encontrado"),
+            @ApiResponse(responseCode = "200", description = "Endereço encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/{id}")
@@ -72,7 +72,7 @@ public class EnderecoController {
 
     @Operation(summary = "Listar todos os endereços de um cliente", description = "Retorna todos os endereços associados a um cliente específico")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/clientes/{clienteId}")
@@ -106,8 +106,8 @@ public class EnderecoController {
 
     @Operation(summary = "Atualizar endereço", description = "Atualiza os dados de um endereço existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Endereço não encontrado",content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json"))
     })
     @PutMapping("/{id}")
@@ -119,8 +119,8 @@ public class EnderecoController {
 
     @Operation(summary = "Definir endereço como principal", description = "Marca um endereço como principal para o cliente (remove principal anterior)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Endereço definido como principal com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Endereço definido como principal com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Endereço não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Endereço já é principal ou cliente sem endereços", content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/principal")
@@ -134,8 +134,8 @@ public class EnderecoController {
 
     @Operation(summary = "Deletar endereço", description = "Remove um endereço do sistema (não permite deletar o último endereço do cliente)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Endereço deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
+            @ApiResponse(responseCode = "204", description = "Endereço deletado com sucesso", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Endereço não encontrado", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Não é possível deletar o único endereço do cliente", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")
@@ -146,7 +146,7 @@ public class EnderecoController {
 
     @Operation(summary = "Deletar todos os endereços de um cliente", description = "Remove todos os endereços associados a um cliente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Endereços deletados com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Endereços deletados com sucesso", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/clientes/{clienteId}")
