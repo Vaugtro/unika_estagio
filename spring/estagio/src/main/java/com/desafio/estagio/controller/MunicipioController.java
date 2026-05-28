@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/municipios")
 @RequiredArgsConstructor
-@Tag(name = "Municípios", description = "Consulta de municípios")
+@Tag(name = "Municipios", description = "Consulta de municípios")
 public class MunicipioController {
 
     private final MunicipioRepository repository;
