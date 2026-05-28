@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>Importar Clientes {{ data.clienteType === 'fisico' ? 'Físicos' : 'Jurídicos' }}</h2>
+<h2 mat-dialog-title>
+  Importar {{ data.clienteType === 'fisico' ? 'Clientes Físicos' : data.clienteType === 'juridico' ? 'Clientes Jurídicos' : 'Endereços' }}
+</h2>
 
 <mat-dialog-content>
   <p>Selecione um arquivo para importação:</p>
@@ -14,7 +16,7 @@
   <button (click)="downloadTemplate()" [disabled]="downloadingTemplate" mat-stroked-button>
     {{ downloadingTemplate ? 'Baixando...' : 'Baixar Template' }}
   </button>
-  <button (click)="import()" [disabled]="!selectedFile" color="primary" mat-raised-button>
-    Importar
+  <button (click)="import()" [disabled]="!selectedFile || importing" color="primary" mat-raised-button>
+    {{ importing ? 'Importando...' : 'Importar' }}
   </button>
 </mat-dialog-actions>

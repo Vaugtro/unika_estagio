@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Editar Cliente Jurídico</h2>
+
+<form (ngSubmit)="submit()" [formGroup]="form">
+  <mat-dialog-content>
+    <div class="form-grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Razão Social</mat-label>
+        <input formControlName="razaoSocial" matInput/>
+        <mat-error *ngIf="form.get('razaoSocial')?.invalid && form.get('razaoSocial')?.touched">
+          {{ getFieldError('razaoSocial') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Inscrição Estadual</mat-label>
+        <input formControlName="inscricaoEstadual" matInput/>
+        <mat-error *ngIf="form.get('inscricaoEstadual')?.invalid && form.get('inscricaoEstadual')?.touched">
+          {{ getFieldError('inscricaoEstadual') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input formControlName="email" matInput type="email"/>
+        <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          {{ getFieldError('email') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Data Criação</mat-label>
+        <input formControlName="dataCriacaoEmpresa" matInput type="date"/>
+        <mat-error *ngIf="form.get('dataCriacaoEmpresa')?.invalid && form.get('dataCriacaoEmpresa')?.touched">
+          Campo obrigatório
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button [mat-dialog-close]="false" mat-button type="button">Cancelar</button>
+    <button [disabled]="submitting" color="primary" mat-raised-button type="submit">
+      {{ submitting ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

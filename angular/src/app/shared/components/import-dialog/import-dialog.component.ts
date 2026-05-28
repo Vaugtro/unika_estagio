@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy} from '@angular/core';
-import {HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpEventType, HttpResponse} from '@angular/common/http';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {catchError, EMPTY, Subscription} from 'rxjs';
 
@@ -9,6 +9,7 @@ import {downloadBlob} from '../../services/download.util';
 
 export interface ImportDialogData {
   clienteType: 'fisico' | 'juridico' | 'endereco';
+  clienteId?: number;
 }
 
 @Component({
@@ -19,12 +20,14 @@ export interface ImportDialogData {
 export class ImportDialogComponent implements OnDestroy {
   selectedFile: File | null = null;
   downloadingTemplate = false;
+  importing = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<ImportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ImportDialogData,
     private arquivoService: ArquivoService,
+    private httpClient: HttpClient,
     private toastService: ToastService,
   ) {
   }
@@ -37,16 +40,16 @@ export class ImportDialogComponent implements OnDestroy {
   }
 
   downloadTemplate(): void {
-    if (this.data.clienteType === 'endereco') {
-      this.toastService.show('info', 'Download de template não disponível para endereços');
-      return;
-    }
-
     this.downloadingTemplate = true;
 
-    const templateCall = this.data.clienteType === 'fisico'
-      ? this.arquivoService.arquivoTemplateClientesFisicos('response')
-      : this.arquivoService.arquivoTemplateClientesJuridicos('response');
+    let templateCall;
+    if (this.data.clienteType === 'fisico') {
+      templateCall = this.arquivoService.arquivoTemplateClientesFisicos('response');
+    } else if (this.data.clienteType === 'juridico') {
+      templateCall = this.arquivoService.arquivoTemplateClientesJuridicos('response');
+    } else {
+      templateCall = this.arquivoService.arquivoTemplateEnderecos('response');
+    }
 
     this.subscriptions.push(
       templateCall.pipe(
@@ -57,7 +60,10 @@ export class ImportDialogComponent implements OnDestroy {
         })
       ).subscribe((response: HttpResponse<string>) => {
         const blob = response.body as unknown as Blob;
-        downloadBlob(blob, `template-clientes-${this.data.clienteType}.xlsx`);
+        const filename = this.data.clienteType === 'endereco'
+          ? 'template-enderecos.xlsx'
+          : `template-clientes-${this.data.clienteType}.xlsx`;
+        downloadBlob(blob, filename);
         this.toastService.show('success', 'Template baixado com sucesso');
         this.downloadingTemplate = false;
       })
@@ -65,8 +71,35 @@ export class ImportDialogComponent implements OnDestroy {
   }
 
   import(): void {
-    // TODO: implement upload when backend endpoint is ready
-    this.dialogRef.close();
+    if (!this.selectedFile) return;
+
+    this.importing = true;
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    let url: string;
+    if (this.data.clienteType === 'fisico') {
+      url = '/v1/export/clientes/fisicos/import';
+    } else if (this.data.clienteType === 'juridico') {
+      url = '/v1/export/clientes/juridicos/import';
+    } else {
+      url = `/v1/export/enderecos/${this.data.clienteId}/import`;
+    }
+
+    this.subscriptions.push(
+      this.httpClient.post(url, formData, {responseType: 'text'}).pipe(
+        catchError((err) => {
+          const msg = err.error?.message || err.statusText || 'Erro ao importar arquivo';
+          this.toastService.show('error', msg);
+          this.importing = false;
+          return EMPTY;
+        })
+      ).subscribe((response) => {
+        this.toastService.show('success', response || 'Importação concluída com sucesso');
+        this.importing = false;
+        this.dialogRef.close(true);
+      })
+    );
   }
 
   ngOnDestroy(): void {

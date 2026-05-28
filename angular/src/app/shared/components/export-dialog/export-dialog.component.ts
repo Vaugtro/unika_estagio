@@ -3,10 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ToastService} from '../../services/toast.service';
 import {downloadBlob} from '../../services/download.util';
-import {catchError, EMPTY, Subscription} from 'rxjs';
+import {catchError, EMPTY} from 'rxjs';
 
 export interface ExportDialogData {
   clienteType: 'fisico' | 'juridico' | 'endereco';
+  clienteId?: number;
   searchQuery?: string;
 }
 
@@ -18,7 +19,6 @@ export interface ExportDialogData {
 export class ExportDialogComponent {
   exportingPdf = false;
   exportingXlsx = false;
-  private subscriptions: Subscription[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<ExportDialogComponent>,
@@ -28,66 +28,62 @@ export class ExportDialogComponent {
   ) {
   }
 
+  private getApiBaseUrl(): string {
+    return (window as any).__env?.apiUrl || 'http://localhost:8080';
+  }
+
   exportPdf(): void {
-    if (this.data.clienteType === 'endereco') {
-      this.toastService.show('info', 'Exportação de PDF não disponível para endereços');
-      return;
-    }
-
     this.exportingPdf = true;
-    const url = this.buildUrl(
-      this.data.clienteType === 'fisico'
-        ? '/v1/export/clientes/fisicos/pdf'
-        : '/v1/export/clientes/juridicos/pdf'
-    );
 
-    this.subscriptions.push(
-      this.httpClient.get(url, {responseType: 'blob'}).pipe(
-        catchError(() => {
-          this.toastService.show('error', 'Erro ao exportar PDF');
-          this.exportingPdf = false;
-          return EMPTY;
-        })
-      ).subscribe((blob) => {
-        downloadBlob(blob, `clientes-${this.data.clienteType}.pdf`);
-        this.toastService.show('success', 'PDF exportado com sucesso');
+    const url = this.data.clienteType === 'endereco'
+      ? `${this.getApiBaseUrl()}/v1/export/clientes/${this.data.clienteId}/enderecos/pdf`
+      : this.buildUrl(
+          this.data.clienteType === 'fisico'
+            ? '/v1/export/clientes/fisicos/pdf'
+            : '/v1/export/clientes/juridicos/pdf'
+        );
+
+    this.httpClient.get(url, {responseType: 'blob'}).pipe(
+      catchError(() => {
+        this.toastService.show('error', 'Erro ao exportar PDF');
         this.exportingPdf = false;
-        this.dialogRef.close();
+        return EMPTY;
       })
-    );
+    ).subscribe((blob) => {
+      downloadBlob(blob, `clientes-${this.data.clienteType}.pdf`);
+      this.toastService.show('success', 'PDF exportado com sucesso');
+      this.exportingPdf = false;
+      this.dialogRef.close();
+    });
   }
 
   exportXlsx(): void {
-    if (this.data.clienteType === 'endereco') {
-      this.toastService.show('info', 'Exportação de planilha não disponível para endereços');
-      return;
-    }
-
     this.exportingXlsx = true;
-    const url = this.buildUrl(
-      this.data.clienteType === 'fisico'
-        ? '/v1/export/clientes/fisicos/xlsx'
-        : '/v1/export/clientes/juridicos/xlsx'
-    );
 
-    this.subscriptions.push(
-      this.httpClient.get(url, {responseType: 'blob'}).pipe(
-        catchError((err) => {
-          this.toastService.show('error', err.message || 'Exportação XLSX não disponível');
-          this.exportingXlsx = false;
-          return EMPTY;
-        })
-      ).subscribe((blob) => {
-        downloadBlob(blob, `clientes-${this.data.clienteType}.xlsx`);
-        this.toastService.show('success', 'Planilha exportada com sucesso');
+    const url = this.data.clienteType === 'endereco'
+      ? `${this.getApiBaseUrl()}/v1/export/clientes/${this.data.clienteId}/enderecos/xlsx`
+      : this.buildUrl(
+          this.data.clienteType === 'fisico'
+            ? '/v1/export/clientes/fisicos/xlsx'
+            : '/v1/export/clientes/juridicos/xlsx'
+        );
+
+    this.httpClient.get(url, {responseType: 'blob'}).pipe(
+      catchError(() => {
+        this.toastService.show('error', 'Erro ao exportar planilha');
         this.exportingXlsx = false;
-        this.dialogRef.close();
+        return EMPTY;
       })
-    );
+    ).subscribe((blob) => {
+      downloadBlob(blob, `clientes-${this.data.clienteType}.xlsx`);
+      this.toastService.show('success', 'Planilha exportada com sucesso');
+      this.exportingXlsx = false;
+      this.dialogRef.close();
+    });
   }
 
   private buildUrl(base: string): string {
     const q = this.data.searchQuery?.trim();
-    return q ? `${base}?q=${encodeURIComponent(q)}` : base;
+    return q ? `${this.getApiBaseUrl()}${base}?q=${encodeURIComponent(q)}` : `${this.getApiBaseUrl()}${base}`;
   }
 }

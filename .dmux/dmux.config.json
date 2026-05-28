@@ -1,0 +1,36 @@
+{
+  "projectName": "unika_estagio",
+  "projectRoot": "/home/vaugtro/Documentos/Workspace/unika_estagio",
+  "panes": [
+    {
+      "id": "dmux-1",
+      "slug": "shell-1",
+      "prompt": "",
+      "paneId": "%22",
+      "projectRoot": "/home/vaugtro/Documentos/Workspace/unika_estagio",
+      "projectName": "unika_estagio",
+      "type": "shell",
+      "shellType": "zsh",
+      "colorTheme": "orange",
+      "hidden": false
+    }
+  ],
+  "sidebarProjects": [
+    {
+      "projectRoot": "/home/vaugtro/Documentos/Workspace/unika_estagio",
+      "projectName": "unika_estagio"
+    }
+  ],
+  "settings": {},
+  "lastUpdated": "2026-05-27T19:36:36.955Z",
+  "controlPaneSize": 40,
+  "controlPaneId": "%18",
+  "updateSettings": {
+    "checkIntervalHours": 24,
+    "autoUpdateEnabled": true,
+    "lastCheckTime": 1779910454489,
+    "cachedCurrentVersion": "5.9.0",
+    "cachedLatestVersion": "5.9.0",
+    "cachedHasUpdate": false
+  }
+}

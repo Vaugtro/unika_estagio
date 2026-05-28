@@ -8,6 +8,17 @@
     Voltar
   </a>
 
+  <div class="detail-actions">
+    <button (click)="openEdit()" color="primary" mat-raised-button>
+      <lucide-icon name="pencil"></lucide-icon>
+      Editar
+    </button>
+    <button *ngIf="!cliente.estaAtivo" (click)="delete()" color="warn" mat-raised-button>
+      <lucide-icon name="trash-2"></lucide-icon>
+      Excluir Cliente
+    </button>
+  </div>
+
   <app-fisico-info-card [cliente]="cliente"></app-fisico-info-card>
 
   <mat-card class="enderecos-card">

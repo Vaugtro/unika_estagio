@@ -1,11 +1,17 @@
 allowBuilds:
   /: true
   '@': true
+  '@nestjs/core': false
+  '@openapitools/openapi-generator-cli': false
+  '@parcel/watcher': false
   a: true
   c: true
   e: true
+  esbuild: false
   h: true
   l: true
+  nice-napi: false
+  nx: false
   p: true
   r: true
   t: true
