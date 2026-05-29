@@ -96,6 +96,7 @@ public class EnderecoListViewPanel extends Panel {
                 item.add(new Label("cidade", end.cidade() != null ? end.cidade() : ""));
                 item.add(new Label("estado", end.estado() != null ? end.estado() : ""));
                 item.add(new Label("telefone", end.telefone() != null ? TelefoneFormatter.format(end.telefone()) : ""));
+                item.add(new Label("complemento", end.complemento() != null ? end.complemento() : ""));
 
                 Long endId = end.id();
                 boolean isPrincipal = Boolean.TRUE.equals(end.principal());

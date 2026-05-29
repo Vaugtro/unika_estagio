@@ -1,1 +1,2 @@
 - FIXME: Mesmo quando um usuario não é criado, o form incrementa o id do usuário.
+- FIXME: Erro de unicidade para: {"cpf":"40276406087","nome":"John Wanna Kill Myself","rg":"404896558","email":"victor.agustgm@gmail.c","dataNascimento":"1111-07-11","enderecos":[{"logradouro":"Rua","numero":1004,"cep":"76400000","bairro":"Setor Sul II","telefone":"","ufSigla":"GO","municipioId":5221601,"principal":false},{"logradouro":"Rua Dona Ada Centini","numero":1006,"cep":"75040050","bairro":"Maracanã","telefone":"","ufSigla":"GO","municipioId":5201108,"principal":true}]}.

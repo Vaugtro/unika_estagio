@@ -45,7 +45,7 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<EnderecoCreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EnderecoCreateDialogData,
   ) {
-    this.hasClienteContext = !!data?.clienteId && !data?.endereco;
+    this.hasClienteContext = !!data?.clienteId;
     this.isEditing = !!data?.endereco;
   }
 
@@ -73,8 +73,8 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
       cep: [e?.cep || '', [Validators.required, cepValidator()]],
       ufSigla: ['', Validators.required],
       municipioId: [null, Validators.required],
-      telefone: ['', telefoneValidator()],
-      complemento: ['', Validators.maxLength(VALIDATION.COMPLEMENTO_MAX)],
+      telefone: [e?.telefone || '', telefoneValidator()],
+      complemento: [e?.complemento, Validators.maxLength(VALIDATION.COMPLEMENTO_MAX)],
       principal: [e?.principal || false],
     };
 

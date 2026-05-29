@@ -6,9 +6,11 @@ import {catchError, debounceTime, distinctUntilChanged, EMPTY, Subscription} fro
 import {ToastService} from '../../../shared/services/toast.service';
 import {Pageable} from '../../../api/model/pageable';
 import {JuridicoCreateDialogComponent} from '../juridico-create-dialog/juridico-create-dialog.component';
+import {JuridicoEditDialogComponent} from '../juridico-edit-dialog/juridico-edit-dialog.component';
 import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
 import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
 import {ClienteJuridicoListResponse} from "../../../api/model/clienteJuridicoListResponse";
+import {ClienteJuridicoResponse} from "../../../api/model/clienteJuridicoResponse";
 import {ClientesJuridicosService} from "../../../api";
 
 @Component({
@@ -26,13 +28,7 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
   loading = false;
 
   searchControl = new FormControl('');
-  editingId: number | null = null;
   private subscriptions: Subscription[] = [];
-  private inlineValues: { razaoSocial: string; inscricaoEstadual: string; email: string } = {
-    razaoSocial: '',
-    inscricaoEstadual: '',
-    email: ''
-  };
 
   constructor(
     private clientesJuridicosService: ClientesJuridicosService,
@@ -96,41 +92,26 @@ export class JuridicoTableComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 
-  startEdit(row: ClienteJuridicoListResponse): void {
-    this.editingId = row.id ?? null;
-    this.inlineValues = {razaoSocial: row.razaoSocial ?? '', inscricaoEstadual: '', email: row.email ?? ''};
-  }
-
-  onInlineValueChange(values: { razaoSocial: string; inscricaoEstadual: string; email: string }): void {
-    this.inlineValues = values;
-  }
-
-  saveInline(row: ClienteJuridicoListResponse): void {
-    if (!this.editingId) return;
-
+  openEdit(row: ClienteJuridicoListResponse): void {
     this.subscriptions.push(
-      this.clientesJuridicosService.clientesJuridicosUpdate(row.id!, {
-        razaoSocial: this.inlineValues.razaoSocial,
-        inscricaoEstadual: this.inlineValues.inscricaoEstadual,
-        email: this.inlineValues.email || undefined,
-        dataCriacaoEmpresa: '',
-        estaAtivo: row.estaAtivo,
-        enderecos: [],
-      }).pipe(
+      this.clientesJuridicosService.clientesJuridicosGetById(row.id!).pipe(
         catchError(() => {
-          this.toastService.show('error', 'Erro ao atualizar cliente');
+          this.toastService.show('error', 'Erro ao carregar cliente');
           return EMPTY;
         })
-      ).subscribe(() => {
-        this.toastService.show('success', 'Cliente atualizado');
-        this.editingId = null;
-        this.loadData();
+      ).subscribe((cliente: ClienteJuridicoResponse) => {
+        const dialogRef = this.dialog.open(JuridicoEditDialogComponent, {
+          width: '500px',
+          data: {cliente},
+        });
+
+        this.subscriptions.push(
+          dialogRef.afterClosed().subscribe((result) => {
+            if (result) this.loadData();
+          })
+        );
       })
     );
-  }
-
-  cancelEdit(): void {
-    this.editingId = null;
   }
 
   toggleStatus(row: ClienteJuridicoListResponse): void {

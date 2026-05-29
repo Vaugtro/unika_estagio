@@ -7,8 +7,10 @@ import {ToastService} from '../../../shared/services/toast.service';
 import {ClienteFisicoListResponse} from '../../../api/model/clienteFisicoListResponse';
 import {Pageable} from '../../../api/model/pageable';
 import {FisicoCreateDialogComponent} from '../fisico-create-dialog/fisico-create-dialog.component';
+import {FisicoEditDialogComponent} from '../fisico-edit-dialog/fisico-edit-dialog.component';
 import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
 import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
+import {ClienteFisicoResponse} from '../../../api/model/clienteFisicoResponse';
 import {ClientesFisicosService} from "../../../api";
 
 @Component({
@@ -26,9 +28,7 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
   loading = false;
 
   searchControl = new FormControl('');
-  editingId: number | null = null;
   private subscriptions: Subscription[] = [];
-  private inlineValues: { nome: string; email: string } = {nome: '', email: ''};
 
   constructor(
     private clientesFisicosService: ClientesFisicosService,
@@ -92,38 +92,17 @@ export class FisicoTableComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 
-  startEdit(row: ClienteFisicoListResponse): void {
-    this.editingId = row.id ?? null;
-    this.inlineValues = {nome: row.nome ?? '', email: row.email ?? ''};
-  }
-
-  onInlineValueChange(values: { nome: string; email: string }): void {
-    this.inlineValues = values;
-  }
-
-  saveInline(row: ClienteFisicoListResponse): void {
-    if (!this.editingId) return;
+  openEdit(row: ClienteFisicoListResponse): void {
+    const dialogRef = this.dialog.open(FisicoEditDialogComponent, {
+      width: '500px',
+      data: {cliente: row as ClienteFisicoResponse},
+    });
 
     this.subscriptions.push(
-      this.clientesFisicosService.clientesFisicosUpdate(row.id!, {
-        nome: this.inlineValues.nome,
-        email: this.inlineValues.email || undefined,
-        estaAtivo: row.estaAtivo,
-      }).pipe(
-        catchError(() => {
-          this.toastService.show('error', 'Erro ao atualizar cliente');
-          return EMPTY;
-        })
-      ).subscribe(() => {
-        this.toastService.show('success', 'Cliente atualizado');
-        this.editingId = null;
-        this.loadData();
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) this.loadData();
       })
     );
-  }
-
-  cancelEdit(): void {
-    this.editingId = null;
   }
 
   toggleStatus(row: ClienteFisicoListResponse): void {

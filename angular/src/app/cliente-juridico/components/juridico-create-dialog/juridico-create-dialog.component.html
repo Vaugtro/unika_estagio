@@ -18,7 +18,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Data Criação</mat-label>
-        <input formControlName="dataCriacaoEmpresa" matInput type="date" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/AAAA"/>
+        <input formControlName="dataCriacaoEmpresa" matInput type="date"/>
         <mat-error *ngIf="form.get('dataCriacaoEmpresa')?.invalid && form.get('dataCriacaoEmpresa')?.touched">
           Campo obrigatório
         </mat-error>

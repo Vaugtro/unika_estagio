@@ -12,7 +12,7 @@ import {
 } from '../endereco-create-dialog/endereco-create-dialog.component';
 import {ExportDialogComponent} from '../../../shared/components/export-dialog/export-dialog.component';
 import {ImportDialogComponent} from '../../../shared/components/import-dialog/import-dialog.component';
-import {EnderecoResponse} from '../../../api/model/enderecoResponse';
+import {EnderecoResponse} from '../../../api';
 import {EnderecosService} from "../../../api";
 
 @Component({
@@ -24,7 +24,7 @@ export class EnderecoTableComponent implements OnInit, OnDestroy {
   @Input() clienteId!: number;
   @Input() clienteType!: 'fisico' | 'juridico';
 
-  displayedColumns = ['logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'principal', 'actions'];
+  displayedColumns = ['logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'telefone', 'complemento', 'principal', 'actions'];
 
   dataSource: EnderecoListResponse[] = [];
   totalElements = 0;

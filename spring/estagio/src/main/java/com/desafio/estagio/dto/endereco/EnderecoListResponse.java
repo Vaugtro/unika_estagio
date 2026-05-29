@@ -37,6 +37,12 @@ public record EnderecoListResponse(
         @Schema(description = "ID do município (IBGE)", example = "3550308")
         Long municipioId,
 
+        @Schema(description = "Telefone associado ao endereço", example = "(62) 0000-0000")
+        String telefone,
+
+        @Schema(description = "Complemento", example = "Apto 42")
+        String complemento,
+
         @Schema(description = "ID do cliente dono do endereço", example = "1")
         Long clienteId,
 

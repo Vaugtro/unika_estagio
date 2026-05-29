@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Wicket UI.md",
+                "file": "Spring Backend.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Wicket UI"
+              "title": "Spring Backend"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Wicket UI.md",
+                "file": "Spring Backend.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Links inversos para Wicket UI"
+              "title": "Links inversos para Spring Backend"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Wicket UI.md",
+                "file": "Spring Backend.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Links de saída para Wicket UI"
+              "title": "Links de saída para Spring Backend"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Wicket UI.md",
+                "file": "Spring Backend.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Sumário de Wicket UI"
+              "title": "Sumário de Spring Backend"
             }
           }
         ]
@@ -185,6 +185,7 @@
   },
   "active": "193140ea92011322",
   "lastOpenFiles": [
+    "Wicket UI.md",
     "Spring Backend.md",
     "Angular Frontend.md"
   ]

@@ -3,7 +3,7 @@
   <component name="DiffGenerationConfig">
     <option name="snapshotDb" value="false" />
     <option name="snapshotModelValue" value="estagio.main:estagio.main" />
-    <option name="sourceModelValue" value="estagio.main:estagio.main" />
-    <option name="targetDbValue" value="832bac54-9400-408c-a507-1b56cb70910d" />
+    <option name="sourceModelValue" value="com.desafio.estagio.main:com.desafio.estagio.main" />
+    <option name="targetDbValue" value="1a92b784-119f-494d-a8b6-9fa159441270" />
   </component>
 </project>

@@ -131,7 +131,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         String message = "Database constraint violation";
 
-        if (ex.getMessage() != null &&
+        java.lang.Throwable cause = ex.getCause();
+
+        if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
+            String constraintName = cve.getConstraintName();
+            if (constraintName != null) {
+                message = switch (constraintName) {
+                    case "uk_cliente_endereco_principal_unico" ->
+                            "Este cliente já possui um endereço principal";
+                    case "che_cep_length" ->
+                            "O CEP informado é inválido. Deve conter exatamente 8 dígitos numéricos.";
+                    case "che_cep_digits" ->
+                            "O CEP informado é inválido. Deve conter apenas números.";
+                    case "che_telefone_digits" ->
+                            "O telefone informado é inválido. Deve conter apenas números.";
+                    default ->
+                            "Erro de integridade dos dados. Verifique os campos obrigatórios.";
+                };
+            }
+        } else if (ex.getMessage() != null &&
                 (ex.getMessage().contains("Unique index") || ex.getMessage().contains("Duplicate entry"))) {
             message = "Resource already exists (possible duplicate CPF, CNPJ, email, or RG)";
         }

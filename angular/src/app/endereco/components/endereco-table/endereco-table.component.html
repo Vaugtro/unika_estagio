@@ -49,6 +49,16 @@
       <td *matCellDef="let row" mat-cell>{{ row.cep }}</td>
     </ng-container>
 
+    <ng-container matColumnDef="telefone">
+      <th *matHeaderCellDef mat-header-cell>Telefone</th>
+      <td *matCellDef="let row" mat-cell>{{ row.telefone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="complemento">
+      <th *matHeaderCellDef mat-header-cell>Complemento</th>
+      <td *matCellDef="let row" mat-cell>{{ row.complemento }}</td>
+    </ng-container>
+
     <ng-container matColumnDef="principal">
       <th *matHeaderCellDef mat-header-cell>Principal</th>
       <td *matCellDef="let row" mat-cell>

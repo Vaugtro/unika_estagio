@@ -17,12 +17,16 @@ public interface EnderecoMapper {
     @Mapping(target = "cidade", source = "municipio.nome")
     @Mapping(target = "estado", source = "municipio.unidadeFederativa.sigla")
     @Mapping(target = "municipioId", source = "municipio.id")
+    @Mapping(target = "cep", expression = "java(com.desafio.estagio.model.formatter.CEPFormatter.format(entity.getCep()))")
+    @Mapping(target = "telefone", expression = "java(com.desafio.estagio.model.formatter.TelefoneFormatter.format(entity.getTelefone()))")
     EnderecoResponse toResponse(Endereco entity);
 
     @Mapping(target = "clienteId", source = "cliente.id")
     @Mapping(target = "cidade", source = "municipio.nome")
     @Mapping(target = "estado", source = "municipio.unidadeFederativa.sigla")
     @Mapping(target = "municipioId", source = "municipio.id")
+    @Mapping(target = "cep", expression = "java(com.desafio.estagio.model.formatter.CEPFormatter.format(entity.getCep()))")
+    @Mapping(target = "telefone", expression = "java(com.desafio.estagio.model.formatter.TelefoneFormatter.format(entity.getTelefone()))")
     EnderecoListResponse toListResponse(Endereco entity);
 
     // ========== Create Mappings ==========

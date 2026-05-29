@@ -585,8 +585,8 @@ public class XlsxFileServiceImpl {
                                 "Linha " + rowNum + ": O CEP informado é inválido. Deve conter exatamente 8 dígitos numéricos.";
                         case "che_cep_digits" ->
                                 "Linha " + rowNum + ": O CEP informado é inválido. Deve conter apenas números.";
-                        case "che_telefone_length" ->
-                                "Linha " + rowNum + ": O telefone informado é inválido. Deve ter 10 ou 11 dígitos.";
+                        //case "che_telefone_length" ->
+                        //        "Linha " + rowNum + ": O telefone informado é inválido. Deve ter 10 ou 11 dígitos.";
                         case "che_telefone_digits" ->
                                 "Linha " + rowNum + ": O telefone informado é inválido. Deve conter apenas números.";
                         default ->

@@ -46,16 +46,7 @@
 
       <ng-container matColumnDef="razaoSocial">
         <th *matHeaderCellDef mat-header-cell>Razão Social</th>
-        <td *matCellDef="let row" mat-cell>
-          <app-juridico-row-form
-            (save)="saveInline(row)"
-            (valueChange)="onInlineValueChange($event)"
-            *ngIf="editingId === row.id; else razaoDisplay"
-            [email]="row.email"
-            [razaoSocial]="row.razaoSocial"
-          ></app-juridico-row-form>
-          <ng-template #razaoDisplay>{{ row.razaoSocial }}</ng-template>
-        </td>
+        <td *matCellDef="let row" mat-cell>{{ row.razaoSocial }}</td>
       </ng-container>
 
       <ng-container matColumnDef="cnpj">
@@ -84,33 +75,13 @@
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let row" class="actions-cell" mat-cell>
-          <a *ngIf="editingId !== row.id" [routerLink]="['/juridico', row.id]" mat-button>
+          <a [routerLink]="['/juridico', row.id]" mat-button>
             <lucide-icon name="eye"></lucide-icon>
             Detalhes
           </a>
-          <button
-            (click)="startEdit(row)"
-            *ngIf="editingId !== row.id"
-            mat-button
-          >
+          <button (click)="openEdit(row)" mat-button>
             <lucide-icon name="pencil"></lucide-icon>
             Editar
-          </button>
-          <button
-            (click)="saveInline(row)"
-            *ngIf="editingId === row.id"
-            color="primary"
-            mat-button
-          >
-            <lucide-icon name="save"></lucide-icon>
-            Salvar
-          </button>
-          <button
-            (click)="cancelEdit()"
-            *ngIf="editingId === row.id"
-            mat-button
-          >
-            Cancelar
           </button>
         </td>
       </ng-container>
@@ -118,7 +89,6 @@
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
       <tr
         *matRowDef="let row; columns: displayedColumns"
-        [ngClass]="{ 'editing-row': editingId === row.id }"
         mat-row
       ></tr>
     </table>

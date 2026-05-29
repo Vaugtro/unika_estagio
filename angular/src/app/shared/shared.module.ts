@@ -37,7 +37,6 @@ import {
 import {
   FisicoEditDialogComponent
 } from '../cliente-fisico/components/fisico-edit-dialog/fisico-edit-dialog.component';
-import {FisicoRowFormComponent} from '../cliente-fisico/components/fisico-row-form/fisico-row-form.component';
 import {FisicoInfoCardComponent} from '../cliente-fisico/components/fisico-info-card/fisico-info-card.component';
 import {FisicoDetailComponent} from '../cliente-fisico/pages/fisico-detail.component';
 
@@ -49,7 +48,6 @@ import {
 import {
   JuridicoEditDialogComponent
 } from '../cliente-juridico/components/juridico-edit-dialog/juridico-edit-dialog.component';
-import {JuridicoRowFormComponent} from '../cliente-juridico/components/juridico-row-form/juridico-row-form.component';
 import {
   JuridicoInfoCardComponent
 } from '../cliente-juridico/components/juridico-info-card/juridico-info-card.component';
@@ -77,14 +75,12 @@ import {HomeComponent} from '../home/home.component';
     FisicoTableComponent,
     FisicoCreateDialogComponent,
     FisicoEditDialogComponent,
-    FisicoRowFormComponent,
     FisicoInfoCardComponent,
     FisicoDetailComponent,
     // Juridico components
     JuridicoTableComponent,
     JuridicoCreateDialogComponent,
     JuridicoEditDialogComponent,
-    JuridicoRowFormComponent,
     JuridicoInfoCardComponent,
     JuridicoDetailComponent,
     // Endereco components
