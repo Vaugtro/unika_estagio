@@ -15,7 +15,9 @@ import com.desafio.estagio.service.ClienteFisicoService;
 import com.desafio.estagio.service.ClienteJuridicoService;
 import com.desafio.estagio.service.EnderecoService;
 import com.desafio.estagio.service.FileService.ImportResult;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -23,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -31,8 +34,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -44,6 +49,11 @@ public class XlsxFileServiceImpl {
     private final EnderecoService enderecoService;
     private final MunicipioRepository municipioRepository;
     private final UnidadeFederativaRepository unidadeFederativaRepository;
+    private final Validator validator;
+
+    private record FisicoRow(ClienteFisicoCreateRequest request, int sheetRowNum) {}
+    private record JuridicoRow(ClienteJuridicoCreateRequest request, int sheetRowNum) {}
+    private record EnderecoRow(EnderecoCreateRequest request, int sheetRowNum) {}
 
     // =====================================================================
     // XLSX REPORT
@@ -154,7 +164,7 @@ public class XlsxFileServiceImpl {
 
     public ImportResult importFisicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
-        int count = 0;
+        List<FisicoRow> validRows = new ArrayList<>();
 
         try (XSSFWorkbook wb = new XSSFWorkbook(xlsx)) {
             Sheet sheet = wb.getSheetAt(0);
@@ -162,14 +172,14 @@ public class XlsxFileServiceImpl {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
 
-                int rowNum = row.getRowNum() + 1;
+                int sheetRowNum = row.getRowNum();
 
                 try {
                     String cpf = getCellString(row, 0);
                     String nome = getCellString(row, 1);
                     String rg = getCellString(row, 2);
                     String email = getCellString(row, 3);
-                    LocalDate dataNascimento = parseDate(getCellString(row, 4));
+                    String dataNascimentoStr = getCellString(row, 4);
 
                     String logradouro = getCellString(row, 5);
                     Long numero = getCellLong(row, 6);
@@ -180,6 +190,11 @@ public class XlsxFileServiceImpl {
                     String cidade = getCellString(row, 11);
                     Boolean principal = getCellBoolean(row, 12);
                     String complemento = getCellString(row, 13);
+
+                    LocalDate dataNascimento = parseDate(dataNascimentoStr);
+                    if (dataNascimento == null && !dataNascimentoStr.isBlank()) {
+                        throw new RuntimeException("Data de nascimento com formato inválido. Use dd/MM/aaaa.");
+                    }
 
                     Long municipioId = resolveMunicipioId(estado, cidade);
                     var endereco = EnderecoWithinClienteCreateRequest.builder()
@@ -202,12 +217,18 @@ public class XlsxFileServiceImpl {
                             .enderecos(List.of(endereco))
                             .build();
 
-                    clienteFisicoService.create(request);
-                    count++;
+                    Set<ConstraintViolation<Object>> violations = new HashSet<>();
+                    violations.addAll(validator.validate(request));
+                    violations.addAll(validator.validate(endereco));
+                    if (!violations.isEmpty()) {
+                        for (var v : violations) {
+                            errors.add("Linha " + (sheetRowNum + 1) + ": " + v.getMessage());
+                        }
+                    } else {
+                        validRows.add(new FisicoRow(request, sheetRowNum));
+                    }
                 } catch (Exception e) {
-                    String msg = translateError(rowNum - 1, e);
-                    errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, e.getMessage());
+                    errors.add(translateError(sheetRowNum, e));
                 }
             }
         } catch (Exception e) {
@@ -215,15 +236,38 @@ public class XlsxFileServiceImpl {
         }
 
         if (!errors.isEmpty()) {
-            log.warn("Importação concluída com {} sucessos e {} erros: {}",
-                    count, errors.size(), String.join(" | ", errors));
+            log.warn("Importação de clientes físicos cancelada — {} erro(s) encontrado(s).", errors.size());
+            return new ImportResult(0, errors);
         }
-        return new ImportResult(count, errors);
+
+        for (var row : validRows) {
+            String cpf = row.request().cpf().replaceAll("\\D", "");
+            if (clienteFisicoService.existsByCpf(cpf)) {
+                errors.add("Linha " + (row.sheetRowNum() + 1) + ": Já existe um cliente cadastrado com este CPF.");
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            log.warn("Importação de clientes físicos cancelada — {} erro(s) de negócio.", errors.size());
+            return new ImportResult(0, errors);
+        }
+
+        return persistAllFisicos(validRows.stream().map(FisicoRow::request).toList());
+    }
+
+    @Transactional
+    public ImportResult persistAllFisicos(List<ClienteFisicoCreateRequest> requests) {
+        int count = 0;
+        for (var request : requests) {
+            clienteFisicoService.create(request);
+            count++;
+        }
+        return new ImportResult(count, List.of());
     }
 
     public ImportResult importJuridicos(InputStream xlsx) {
         List<String> errors = new ArrayList<>();
-        int count = 0;
+        List<JuridicoRow> validRows = new ArrayList<>();
 
         try (XSSFWorkbook wb = new XSSFWorkbook(xlsx)) {
             Sheet sheet = wb.getSheetAt(0);
@@ -231,14 +275,14 @@ public class XlsxFileServiceImpl {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
 
-                int rowNum = row.getRowNum() + 1;
+                int sheetRowNum = row.getRowNum();
 
                 try {
                     String cnpj = getCellString(row, 0);
                     String razaoSocial = getCellString(row, 1);
                     String inscricaoEstadual = getCellString(row, 2);
                     String email = getCellString(row, 3);
-                    LocalDate dataCriacaoEmpresa = parseDate(getCellString(row, 4));
+                    String dataCriacaoStr = getCellString(row, 4);
 
                     String logradouro = getCellString(row, 5);
                     Long numero = getCellLong(row, 6);
@@ -249,6 +293,11 @@ public class XlsxFileServiceImpl {
                     String cidade = getCellString(row, 11);
                     Boolean principal = getCellBoolean(row, 12);
                     String complemento = getCellString(row, 13);
+
+                    LocalDate dataCriacaoEmpresa = parseDate(dataCriacaoStr);
+                    if (dataCriacaoEmpresa == null && !dataCriacaoStr.isBlank()) {
+                        throw new RuntimeException("Data de criação com formato inválido. Use dd/MM/aaaa.");
+                    }
 
                     Long municipioId = resolveMunicipioId(estado, cidade);
                     var endereco = EnderecoWithinClienteCreateRequest.builder()
@@ -271,12 +320,18 @@ public class XlsxFileServiceImpl {
                             .enderecos(List.of(endereco))
                             .build();
 
-                    clienteJuridicoService.create(request);
-                    count++;
+                    Set<ConstraintViolation<Object>> violations = new HashSet<>();
+                    violations.addAll(validator.validate(request));
+                    violations.addAll(validator.validate(endereco));
+                    if (!violations.isEmpty()) {
+                        for (var v : violations) {
+                            errors.add("Linha " + (sheetRowNum + 1) + ": " + v.getMessage());
+                        }
+                    } else {
+                        validRows.add(new JuridicoRow(request, sheetRowNum));
+                    }
                 } catch (Exception e) {
-                    String msg = translateError(rowNum - 1, e);
-                    errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, e.getMessage());
+                    errors.add(translateError(sheetRowNum, e));
                 }
             }
         } catch (Exception e) {
@@ -284,15 +339,38 @@ public class XlsxFileServiceImpl {
         }
 
         if (!errors.isEmpty()) {
-            log.warn("Importação concluída com {} sucessos e {} erros: {}",
-                    count, errors.size(), String.join(" | ", errors));
+            log.warn("Importação de clientes jurídicos cancelada — {} erro(s) encontrado(s).", errors.size());
+            return new ImportResult(0, errors);
         }
-        return new ImportResult(count, errors);
+
+        for (var row : validRows) {
+            String cnpj = row.request().cnpj().replaceAll("\\D", "");
+            if (clienteJuridicoService.existsByCnpj(cnpj)) {
+                errors.add("Linha " + (row.sheetRowNum() + 1) + ": Já existe um cliente cadastrado com este CNPJ.");
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            log.warn("Importação de clientes jurídicos cancelada — {} erro(s) de negócio.", errors.size());
+            return new ImportResult(0, errors);
+        }
+
+        return persistAllJuridicos(validRows.stream().map(JuridicoRow::request).toList());
+    }
+
+    @Transactional
+    public ImportResult persistAllJuridicos(List<ClienteJuridicoCreateRequest> requests) {
+        int count = 0;
+        for (var request : requests) {
+            clienteJuridicoService.create(request);
+            count++;
+        }
+        return new ImportResult(count, List.of());
     }
 
     public ImportResult importEnderecos(Long clienteId, InputStream xlsx) {
         List<String> errors = new ArrayList<>();
-        int count = 0;
+        List<EnderecoRow> validRows = new ArrayList<>();
 
         try (XSSFWorkbook wb = new XSSFWorkbook(xlsx)) {
             Sheet sheet = wb.getSheetAt(0);
@@ -300,7 +378,7 @@ public class XlsxFileServiceImpl {
                 if (row.getRowNum() == 0) continue;
                 if (isRowEmpty(row)) continue;
 
-                int rowNum = row.getRowNum() + 1;
+                int sheetRowNum = row.getRowNum();
 
                 try {
                     String logradouro = getCellString(row, 0);
@@ -326,15 +404,16 @@ public class XlsxFileServiceImpl {
                             .clienteId(clienteId)
                             .build();
 
-                    enderecoService.create(request);
-                    count++;
-                } catch (DataIntegrityViolationException ex) {
-                    String msg = translateError(rowNum - 1, ex);
-                    errors.add(msg);
-                    log.warn("Erro ao importar linha {}: {}", rowNum - 1, ex.getMessage()); // Desconsidera o header do template
-                    return new ImportResult(count, errors); // Se erro de integridade, retorna o unico que ocorrer
-                } catch (Exception ex) {
-                    log.warn("Erro desconhecido importar linha {}: {}", rowNum, ex.getMessage());
+                    var violations = validator.validate(request);
+                    if (!violations.isEmpty()) {
+                        for (var v : violations) {
+                            errors.add("Linha " + (sheetRowNum + 1) + ": " + v.getMessage());
+                        }
+                    } else {
+                        validRows.add(new EnderecoRow(request, sheetRowNum));
+                    }
+                } catch (Exception e) {
+                    errors.add(translateError(sheetRowNum, e));
                 }
             }
         } catch (Exception e) {
@@ -342,10 +421,21 @@ public class XlsxFileServiceImpl {
         }
 
         if (!errors.isEmpty()) {
-            log.warn("Importação concluída com {} sucessos e {} erros: {}",
-                    count, errors.size(), String.join(" | ", errors));
+            log.warn("Importação de endereços cancelada — {} erro(s) encontrado(s).", errors.size());
+            return new ImportResult(0, errors);
         }
-        return new ImportResult(count, errors);
+
+        return persistAllEnderecos(validRows.stream().map(EnderecoRow::request).toList());
+    }
+
+    @Transactional
+    public ImportResult persistAllEnderecos(List<EnderecoCreateRequest> requests) {
+        int count = 0;
+        for (var request : requests) {
+            enderecoService.create(request);
+            count++;
+        }
+        return new ImportResult(count, List.of());
     }
 
     // =====================================================================

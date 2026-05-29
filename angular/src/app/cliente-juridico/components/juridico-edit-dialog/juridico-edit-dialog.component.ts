@@ -35,7 +35,7 @@ export class JuridicoEditDialogComponent implements OnInit {
       razaoSocial: [this.data.cliente.razaoSocial, [Validators.required, Validators.minLength(VALIDATION.RAZAO_SOCIAL_MIN), Validators.maxLength(VALIDATION.RAZAO_SOCIAL_MAX)]],
       inscricaoEstadual: [this.data.cliente.inscricaoEstadual, [Validators.maxLength(VALIDATION.INSCRICAO_ESTADUAL_MAX)]],
       email: [this.data.cliente.email, [Validators.email, Validators.maxLength(VALIDATION.EMAIL_MAX)]],
-      dataCriacaoEmpresa: [this.data.cliente.dataCriacaoEmpresa],
+      dataCriacaoEmpresa: [this.data.cliente.dataCriacaoEmpresa || null],
     });
   }
 

@@ -18,7 +18,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Data Nascimento</mat-label>
-        <input formControlName="dataNascimento" matInput type="date"/>
+        <input formControlName="dataNascimento" matInput type="date" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/AAAA"/>
         <mat-error *ngIf="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched">
           Campo obrigatório
         </mat-error>

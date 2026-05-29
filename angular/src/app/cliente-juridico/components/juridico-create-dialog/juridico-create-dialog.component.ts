@@ -19,6 +19,11 @@ export class JuridicoCreateDialogComponent implements OnInit {
   form!: FormGroup;
   submitting = false;
   private subscriptions: Subscription[] = [];
+  public mask = {
+    guide: true,
+    showMask : true,
+    mask: [/\d/, /\d/, '/', /\d/, /\d/, '/',/\d/, /\d/,/\d/, /\d/]
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -72,7 +77,7 @@ export class JuridicoCreateDialogComponent implements OnInit {
       razaoSocial: this.form.value.razaoSocial,
       inscricaoEstadual: this.form.value.inscricaoEstadual,
       email: this.form.value.email || undefined,
-      dataCriacaoEmpresa: this.form.value.dataCriacaoEmpresa,
+      dataCriacaoEmpresa: this.form.value.dataCriacaoEmpresa || undefined,
       enderecos: enderecoArray.value.map((e: any) => ({
         logradouro: e.logradouro,
         numero: e.numero,

@@ -72,7 +72,7 @@ export class FisicoCreateDialogComponent implements OnInit {
       nome: this.form.value.nome,
       rg: this.form.value.rg.replace(/\D/g, ''),
       email: this.form.value.email || undefined,
-      dataNascimento: this.form.value.dataNascimento,
+      dataNascimento: this.form.value.dataNascimento || undefined,
       enderecos: enderecoArray.value.map((e: any) => ({
         logradouro: e.logradouro,
         numero: e.numero,
