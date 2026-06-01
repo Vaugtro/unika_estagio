@@ -17,6 +17,9 @@ export default defineConfig({
     video: 'on',
     actionTimeout: 15000,
     navigationTimeout: 30000,
+    launchOptions: {
+      slowMo: 500, // Delays every operation by 500 milliseconds
+    },
   },
   projects: [
     {

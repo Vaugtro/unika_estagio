@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mariadb-test:
+    image: mariadb:11.4
+    container_name: estagio-test-db
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: "mariadb"
+      MARIADB_DATABASE: "dummy_db"
+    tmpfs: /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: estagio-test-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mariadb-test:3306/dummy_db"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "mariadb"
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+    depends_on:
+      mariadb-test:
+        condition: service_healthy

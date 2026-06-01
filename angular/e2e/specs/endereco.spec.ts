@@ -77,8 +77,10 @@ test.describe('Endereço Management', () => {
     await page.locator('mat-dialog-content').getByLabel('CEP').fill('03003000')
     await page.locator('mat-dialog-content').getByLabel('Telefone').fill('(11) 97777-8888')
     await page.locator('mat-dialog-content').getByLabel('Estado').click()
+    await page.locator('mat-option', { hasText: 'São Paulo' }).waitFor({ state: 'visible', timeout: 5000 })
     await page.locator('mat-option', { hasText: 'São Paulo' }).click()
     await page.locator('mat-dialog-content').getByLabel('Município').click()
+    await page.getByRole('option', { name: 'São Paulo' }).last().waitFor({ state: 'visible', timeout: 5000 })
     await page.getByRole('option', { name: 'São Paulo' }).last().click()
 
     await page.getByRole('button', { name: /^Salvar$/ }).click()
@@ -106,7 +108,7 @@ test.describe('Endereço Management', () => {
     await expect(remainingRows.first()).toContainText('Sim')
   })
 
-  test('should delete the last remaining address', async ({ page }) => {
+  test('should block deleting the last principal address', async ({ page }) => {
     const detail = new FisicoDetailPage(page)
     await detail.goto(1)
     await detail.waitForLoad()
@@ -127,7 +129,9 @@ test.describe('Endereço Management', () => {
     await rows().first().getByRole('button', { name: 'Excluir' }).click()
     await page.getByRole('button', { name: 'Confirmar' }).click()
     await page.waitForLoadState('networkidle')
-    await expect(page.locator('.toast-success').first()).toContainText('Endereço excluído', { timeout: 5000 })
+    await expect(page.locator('.toast-error')).toContainText('Erro ao excluir endereço', { timeout: 5000 })
+
+    await expect(rows()).toHaveCount(1)
   })
 
   test('should open export dialog from address table', async ({ page }) => {

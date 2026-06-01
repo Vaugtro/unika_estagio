@@ -1,12 +1,11 @@
 import { Page } from '@playwright/test'
+import { isRealApi } from '../helpers/test-mode'
+import { PJ_CLIENTS } from '../helpers/test-data'
 
-export const mockClientesJuridicos: any[] = [
-  { id: 1, razaoSocial: 'Empresa Alpha Ltda', cnpj: '11.222.333/0001-44', email: 'alpha@empresa.com', nomeFantasia: 'Alpha', inscricaoEstadual: '123456789', estaAtivo: true, dataCriacaoEmpresa: '2000-01-01', dataCriacao: '2024-01-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-  { id: 2, razaoSocial: 'Beta Comércio S.A.', cnpj: '55.666.777/0001-88', email: 'beta@comercio.com', nomeFantasia: 'Beta', inscricaoEstadual: '987654321', estaAtivo: true, dataCriacaoEmpresa: '1995-05-15', dataCriacao: '2024-02-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-  { id: 3, razaoSocial: 'Gamma Inativa ME', cnpj: '99.888.777/0001-66', email: 'gamma@inativa.com', nomeFantasia: 'Gamma', inscricaoEstadual: '456789123', estaAtivo: false, dataCriacaoEmpresa: '2010-03-20', dataCriacao: '2024-03-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-]
+export const mockClientesJuridicos = PJ_CLIENTS.map((c, i) => ({ id: i + 1, ...c, estaAtivo: i === 2 ? false : true, dataCriacao: '2024-01-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' }))
 
 export function setupClientesJuridicosMocks(page: Page) {
+  if (isRealApi()) return
   page.route('**/viacep.com.br/**', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ erro: true }) }))
 
   page.route('**/v1/unidades-federativas', (route) =>

@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test'
+import { isRealApi } from '../helpers/test-mode'
 
 function generateEnderecos(count: number) {
   const enderecos: any[] = []
@@ -46,6 +47,7 @@ function toPage(data: any[]) {
 }
 
 export function setupEnderecosMocks(page: Page) {
+  if (isRealApi()) return
   page.route(/\/v1\/enderecos\/clientes\//, async (route) => {
     const url = route.request().url()
     if (url.includes('/has-principal')) {
@@ -99,7 +101,20 @@ export function setupEnderecosMocks(page: Page) {
       }
       case 'DELETE': {
         const idx = mockEnderecos.findIndex(e => e.id === id)
-        if (idx >= 0) mockEnderecos.splice(idx, 1)
+        if (idx < 0) {
+          await route.fulfill({ status: 404 })
+          break
+        }
+        const wasPrincipal = mockEnderecos[idx].principal
+        const isOnlyOne = mockEnderecos.length === 1
+        if (wasPrincipal && isOnlyOne) {
+          await route.fulfill({ status: 400, json: { message: 'Não é possível excluir o único endereço principal' } })
+          break
+        }
+        mockEnderecos.splice(idx, 1)
+        if (wasPrincipal && mockEnderecos.length > 0) {
+          mockEnderecos[0].principal = true
+        }
         await route.fulfill({ status: 204 })
         break
       }

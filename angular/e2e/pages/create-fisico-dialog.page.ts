@@ -83,11 +83,13 @@ export class CreateFisicoDialog {
 
   async selectUF(nome: string) {
     await this.ufSelect.click()
+    await this.page.locator('mat-option', { hasText: nome }).first().waitFor({ state: 'visible', timeout: 5000 })
     await this.page.locator('mat-option', { hasText: nome }).first().click()
   }
 
   async selectMunicipio(nome: string) {
     await this.municipioSelect.click()
+    await this.page.locator('mat-option', { hasText: nome }).last().waitFor({ state: 'visible', timeout: 5000 })
     await this.page.locator('mat-option', { hasText: nome }).last().click()
   }
 

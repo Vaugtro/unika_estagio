@@ -1,12 +1,11 @@
 import { Page } from '@playwright/test'
+import { isRealApi } from '../helpers/test-mode'
+import { PF_CLIENTS } from '../helpers/test-data'
 
-export const mockClientesFisicos: any[] = [
-  { id: 1, nome: 'João Silva', cpf: '123.456.789-00', email: 'joao@email.com', rg: '123456789', dataNascimento: '1990-01-01', estaAtivo: true, dataCriacao: '2024-01-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-  { id: 2, nome: 'Maria Souza', cpf: '987.654.321-00', email: 'maria@email.com', rg: '987654321', dataNascimento: '1985-05-15', estaAtivo: true, dataCriacao: '2024-02-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-  { id: 3, nome: 'Carlos Inativo', cpf: '111.222.333-44', email: 'carlos@email.com', rg: '111222333', dataNascimento: '1975-03-20', estaAtivo: false, dataCriacao: '2024-03-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' },
-]
+export const mockClientesFisicos = PF_CLIENTS.map((c, i) => ({ id: i + 1, ...c, estaAtivo: c.nome === 'Carlos Inativo' ? false : true, dataCriacao: '2024-01-01T00:00:00', dataAtualizacao: '2024-06-01T00:00:00' }))
 
 export function setupClientesFisicosMocks(page: Page) {
+  if (isRealApi()) return
   page.route('**/viacep.com.br/**', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ erro: true }) }))
 
   page.route('**/v1/unidades-federativas', (route) =>

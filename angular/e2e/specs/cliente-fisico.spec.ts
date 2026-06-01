@@ -5,10 +5,27 @@ import { FisicoDetailPage } from '../pages/fisico-detail.page'
 import { CreateFisicoDialog } from '../pages/create-fisico-dialog.page'
 import { ConfirmDialog } from '../pages/confirm-dialog.page'
 import { setupClientesFisicosMocks, mockClientesFisicos } from '../fixtures/clientes-fisicos'
+import { isRealApi } from '../helpers/test-mode'
+import { setupRealApiData, cleanupRealApiData, PF_CLIENTS } from '../helpers/test-data'
 
 test.describe('Cliente Físico CRUD', () => {
   let home: HomePage
   let fisicoTable: FisicoTablePage
+  let clientIds: number[] = []
+  const useRealApi = isRealApi()
+
+  test.beforeAll(async ({ request }) => {
+    if (useRealApi) {
+      const data = await setupRealApiData(request)
+      clientIds = data.pfIds
+    }
+  })
+
+  test.afterAll(async ({ request }) => {
+    if (useRealApi) {
+      await cleanupRealApiData(request, clientIds, [])
+    }
+  })
 
   test.beforeEach(async ({ page }) => {
     await page.unrouteAll()
@@ -26,7 +43,7 @@ test.describe('Cliente Físico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Físico')
 
     await dialog.fillForm({
-      cpf: '529.982.247-25',
+      cpf: '876.477.910-60',
       nome: 'Novo Cliente Teste',
       rg: '123456789',
       email: 'novo@teste.com',
@@ -55,7 +72,7 @@ test.describe('Cliente Físico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Físico')
 
     await dialog.fillForm({
-      cpf: '529.982.247-25',
+      cpf: '320.161.980-95',
       nome: 'Multi Endereco PF',
       rg: '987654321',
       email: 'multi@pf.com',
@@ -112,7 +129,7 @@ test.describe('Cliente Físico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Físico')
 
     await dialog.fillForm({
-      cpf: '529.982.247-25',
+      cpf: '588.109.000-49',
       nome: 'Principal Test PF',
       rg: '555555555',
       email: 'principal@test.com',
@@ -159,14 +176,14 @@ test.describe('Cliente Físico CRUD', () => {
     await fisicoTable.search('Maria')
     await fisicoTable.waitForLoad()
     const rows = await fisicoTable.getRowText(0)
-    expect(rows).toContain('Maria Souza')
+    expect(rows).toContain(PF_CLIENTS[1].nome)
   })
 
   test('should search PF clients by CPF', async () => {
-    await fisicoTable.search('111.222.333-44')
+    await fisicoTable.search(PF_CLIENTS[2].cpf)
     await fisicoTable.waitForLoad()
     const rows = await fisicoTable.getRowText(0)
-    expect(rows).toContain('Carlos Inativo')
+    expect(rows).toContain(PF_CLIENTS[2].nome)
   })
 
   test('should clear search and reload all clients', async () => {
@@ -176,18 +193,19 @@ test.describe('Cliente Físico CRUD', () => {
 
     await fisicoTable.clearSearch()
     await fisicoTable.waitForLoad()
-    expect(await fisicoTable.getRowCount()).toBe(mockClientesFisicos.length)
+    expect(await fisicoTable.getRowCount()).toBe(useRealApi ? clientIds.length : mockClientesFisicos.length)
   })
 
   test('should navigate to PF detail page', async ({ page }) => {
     await fisicoTable.clickDetalhes(0)
     await page.waitForLoadState('networkidle')
-    expect(page.url()).toContain('/fisico/1')
+    const expectedId = useRealApi ? clientIds[0] : 1
+    expect(page.url()).toContain(`/fisico/${expectedId}`)
 
     const detail = new FisicoDetailPage(page)
     await detail.waitForLoad()
     const cardText = await detail.getInfoCardText()
-    expect(cardText).toContain('João Silva')
+    expect(cardText).toContain(PF_CLIENTS[0].nome)
   })
 
   test('should open edit dialog from table', async ({ page }) => {
@@ -212,8 +230,9 @@ test.describe('Cliente Físico CRUD', () => {
   })
 
   test('should delete inactive PF client from detail page', async ({ page }) => {
+    const inactiveId = useRealApi ? clientIds[2] : 3
     const detail = new FisicoDetailPage(page)
-    await detail.goto(3)
+    await detail.goto(inactiveId)
     await expect(detail.excluirButton).toBeVisible()
 
     await detail.clickExcluir()
@@ -257,6 +276,8 @@ test.describe('Cliente Físico CRUD', () => {
   })
 
   test('should show error toast on API failure', async ({ page }) => {
+    test.skip(useRealApi, 'Skipped in real API mode')
+
     page.route('**/v1/clientes/fisicos?*', async (route) => {
       await route.fulfill({ status: 500 })
     })

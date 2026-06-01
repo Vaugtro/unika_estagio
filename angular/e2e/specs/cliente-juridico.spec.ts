@@ -5,10 +5,27 @@ import { JuridicoDetailPage } from '../pages/juridico-detail.page'
 import { CreateJuridicoDialog } from '../pages/create-juridico-dialog.page'
 import { ConfirmDialog } from '../pages/confirm-dialog.page'
 import { setupClientesJuridicosMocks, mockClientesJuridicos } from '../fixtures/clientes-juridicos'
+import { isRealApi } from '../helpers/test-mode'
+import { setupRealApiData, cleanupRealApiData, PJ_CLIENTS } from '../helpers/test-data'
 
 test.describe('Cliente Jurídico CRUD', () => {
   let home: HomePage
   let juridicoTable: JuridicoTablePage
+  let clientIds: number[] = []
+  const useRealApi = isRealApi()
+
+  test.beforeAll(async ({ request }) => {
+    if (useRealApi) {
+      const data = await setupRealApiData(request)
+      clientIds = data.pjIds
+    }
+  })
+
+  test.afterAll(async ({ request }) => {
+    if (useRealApi) {
+      await cleanupRealApiData(request, [], clientIds)
+    }
+  })
 
   test.beforeEach(async ({ page }) => {
     await page.unrouteAll()
@@ -22,11 +39,11 @@ test.describe('Cliente Jurídico CRUD', () => {
 
   test('should display PJ table with client data', async () => {
     const rowCount = await juridicoTable.getRowCount()
-    expect(rowCount).toBe(mockClientesJuridicos.length)
+    expect(rowCount).toBe(useRealApi ? clientIds.length : mockClientesJuridicos.length)
 
     const firstRow = await juridicoTable.getRowText(0)
-    expect(firstRow).toContain('Empresa Alpha Ltda')
-    expect(firstRow).toContain('11.222.333/0001-44')
+    expect(firstRow).toContain(PJ_CLIENTS[0].razaoSocial)
+    expect(firstRow).toContain(PJ_CLIENTS[0].cnpj)
   })
 
   test('should display PJ table columns', async ({ page }) => {
@@ -44,7 +61,7 @@ test.describe('Cliente Jurídico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Jurídico')
 
     await dialog.fillForm({
-      cnpj: '11.444.777/0001-61',
+      cnpj: '46.740.909/0001-87',
       razaoSocial: 'Empresa Nova Ltda',
       inscricaoEstadual: '123456789',
       email: 'nova@empresa.com',
@@ -73,7 +90,7 @@ test.describe('Cliente Jurídico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Jurídico')
 
     await dialog.fillForm({
-      cnpj: '11.444.777/0001-61',
+      cnpj: '85.367.692/0001-63',
       razaoSocial: 'Multi Endereco PJ Ltda',
       inscricaoEstadual: '987654321',
       email: 'multi@pj.com',
@@ -130,7 +147,7 @@ test.describe('Cliente Jurídico CRUD', () => {
     await expect(dialog.dialogTitle).toHaveText('Novo Cliente Jurídico')
 
     await dialog.fillForm({
-      cnpj: '11.444.777/0001-61',
+      cnpj: '41.915.609/0001-78',
       razaoSocial: 'Principal Test PJ Ltda',
       inscricaoEstadual: '123456789',
       email: 'principal@pjtest.com',
@@ -177,14 +194,14 @@ test.describe('Cliente Jurídico CRUD', () => {
     await juridicoTable.search('Beta')
     await juridicoTable.waitForLoad()
     const rows = await juridicoTable.getRowText(0)
-    expect(rows).toContain('Beta Comércio')
+    expect(rows).toContain(PJ_CLIENTS[1].razaoSocial)
   })
 
   test('should search PJ clients by CNPJ', async () => {
-    await juridicoTable.search('55.666.777/0001-88')
+    await juridicoTable.search(PJ_CLIENTS[1].cnpj)
     await juridicoTable.waitForLoad()
     const rows = await juridicoTable.getRowText(0)
-    expect(rows).toContain('Beta Comércio')
+    expect(rows).toContain(PJ_CLIENTS[1].razaoSocial)
   })
 
   test('should clear search and reload all PJ clients', async () => {
@@ -194,18 +211,19 @@ test.describe('Cliente Jurídico CRUD', () => {
 
     await juridicoTable.clearSearch()
     await juridicoTable.waitForLoad()
-    expect(await juridicoTable.getRowCount()).toBe(mockClientesJuridicos.length)
+    expect(await juridicoTable.getRowCount()).toBe(useRealApi ? clientIds.length : mockClientesJuridicos.length)
   })
 
   test('should navigate to PJ detail page', async ({ page }) => {
     await juridicoTable.clickDetalhes(0)
     await page.waitForLoadState('networkidle')
-    expect(page.url()).toContain('/juridico/1')
+    const expectedId = useRealApi ? clientIds[0] : 1
+    expect(page.url()).toContain(`/juridico/${expectedId}`)
 
     const detail = new JuridicoDetailPage(page)
     await detail.waitForLoad()
     const cardText = await detail.getInfoCardText()
-    expect(cardText).toContain('Empresa Alpha Ltda')
+    expect(cardText).toContain(PJ_CLIENTS[0].razaoSocial)
   })
 
   test('should open edit dialog from table', async ({ page }) => {
@@ -232,8 +250,9 @@ test.describe('Cliente Jurídico CRUD', () => {
   })
 
   test('should delete inactive PJ client from detail page', async ({ page }) => {
+    const inactiveId = useRealApi ? clientIds[2] : 3
     const detail = new JuridicoDetailPage(page)
-    await detail.goto(3)
+    await detail.goto(inactiveId)
     await detail.waitForLoad()
 
     if (await detail.excluirButton.isVisible()) {

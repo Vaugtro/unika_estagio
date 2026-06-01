@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test'
 import { HomePage } from '../pages/home.page'
 import { FisicoTablePage } from '../pages/fisico-table.page'
-import { setupClientesFisicosMocks } from '../fixtures/clientes-fisicos'
-import { mockClientesFisicos } from '../fixtures/clientes-fisicos'
+import { setupClientesFisicosMocks, mockClientesFisicos } from '../fixtures/clientes-fisicos'
+import { resetEnderecos } from '../fixtures/enderecos'
 
 test.describe('Home Page', () => {
   let home: HomePage
