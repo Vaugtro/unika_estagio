@@ -12,19 +12,44 @@ export const PJ_CLIENTS = [
   { cnpj: '99.888.777/0001-66', razaoSocial: 'Gamma Inativa ME', nomeFantasia: 'Gamma', inscricaoEstadual: '456789123', email: 'gamma@inativa.com', dataCriacaoEmpresa: '2020-03-20' },
 ]
 
+function makeEndereco(principal: boolean) {
+  return { logradouro: 'Rua das Flores', numero: 100, bairro: 'Centro', cep: '01001-000', municipioId: 3550308, principal }
+}
+
+let cachedPfIds: number[] | null = null
+let cachedPjIds: number[] | null = null
+
+async function createOrGetPf(request: APIRequestContext, c: typeof PF_CLIENTS[0]): Promise<number | null> {
+  const r = await request.post('/v1/clientes/fisicos', { data: { ...c, enderecos: [makeEndereco(true)] } })
+  if (r.ok()) { const b = await r.json(); return b.id }
+  const search = await request.get(`/v1/clientes/fisicos/search?q=${encodeURIComponent(c.cpf)}`)
+  if (search.ok()) { const data = await search.json(); if (data.content?.length > 0) return data.content[0].id }
+  console.error('PF create failed:', await r.text()); return null
+}
+
+async function createOrGetPj(request: APIRequestContext, c: typeof PJ_CLIENTS[0]): Promise<number | null> {
+  const r = await request.post('/v1/clientes/juridicos', { data: { ...c, enderecos: [makeEndereco(true)] } })
+  if (r.ok()) { const b = await r.json(); return b.id }
+  const search = await request.get(`/v1/clientes/juridicos/search?q=${encodeURIComponent(c.cnpj)}`)
+  if (search.ok()) { const data = await search.json(); if (data.content?.length > 0) return data.content[0].id }
+  console.error('PJ create failed:', await r.text()); return null
+}
+
 export async function setupRealApiData(request: APIRequestContext) {
+  if (cachedPfIds && cachedPjIds) return { pfIds: cachedPfIds, pjIds: cachedPjIds }
+
   const pfIds: number[] = []
   for (const c of PF_CLIENTS) {
-    const r = await request.post('/v1/clientes/fisicos', { data: c })
-    const body = await r.json()
-    pfIds.push(body.id)
+    const id = await createOrGetPf(request, c)
+    if (id) pfIds.push(id)
   }
   const pjIds: number[] = []
   for (const c of PJ_CLIENTS) {
-    const r = await request.post('/v1/clientes/juridicos', { data: c })
-    const body = await r.json()
-    pjIds.push(body.id)
+    const id = await createOrGetPj(request, c)
+    if (id) pjIds.push(id)
   }
+  cachedPfIds = pfIds
+  cachedPjIds = pjIds
   return { pfIds, pjIds }
 }
 

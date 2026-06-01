@@ -52,7 +52,8 @@ export class FisicoEditDialogComponent implements OnInit {
     this.subscriptions.push(
       this.clientesFisicosService.clientesFisicosUpdate(this.data.cliente.id!, dto).pipe(
         catchError((err) => {
-          const msg = err.error?.message || err.statusText || 'Erro ao atualizar cliente';
+          const ve = err.error?.validationErrors;
+          const msg = ve ? Object.entries(ve).map(([k, v]) => `${k}: ${v}`).join('; ') : (err.error?.message || err.statusText || 'Erro ao atualizar cliente');
           this.toastService.show('error', msg);
           this.submitting = false;
           return EMPTY;

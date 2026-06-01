@@ -1,0 +1,1 @@
+TODO: Quando inativo, não se pode alterar nada do cliente, nem mesmo o endereço principal.

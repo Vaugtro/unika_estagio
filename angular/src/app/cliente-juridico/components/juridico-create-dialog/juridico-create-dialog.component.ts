@@ -94,7 +94,8 @@ export class JuridicoCreateDialogComponent implements OnInit {
     this.subscriptions.push(
       this.clientesJuridicosService.clientesJuridicosCreate(dto).pipe(
         catchError((err) => {
-          const msg = err.error?.message || err.statusText || 'Erro ao criar cliente';
+          const ve = err.error?.validationErrors;
+          const msg = ve ? Object.entries(ve).map(([k, v]) => `${k}: ${v}`).join('; ') : (err.error?.message || err.statusText || 'Erro ao criar cliente');
           this.toastService.show('error', msg);
           this.submitting = false;
           return EMPTY;

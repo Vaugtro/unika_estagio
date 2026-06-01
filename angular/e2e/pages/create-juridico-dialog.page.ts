@@ -117,6 +117,7 @@ export class CreateJuridicoDialog {
     await this.selectUF(data.ufNome)
     await this.selectMunicipio(data.municipioNome)
     await this.setAsPrincipal()
+    await this.page.waitForTimeout(300)
   }
 
   async fillForm(data: { cnpj: string; razaoSocial: string; inscricaoEstadual?: string; email?: string; dataCriacaoEmpresa?: string; endereco: { logradouro: string; numero: string; bairro: string; cep: string; telefone: string; ufNome: string; municipioNome: string } }) {
@@ -126,5 +127,11 @@ export class CreateJuridicoDialog {
     if (data.email) await this.fillEmail(data.email)
     if (data.dataCriacaoEmpresa) await this.fillDataCriacaoEmpresa(data.dataCriacaoEmpresa)
     await this.fillEndereco(data.endereco)
+    await this.page.waitForTimeout(300)
+  }
+
+  async clickSalvar() {
+    await this.page.waitForTimeout(300)
+    await this.salvarButton.click()
   }
 }

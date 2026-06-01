@@ -116,6 +116,7 @@ export class CreateFisicoDialog {
     await this.selectUF(data.ufNome)
     await this.selectMunicipio(data.municipioNome)
     await this.setAsPrincipal()
+    await this.page.waitForTimeout(300)
   }
 
   async fillForm(data: { cpf: string; nome: string; rg: string; email?: string; dataNascimento?: string; endereco: { logradouro: string; numero: string; bairro: string; cep: string; telefone: string; ufNome: string; municipioNome: string } }) {
@@ -125,5 +126,11 @@ export class CreateFisicoDialog {
     if (data.email) await this.fillEmail(data.email)
     if (data.dataNascimento) await this.fillDataNascimento(data.dataNascimento)
     await this.fillEndereco(data.endereco)
+    await this.page.waitForTimeout(300)
+  }
+
+  async clickSalvar() {
+    await this.page.waitForTimeout(300)
+    await this.salvarButton.click()
   }
 }

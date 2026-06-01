@@ -175,7 +175,8 @@ export class EnderecoCreateDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       obs$.pipe(
         catchError((err) => {
-          const msg = err.error?.message || err.statusText || 'Erro ao salvar endereço';
+          const ve = err.error?.validationErrors;
+          const msg = ve ? Object.entries(ve).map(([k, v]) => `${k}: ${v}`).join('; ') : (err.error?.message || err.statusText || 'Erro ao salvar endereço');
           this.toastService.show('error', msg);
           this.submitting = false;
           return EMPTY;

@@ -87,7 +87,8 @@ export class JuridicoDetailComponent implements OnInit, OnDestroy {
         this.sub.add(
           this.clientesJuridicosService.clientesJuridicosHardDelete(this.cliente!.id!).pipe(
             catchError((err) => {
-              const msg = err.error?.message || err.statusText || 'Erro ao excluir cliente';
+              const ve = err.error?.validationErrors;
+              const msg = ve ? Object.entries(ve).map(([k, v]) => `${k}: ${v}`).join('; ') : (err.error?.message || err.statusText || 'Erro ao excluir cliente');
               this.toastService.show('error', msg);
               return EMPTY;
             })
