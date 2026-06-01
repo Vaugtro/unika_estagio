@@ -25,8 +25,6 @@ public class RGValidator implements ConstraintValidator<ValidRG, String> {
             return false;
         }
 
-        // Add any additional RG validation logic here
-        // Example: check if not all digits are the same
-        return !rawRG.matches("(\\d)\\1{" + (rawRG.length() - 1) + "}");
+        return true;
     }
 }
