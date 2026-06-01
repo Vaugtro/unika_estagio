@@ -46,12 +46,23 @@ public class EnderecoServiceImpl implements EnderecoService {
             throw new BusinessException("Cliente ID é obrigatório para criar um endereço.");
         }
 
-        Endereco entity = enderecoMapper.toEntity(request);
         Cliente cliente = findClienteById(request.clienteId());
+        Endereco entity = enderecoMapper.toEntity(request);
         entity.setCliente(cliente);
         entity.setMunicipio(findMunicipioById(request.municipioId()));
-        handlePrincipalLogic(entity, cliente.getId());
+
+        long addressCount = enderecoRepository.countByClienteId(request.clienteId());
+        if (addressCount == 0) {
+            entity.setPrincipal(true);
+            log.debug("First address for cliente {}, setting as principal", cliente.getId());
+        } else if (entity.isPrincipal()) {
+            enderecoRepository.findByClienteIdAndPrincipalTrue(request.clienteId())
+                    .ifPresent(e -> e.setPrincipal(false));
+            enderecoRepository.flush();
+        }
+
         Endereco saved = enderecoRepository.save(entity);
+        cliente.getEnderecos().add(saved);
         log.info("Created endereco with ID: {}", saved.getId());
         return enderecoMapper.toResponse(saved);
     }
@@ -65,8 +76,19 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco entity = enderecoMapper.toEntity(request);
         entity.setCliente(cliente);
         entity.setMunicipio(findMunicipioById(request.municipioId()));
-        handlePrincipalLogic(entity, clienteId);
+
+        long addressCount = enderecoRepository.countByClienteId(clienteId);
+        if (addressCount == 0) {
+            entity.setPrincipal(true);
+            log.debug("First address for cliente {}, setting as principal", clienteId);
+        } else if (entity.isPrincipal()) {
+            enderecoRepository.findByClienteIdAndPrincipalTrue(clienteId)
+                    .ifPresent(e -> e.setPrincipal(false));
+            enderecoRepository.flush();
+        }
+
         Endereco saved = enderecoRepository.save(entity);
+        cliente.getEnderecos().add(saved);
         log.info("Created endereco with ID: {} for cliente ID: {}", saved.getId(), clienteId);
         return enderecoMapper.toResponse(saved);
     }
@@ -296,23 +318,4 @@ public class EnderecoServiceImpl implements EnderecoService {
                         String.format("Município não encontrado com o ID: %d", id)));
     }
 
-    /**
-     * Delegates principal logic to the model's addEndereco method.
-     * The model ensures first address is principal and handles principal uniqueness.
-     */
-    private void handlePrincipalLogic(Endereco entity, Long clienteId) {
-        // The model's addEndereco() already handles:
-        // - First address must be principal
-        // - If new address is principal, demotes others
-        // So we only need to handle the case where this is the first address
-        long addressCount = enderecoRepository.countByClienteId(clienteId);
-        if (addressCount == 0) {
-            entity.setPrincipal(true);
-            log.debug("First address for cliente {}, setting as principal", clienteId);
-        } else if (entity.getPrincipal()) {
-            // Demote existing principal via model
-            Cliente cliente = findClienteById(clienteId);
-            cliente.getEnderecos().forEach(e -> e.setPrincipal(false));
-        }
-    }
 }

@@ -43,3 +43,7 @@ Thumbs.db
 
 .opencode
 .omo
+
+test-results
+
+e2e/playwright-report

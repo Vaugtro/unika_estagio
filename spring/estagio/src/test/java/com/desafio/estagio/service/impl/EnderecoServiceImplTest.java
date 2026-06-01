@@ -235,6 +235,8 @@ class EnderecoServiceImplTest {
     @DisplayName("create: success for first address without telefone (first address auto-set as principal)")
     void testCreateFirstAddressWithoutTelefone() {
         // Arrange
+        mockCliente.getEnderecos().clear();
+
         Endereco enderecoSemTelefone = Endereco.builder()
                 .id(1L)
                 .logradouro("Rua A")
@@ -288,7 +290,6 @@ class EnderecoServiceImplTest {
                 .clienteId(999L)
                 .build();
 
-        when(enderecoMapper.toEntity(request)).thenReturn(mockEndereco);
         when(clienteRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -300,6 +301,8 @@ class EnderecoServiceImplTest {
     @DisplayName("create: first address auto-set as principal")
     void testCreateFirstAddressAsPrincipal() {
         // Arrange
+        mockCliente.getEnderecos().clear();
+
         EnderecoCreateRequest request = EnderecoCreateRequest.builder()
                 .logradouro("Rua A")
                 .numero(123L)
