@@ -7,6 +7,7 @@ import {telefoneValidator} from '../../validators/telefone.validator';
 import {VALIDATION} from '../../validators/validation-constants';
 import {ViaCepService} from '../../services/via-cep.service';
 import {principalArrayValidator} from "../../validators/principal.validator";
+import {ToastService} from '../../services/toast.service';
 import {UnidadesFederativasService} from '../../../api/api/unidadesFederativas.service';
 import {MunicipiosService} from '../../../api/api/municipios.service';
 import {UnidadeFederativaDTO} from '../../../api/model/unidadeFederativaDTO';
@@ -29,6 +30,7 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
     private viaCepService: ViaCepService,
     private ufService: UnidadesFederativasService,
     private municipioService: MunicipiosService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -161,8 +163,10 @@ export class EnderecoFormComponent implements OnInit, OnDestroy {
 
     enderecosArray.controls.forEach(control => {
       if (control !== currentGroup) {
-        control.get('principal')?.setValue(false, {emitEvent: false});
+        control.get('principal')?.setValue(false);
       }
     });
+
+    this.toastService.show('info', 'Apenas um endereço pode ser principal. Mantendo somente o último endereço.');
   }
 }

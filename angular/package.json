@@ -7,6 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "e2e": "playwright test --config=e2e/playwright.config.ts",
+    "e2e:ui": "playwright test --config=e2e/playwright.config.ts --ui",
+    "e2e:debug": "playwright test --config=e2e/playwright.config.ts --debug",
+    "e2e:report": "playwright show-report e2e/playwright-report",
     "generate:api": "openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-angular -t ./src/templates -o ./src/app/api --additional-properties=ngVersion=14.2.0,useHttpClient=true,supportsES6=true && node -e \"const m=require('mustache'),f=require('fs'),d=JSON.parse(f.readFileSync('src/templates/provide-api-data.json','utf8')),t=f.readFileSync('src/templates/provide-api.mustache','utf8'),p={licenseInfo:f.readFileSync('src/templates/partials/licenseInfo.mustache','utf8')};f.writeFileSync('src/app/api/provide-api.ts',m.render(t,d,p))\""
   },
   "private": true,
@@ -33,6 +37,7 @@
     "@angular/cli": "~14.2.13",
     "@angular/compiler-cli": "^14.2.0",
     "@openapitools/openapi-generator-cli": "^2.34.0",
+    "@playwright/test": "^1.60.0",
     "@types/jasmine": "~4.0.0",
     "autoprefixer": "^10.5.0",
     "jasmine-core": "~4.3.0",

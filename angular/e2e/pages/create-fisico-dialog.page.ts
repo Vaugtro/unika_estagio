@@ -1,0 +1,127 @@
+import { Page, Locator } from '@playwright/test'
+
+export class CreateFisicoDialog {
+  readonly page: Page
+  readonly dialogTitle: Locator
+  readonly cpfInput: Locator
+  readonly nomeInput: Locator
+  readonly rgInput: Locator
+  readonly emailInput: Locator
+  readonly dataNascimentoInput: Locator
+  readonly logradouroInput: Locator
+  readonly numeroInput: Locator
+  readonly bairroInput: Locator
+  readonly cepInput: Locator
+  readonly telefoneInput: Locator
+  readonly ufSelect: Locator
+  readonly municipioSelect: Locator
+  readonly principalCheckbox: Locator
+  readonly salvarButton: Locator
+  readonly cancelarButton: Locator
+
+  constructor(page: Page) {
+    this.page = page
+    this.dialogTitle = page.locator('h2[mat-dialog-title]')
+    this.cpfInput = page.locator('mat-dialog-content').locator('input[mask="000.000.000-00"]')
+    this.nomeInput = page.locator('mat-dialog-content').getByLabel('Nome')
+    this.rgInput = page.locator('mat-dialog-content').getByLabel('RG')
+    this.emailInput = page.locator('mat-dialog-content').getByLabel('E-mail')
+    this.dataNascimentoInput = page.locator('mat-dialog-content').getByLabel('Data Nascimento')
+
+    this.logradouroInput = page.locator('app-endereco-form').getByLabel('Logradouro')
+    this.numeroInput = page.locator('app-endereco-form').getByLabel('Número')
+    this.bairroInput = page.locator('app-endereco-form').getByLabel('Bairro')
+    this.cepInput = page.locator('app-endereco-form').getByLabel('CEP')
+    this.telefoneInput = page.locator('app-endereco-form').getByLabel('Telefone')
+    this.ufSelect = page.locator('app-endereco-form').getByLabel('Estado')
+    this.municipioSelect = page.locator('app-endereco-form').getByLabel('Município')
+    this.principalCheckbox = page.locator('app-endereco-form').getByLabel('Principal')
+
+    this.salvarButton = page.getByRole('button', { name: /^Salvar$/ })
+    this.cancelarButton = page.getByRole('button', { name: 'Cancelar' })
+  }
+
+  async fillCPF(cpf: string) {
+    await this.cpfInput.fill(cpf)
+  }
+
+  async fillNome(nome: string) {
+    await this.nomeInput.fill(nome)
+  }
+
+  async fillRG(rg: string) {
+    await this.rgInput.fill(rg)
+  }
+
+  async fillEmail(email: string) {
+    await this.emailInput.fill(email)
+  }
+
+  async fillDataNascimento(data: string) {
+    await this.dataNascimentoInput.fill(data)
+  }
+
+  async fillLogradouro(value: string) {
+    await this.logradouroInput.fill(value)
+  }
+
+  async fillNumero(value: string) {
+    await this.numeroInput.fill(value)
+  }
+
+  async fillBairro(value: string) {
+    await this.bairroInput.fill(value)
+  }
+
+  async fillCEP(value: string) {
+    await this.cepInput.fill(value)
+  }
+
+  async fillTelefone(value: string) {
+    await this.telefoneInput.fill(value)
+  }
+
+  async selectUF(nome: string) {
+    await this.ufSelect.click()
+    await this.page.locator('mat-option', { hasText: nome }).first().click()
+  }
+
+  async selectMunicipio(nome: string) {
+    await this.municipioSelect.click()
+    await this.page.locator('mat-option', { hasText: nome }).last().click()
+  }
+
+  async setAsPrincipal() {
+    if (!(await this.principalCheckbox.isChecked())) {
+      await this.principalCheckbox.click()
+    }
+  }
+
+  async clickSalvar() {
+    await this.salvarButton.click()
+  }
+
+  async clickCancelar() {
+    await this.cancelarButton.click()
+  }
+
+  async fillEndereco(data: { logradouro: string; numero: string; bairro: string; cep: string; telefone: string; ufNome: string; municipioNome: string }) {
+    await this.fillLogradouro(data.logradouro)
+    await this.fillNumero(data.numero)
+    await this.fillBairro(data.bairro)
+    await this.fillCEP(data.cep)
+    await this.fillTelefone(data.telefone)
+    await this.selectUF(data.ufNome)
+    await this.selectMunicipio(data.municipioNome)
+    await this.setAsPrincipal()
+  }
+
+  async fillForm(data: { cpf: string; nome: string; rg: string; email?: string; dataNascimento?: string; endereco: { logradouro: string; numero: string; bairro: string; cep: string; telefone: string; ufNome: string; municipioNome: string } }) {
+    await this.fillCPF(data.cpf)
+    await this.fillNome(data.nome)
+    await this.fillRG(data.rg)
+    if (data.email) await this.fillEmail(data.email)
+    if (data.dataNascimento) await this.fillDataNascimento(data.dataNascimento)
+    await this.fillEndereco(data.endereco)
+  }
+}
